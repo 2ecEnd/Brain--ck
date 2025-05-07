@@ -7,15 +7,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.foundation.shape.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.mobileapp.ui.theme.MobileAppTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -42,7 +48,7 @@ class MainActivity : ComponentActivity() {
 fun App(modifier: Modifier = Modifier){
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "createProject") {
+    NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomePage(navController)
         }
@@ -66,10 +72,26 @@ fun ExitButton(){
             }
             context.startActivity(homeIntent)
         },
-        modifier = Modifier.width(200.dp)
+        modifier = buttonModifier
     )
     {
-        Text("Выйти")
+        Text("Выйти", fontSize = 24.sp)
+    }
+}
+
+@Composable
+fun HomeButton(navController: NavController){
+    val context = LocalContext.current
+    Button(
+        onClick = {navController.navigate("projects")},
+        modifier = Modifier
+            .width(68.dp)
+            .height(68.dp)
+            .padding(8.dp),
+        shape = RoundedCornerShape(12.dp),
+    )
+    {
+
     }
 }
 

@@ -37,17 +37,19 @@ import androidx.navigation.NavController
 
 @Composable
 fun HomePage(navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize().background(Color.Green)){
+    Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(id = R.drawable.background),
             contentDescription = "background",
         )
 
+        HomeButton(navController)
+
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
-                .width(225.dp)
-                .height(150.dp),
+                .width(325.dp)
+                .height(200.dp),
             shape = RoundedCornerShape(15.dp)
         )
         {
@@ -56,15 +58,17 @@ fun HomePage(navController: NavController) {
                 contentAlignment = Alignment.Center
             ){
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
                 )
                 {
                     Button(
                         onClick = {navController.navigate("projects")},
-                        modifier = Modifier.width(200.dp)
+                        modifier = Modifier
+                            .width(275.dp)
+                            .height(50.dp)
                     )
                     {
-                        Text("Проекты")
+                        Text("Проекты", fontSize = 24.sp)
                     }
 
                     ExitButton()
@@ -85,8 +89,8 @@ fun ProjectsPage(navController: NavController){
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
-                .width(225.dp)
-                .height(150.dp),
+                .width(325.dp)
+                .height(200.dp),
             shape = RoundedCornerShape(15.dp)
         )
         {
@@ -95,15 +99,17 @@ fun ProjectsPage(navController: NavController){
                 contentAlignment = Alignment.Center
             ){
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
                 )
                 {
                     Button(
                         onClick = {navController.navigate("createProject")},
-                        modifier = Modifier.width(200.dp)
+                        modifier = Modifier
+                            .width(275.dp)
+                            .height(50.dp)
                     )
                     {
-                        Text("+")
+                        Text("+", fontSize = 24.sp)
                     }
                 }
             }
@@ -122,8 +128,8 @@ fun CreateProjectPage(navController: NavController){
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
-                .width(225.dp)
-                .height(150.dp),
+                .width(325.dp)
+                .height(200.dp),
             shape = RoundedCornerShape(15.dp)
         )
         {
@@ -143,22 +149,23 @@ fun ProjectNameForm(navController: NavController){
             verticalArrangement = Arrangement.spacedBy(16.dp),
         )
         {
-            OutlinedTextField(
+            TextField(
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(40.dp),
-                shape = RoundedCornerShape(15.dp),
+                    .width(275.dp)
+                    .height(80.dp),
                 value = text,
                 onValueChange = { newText -> text = newText },
-                textStyle = LocalTextStyle.current.copy(fontSize = 20.sp)
+                textStyle = LocalTextStyle.current.copy(fontSize = 24.sp)
             )
 
             Button(
                 onClick = {},
-                modifier = Modifier.width(200.dp)
+                modifier = Modifier
+                    .width(275.dp)
+                    .height(50.dp)
             )
             {
-                Text("Создать")
+                Text("Создать", fontSize = 24.sp)
             }
         }
     }
