@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
@@ -42,8 +45,6 @@ fun HomePage(navController: NavController) {
             painter = painterResource(id = R.drawable.background),
             contentDescription = "background",
         )
-
-        HomeButton(navController)
 
         Card(
             modifier = Modifier
@@ -86,6 +87,8 @@ fun ProjectsPage(navController: NavController){
             contentDescription = "background",
         )
 
+        HomeButton(navController)
+
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
@@ -125,6 +128,8 @@ fun CreateProjectPage(navController: NavController){
             contentDescription = "background",
         )
 
+        HomeButton(navController)
+
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
@@ -159,13 +164,67 @@ fun ProjectNameForm(navController: NavController){
             )
 
             Button(
-                onClick = {},
+                onClick = {navController.navigate("redactor")},
                 modifier = Modifier
                     .width(275.dp)
                     .height(50.dp)
             )
             {
                 Text("Создать", fontSize = 24.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun RedactorPage(navController: NavController){
+    Box(modifier = Modifier.fillMaxSize().background(Color(red = 249, green = 249, blue = 249))){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        )
+        {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
+                    .background(Color(red = 230, green = 224, blue = 233))
+            )
+            {
+                HomeButton(navController)
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.75f)
+                    .background(Color(red = 249, green = 249, blue = 249))
+            )
+            {
+
+            }
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(1f)
+                    .background(Color(red = 230, green = 224, blue = 233))
+            )
+            {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+                {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.33f)
+                    )
+                    {
+                        DeclareVariableBlock()
+                    }
+                }
             }
         }
     }

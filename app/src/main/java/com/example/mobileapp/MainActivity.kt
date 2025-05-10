@@ -6,9 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
 fun App(modifier: Modifier = Modifier){
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = "redactor") {
         composable("home") {
             HomePage(navController)
         }
@@ -57,6 +59,9 @@ fun App(modifier: Modifier = Modifier){
         }
         composable("createProject") {
             CreateProjectPage(navController)
+        }
+        composable("redactor") {
+            RedactorPage(navController)
         }
     }
 }
@@ -81,17 +86,21 @@ fun ExitButton(){
 
 @Composable
 fun HomeButton(navController: NavController){
-    val context = LocalContext.current
     Button(
-        onClick = {navController.navigate("projects")},
+        onClick = {navController.navigate("home")},
         modifier = Modifier
             .width(68.dp)
             .height(68.dp)
             .padding(8.dp),
         shape = RoundedCornerShape(12.dp),
+        contentPadding = PaddingValues(0.dp)
     )
     {
-
+        Image(
+            painter = painterResource(id = R.drawable.housefill_48px),
+            contentDescription = "button_icon",
+            modifier = Modifier.size(32.dp)
+        )
     }
 }
 
