@@ -13,6 +13,7 @@ class Context : ComplexBlock() {
         set(value) {}
 
     override fun execute() {
+        // Нуждается в доработке
         for (i in 0..blockList.size){
             blockList[i].execute()
         }
