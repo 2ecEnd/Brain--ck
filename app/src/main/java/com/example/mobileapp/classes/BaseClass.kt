@@ -17,7 +17,7 @@ abstract class Block() : BlockTemplate() {
 abstract class ComplexBlock() : BlockTemplate() {
     abstract override val color: Color // Цвет блока (ui)
     abstract var blockList: MutableList<BlockTemplate> // Список блоков, которые он будет содержать
-    abstract var varList: MutableList<Block> //Список переменных, доступных в его области видимости
+    abstract var varList: MutableMap<String, Any> //Список переменных, доступных в его области видимости
 
     abstract override fun execute(): Any  // Выполняет свою функцию
 }
