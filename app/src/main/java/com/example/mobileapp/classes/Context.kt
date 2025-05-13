@@ -12,6 +12,14 @@ class Context : ComplexBlock() {
         get() = TODO("Not yet implemented")
         set(value) {}
 
+    fun deleteVariable(name: String)
+    {
+        varList.remove(name)
+    }
+    fun addVariable(name: String)
+    {
+        varList.put(name, 0)
+    }
     override fun execute() {
         // Нуждается в доработке
         for (i in 0..blockList.size){
