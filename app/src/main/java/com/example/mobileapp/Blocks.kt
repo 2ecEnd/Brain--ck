@@ -2,6 +2,7 @@ package com.example.mobileapp
 
 import android.R
 import android.R.bool
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -109,7 +110,10 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             .fillMaxHeight(0.7f),
                         value = value,
                         onValueChange = {
-                            newValue -> value = newValue
+                            newValue ->
+                                block.scope.deleteVariable(value)
+                                block.scope.addVariable(newValue)
+                                value = newValue
                         },
                         textStyle = LocalTextStyle.current.copy(fontSize = 15.sp, textAlign = TextAlign.Center),
                         singleLine = true,
@@ -128,8 +132,13 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
             }}
         is SetVariable -> {var density = LocalDensity.current
             var expanded by remember { mutableStateOf(false) }
-            val items = listOf("my variable", "Option 2", "Option 3")
-            var selectedItem by remember { mutableStateOf(items.first()) }
+            var items = remember { block.scope.varList.keys.toMutableList() }
+            var selectedItem by remember { mutableStateOf("my variable") }
+
+            if(isActive){
+
+            }
+            //Log.i("tag", "$varList")
 
             Card(
                 modifier = Modifier

@@ -8,18 +8,9 @@ class Context : ComplexBlock() {
     override var blockList: MutableList<BlockTemplate>
         get() = TODO("Not yet implemented")
         set(value) {}
-    override var varList: MutableMap<String, Any>
-        get() = TODO("Not yet implemented")
-        set(value) {}
+    override var varList: MutableMap<String, Any> = mutableMapOf<String, Any>()
 
-    fun deleteVariable(name: String)
-    {
-        varList.remove(name)
-    }
-    fun addVariable(name: String)
-    {
-        varList.put(name, 0)
-    }
+
     override fun execute() {
         // Нуждается в доработке
         for (i in 0..blockList.size){

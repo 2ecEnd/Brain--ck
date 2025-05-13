@@ -305,6 +305,8 @@ fun RedactorPage(navController: NavController){
                 )
                 {
                     DrawBlock(block = DeclareVariable(context), { offset, chosenBlock ->
+                        var hashCode = chosenBlock.hashCode()
+                        Log.i("tag", "$hashCode")
                         isDragging = true
                         touchPoint = offset
                         draggingBlock = chosenBlock},
@@ -315,6 +317,8 @@ fun RedactorPage(navController: NavController){
                     )
 
                     DrawBlock(block = SetVariable(context), {offset, chosenBlock ->
+                        var hashCode = chosenBlock.hashCode()
+                        Log.i("tag", "$hashCode")
                         isDragging = true
                         touchPoint = offset
                         draggingBlock = chosenBlock},
