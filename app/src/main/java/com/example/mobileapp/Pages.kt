@@ -55,6 +55,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Context
+import com.example.mobileapp.classes.DeclareVariable
+import com.example.mobileapp.classes.SetVariable
 import kotlin.math.roundToInt
 
 @Composable
@@ -201,19 +204,24 @@ fun ProjectNameForm(navController: NavController){
 
 @Composable
 fun RedactorPage(navController: NavController){
-    var draggingBlock by remember { mutableStateOf<BlockTemplate?>(null) }
+    var context = Context()
+
+    var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
     var isDragging by remember { mutableStateOf(false) }
     var dragOffset by remember { mutableStateOf(Offset.Zero) }
     var touchPoint by remember { mutableStateOf(Offset.Zero) }
 
-    var blockList = remember { mutableStateListOf<BlockTemplate?>() }
+    var varList = remember { mutableMapOf<String, Any>() }
+    var blockList = remember { mutableStateListOf<BlockTemplate>() }
     var dropZone by remember { mutableStateOf(Rect.Zero) }
 
-    fun AddNewBlock(block: BlockTemplate?){
+    fun AddNewBlock(block: BlockTemplate){
         if (dropZone.contains(Offset(dragOffset.x, dragOffset.y))){
             blockList.add(block)
         }
     }
+
+
 
     Box(
         modifier = Modifier
@@ -232,7 +240,7 @@ fun RedactorPage(navController: NavController){
             }
     )
     {
-        if (isDragging){
+        if (isDragging && draggingBlock != null){
             Box(
                 modifier = Modifier
                     .offset {
@@ -244,7 +252,7 @@ fun RedactorPage(navController: NavController){
                     .zIndex(1f)
             )
             {
-                DrawBlock(null, {}, {}, false, {})
+                DrawBlock(draggingBlock, {_, _ ->}, {}, false, {}, false)
             }
 
             if(dropZone.contains(Offset(dragOffset.x, dragOffset.y))) {
@@ -291,26 +299,30 @@ fun RedactorPage(navController: NavController){
             {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.Start
                 )
                 {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.33f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
+                    DrawBlock(block = DeclareVariable(context), { offset, chosenBlock ->
+                        isDragging = true
+                        touchPoint = offset
+                        draggingBlock = chosenBlock},
+                        {draggedBlock ->
+                            isDragging = false
+                            AddNewBlock(draggedBlock)
+                        }, false, {}, false
                     )
-                    {
-                        DrawBlock(null, {offset ->
-                            isDragging = true
-                            touchPoint = offset },
-                            {block ->
-                                isDragging = false
-                                AddNewBlock(block)
-                            }, false, {}
-                        )
-                    }
+
+                    DrawBlock(block = SetVariable(context), {offset, chosenBlock ->
+                        isDragging = true
+                        touchPoint = offset
+                        draggingBlock = chosenBlock},
+                        {block ->
+                            isDragging = false
+                            AddNewBlock(block)
+                        }, false, {}, false
+                    )
                 }
             }
         }
@@ -318,7 +330,7 @@ fun RedactorPage(navController: NavController){
 }
 
 @Composable
-fun RedactorArea(blockList: SnapshotStateList<BlockTemplate?>, dropZoneUpdated: (Rect) -> Unit){
+fun RedactorArea(blockList: SnapshotStateList<BlockTemplate>, dropZoneUpdated: (Rect) -> Unit){
     var density = LocalDensity.current
 
     Column(
@@ -350,7 +362,7 @@ fun RedactorArea(blockList: SnapshotStateList<BlockTemplate?>, dropZoneUpdated: 
         {}
 
         blockList.forEach { block ->
-            DrawBlock(null, {}, {}, true, dropZoneUpdated)
+            DrawBlock(block, {_, _ ->}, {}, true, dropZoneUpdated, true)
         }
     }
 }
