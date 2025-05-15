@@ -1,7 +1,5 @@
 package com.example.mobileapp.classes
 
-import androidx.compose.ui.graphics.Color
-
 class SetVariable(var scope: ComplexBlock) : Block()
 {
     var name: String = ""

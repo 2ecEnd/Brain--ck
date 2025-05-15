@@ -1,21 +1,21 @@
 package com.example.mobileapp.classes
 
-import androidx.compose.ui.graphics.Color
-
 abstract class BlockTemplate
 {
-    abstract fun execute(): Any  // Выполняет свою функцию
+    abstract fun execute(): Any
 }
 
 abstract class Block: BlockTemplate()
 {
-    abstract override fun execute(): Any // Выполняет свою функцию
+    abstract override fun execute(): Any
 }
 
 abstract class ComplexBlock: BlockTemplate()
 {
-    abstract var blockList: MutableList<BlockTemplate> // Список блоков, которые он будет содержать
-    abstract var varList: MutableMap<String, Int> //Список переменных, доступных в его области видимости
+    // Список блоков, которые будет содержать данный блок
+    abstract var blockList: MutableList<BlockTemplate>
+    //Список переменных, доступных в области видимости данного блока
+    abstract var varList: MutableMap<String, Int>
 
-    abstract override fun execute(): Any  // Выполняет свою функцию
+    abstract override fun execute(): Any
 }
