@@ -2,11 +2,10 @@ package com.example.mobileapp.classes
 
 import androidx.compose.ui.graphics.Color
 
-class DeclareVariable(val scope: ComplexBlock) : Block() {
-    val name: String = ""
-    val value: String = ""
-    override val color: Color
-        get() = TODO("Not yet implemented")
+class DeclareVariable(var scope: ComplexBlock) : Block() 
+{
+    var name: String = ""
+    var value: Int = 0
 
     override fun execute() {
         // Нуждается в доработке

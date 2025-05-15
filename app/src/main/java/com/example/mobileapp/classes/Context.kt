@@ -2,13 +2,12 @@ package com.example.mobileapp.classes
 
 import androidx.compose.ui.graphics.Color
 
-class Context : ComplexBlock() {
-    override val color: Color
-        get() = TODO("Not yet implemented")
+class Context : ComplexBlock()
+{
     override var blockList: MutableList<BlockTemplate>
         get() = TODO("Not yet implemented")
         set(value) {}
-    override var varList: MutableMap<String, Any>
+    override var varList: MutableMap<String, Int>
         get() = TODO("Not yet implemented")
         set(value) {}
 
@@ -20,9 +19,11 @@ class Context : ComplexBlock() {
     {
         varList.put(name, 0)
     }
-    override fun execute() {
+    override fun execute()
+    {
         // Нуждается в доработке
-        for (i in 0..blockList.size){
+        for (i in 0..blockList.size)
+        {
             blockList[i].execute()
         }
     }
