@@ -3,7 +3,7 @@ package com.example.mobileapp.classes
 class Context : ComplexBlock()
 {
     override var blockList = mutableListOf<BlockTemplate>()
-    override var varList = mutableMapOf<String, Int>()
+    override var varList = mutableMapOf<String, Value>()
 
     fun deleteVariable(name: String)
     {

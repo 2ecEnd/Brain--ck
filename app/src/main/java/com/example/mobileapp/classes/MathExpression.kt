@@ -6,7 +6,7 @@ class MathExpression: Block()
     var rightValue: BlockTemplate = Constant()
     var operartion: String = "+"
 
-    override fun execute(): Int
+    override fun execute(): Value
     {
         var left = (leftValue.execute()) as Int
         var right = (rightValue.execute()) as Int
