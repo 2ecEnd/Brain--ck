@@ -44,7 +44,6 @@ class MathExpression: Block()
             (left is Value.INT || left is Value.DOUBLE &&
             right is Value.INT || right is Value.DOUBLE) ->
             {
-
                 if (left is Value.INT && right is Value.INT)
                 {
                     when (operation)
