@@ -16,7 +16,7 @@ class Context : ComplexBlock()
     override fun execute()
     {
         // Нуждается в доработке
-        for (i in 0..blockList.size)
+        for (i in 0..(blockList.size - 1))
         {
             blockList[i].execute()
         }
