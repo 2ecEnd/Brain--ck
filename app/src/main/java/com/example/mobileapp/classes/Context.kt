@@ -11,12 +11,12 @@ class Context : ComplexBlock()
     }
     fun addVariable(name: String)
     {
-        varList.put(name, 0)
+        varList.put(name, Value.INT(0))
     }
     override fun execute()
     {
         // Нуждается в доработке
-        for (i in 0..(blockList.size - 1))
+        for (i in 0..<blockList.size )
         {
             blockList[i].execute()
         }

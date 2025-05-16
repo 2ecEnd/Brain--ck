@@ -5,7 +5,7 @@ class IfElse: Block()
     class If: ComplexBlock()
     {
         override var blockList = mutableListOf<BlockTemplate>()
-        override var varList = mutableMapOf<String, Int>()
+        override var varList = mutableMapOf<String, Value>()
 
         override fun execute()
         {
@@ -19,7 +19,7 @@ class IfElse: Block()
     class Else: ComplexBlock()
     {
         override var blockList = mutableListOf<BlockTemplate>()
-        override var varList = mutableMapOf<String, Int>()
+        override var varList = mutableMapOf<String, Value>()
 
         override fun execute() 
         {
@@ -36,9 +36,15 @@ class IfElse: Block()
 
     override fun execute()
     {
-        if (condition.execute())
-            if_.execute()
+        val condRes = condition.execute()
+        if (condRes is Value.BOOLEAN)
+        {
+            if (condRes.value)
+                if_.execute()
+            else
+                else_.execute()
+        }
         else
-            else_.execute()
+            throw IllegalArgumentException("Ошибка")
     }
 }
