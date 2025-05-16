@@ -1,4 +1,5 @@
 package com.example.mobileapp.classes
+import kotlin.math.pow
 
 class MathExpression: Block()
 {
@@ -52,6 +53,8 @@ class MathExpression: Block()
                         "-" -> Value.INT(left.value - right.value)
                         "*" -> Value.INT(left.value * right.value)
                         "/" -> Value.INT(left.value / right.value)
+                        "%" -> Value.INT(left.value % right.value)
+                        "^" -> Value.DOUBLE((left.value.toDouble().pow(right.value)))
                         else -> throw IllegalArgumentException("Недопустимая операция")
                     }
                 }
@@ -75,6 +78,8 @@ class MathExpression: Block()
                         "-" -> Value.DOUBLE(l - r)
                         "*" -> Value.DOUBLE(l * r)
                         "/" -> Value.DOUBLE(l / r)
+                        "%" -> Value.DOUBLE(l % r)
+                        "^" -> Value.DOUBLE((l.pow(r)))
                         else -> throw IllegalArgumentException("Недопустимая операция")
                     }
                 }
