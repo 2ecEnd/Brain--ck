@@ -1,16 +1,9 @@
 package com.example.mobileapp.classes
 
-import androidx.compose.ui.graphics.Color
-
-class Context : ComplexBlock() {
-    override val color: Color
-        get() = TODO("Not yet implemented")
-    override var blockList: MutableList<BlockTemplate>
-        get() = TODO("Not yet implemented")
-        set(value) {}
-    override var varList: MutableMap<String, Any>
-        get() = TODO("Not yet implemented")
-        set(value) {}
+class Context : ComplexBlock()
+{
+    override var blockList = mutableListOf<BlockTemplate>()
+    override var varList = mutableMapOf<String, Int>()
 
     fun deleteVariable(name: String)
     {
@@ -20,9 +13,11 @@ class Context : ComplexBlock() {
     {
         varList.put(name, 0)
     }
-    override fun execute() {
+    override fun execute()
+    {
         // Нуждается в доработке
-        for (i in 0..blockList.size){
+        for (i in 0..(blockList.size - 1))
+        {
             blockList[i].execute()
         }
     }
