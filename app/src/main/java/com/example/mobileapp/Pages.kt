@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -54,7 +56,9 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.ComplexBlock
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
 import com.example.mobileapp.classes.SetVariable
@@ -204,7 +208,7 @@ fun ProjectNameForm(navController: NavController){
 
 @Composable
 fun RedactorPage(navController: NavController){
-    var context = Context()
+    var context = remember {Context()}
 
     var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
     var isDragging by remember { mutableStateOf(false) }
@@ -215,14 +219,28 @@ fun RedactorPage(navController: NavController){
     var blockList = remember { mutableStateListOf<BlockTemplate>() }
     var dropZone by remember { mutableStateOf(Rect.Zero) }
 
+    var pagerState = rememberPagerState (pageCount = {2})
+
     fun AddNewBlock(block: BlockTemplate){
         if (dropZone.contains(Offset(dragOffset.x, dragOffset.y))){
-            blockList.add(block)
+            var className = block::class.simpleName
+            var newBlock: Block
+            when(className){
+                "DeclareVariable" -> {newBlock = DeclareVariable(context)
+                    var scope = newBlock.scope
+                    Log.i("block", "$scope")}
+                "SetVariable" -> {newBlock = SetVariable(context)
+                    var scope = newBlock.scope
+                    Log.i("block", "$scope")}
+                else -> newBlock = DeclareVariable(context)
+            }
+            blockList.add(newBlock)
+
         }
     }
 
 
-
+    // Основноц контецнер
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -290,45 +308,73 @@ fun RedactorPage(navController: NavController){
 
             RedactorArea(blockList, {rect -> dropZone = rect})
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(1f)
-                    .background(Color(red = 230, green = 224, blue = 233))
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize()
             )
             {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.Start
-                )
-                {
-                    DrawBlock(block = DeclareVariable(context), { offset, chosenBlock ->
-                        var hashCode = chosenBlock.hashCode()
-                        Log.i("tag", "$hashCode")
-                        isDragging = true
-                        touchPoint = offset
-                        draggingBlock = chosenBlock},
-                        {draggedBlock ->
-                            isDragging = false
-                            AddNewBlock(draggedBlock)
-                        }, false, {}, false
+                page -> when(page) {
+                0 -> {
+                    Card(
+                        modifier = Modifier
+                            .background(Color(red = 230, green = 224, blue = 233))
                     )
+                    {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.SpaceAround,
+                            horizontalAlignment = Alignment.Start
+                        )
+                        {
+                            DrawBlock(
+                                block = DeclareVariable(context), { offset, chosenBlock ->
+                                isDragging = true
+                                touchPoint = offset
+                                draggingBlock = chosenBlock
+                            },
+                                { draggedBlock ->
+                                    isDragging = false
+                                    AddNewBlock(draggedBlock)
+                                }, false, {}, false
+                            )
 
-                    DrawBlock(block = SetVariable(context), {offset, chosenBlock ->
-                        var hashCode = chosenBlock.hashCode()
-                        Log.i("tag", "$hashCode")
-                        isDragging = true
-                        touchPoint = offset
-                        draggingBlock = chosenBlock},
-                        {block ->
-                            isDragging = false
-                            AddNewBlock(block)
-                        }, false, {}, false
+                            DrawBlock(
+                                block = SetVariable(context), { offset, chosenBlock ->
+                                isDragging = true
+                                touchPoint = offset
+                                draggingBlock = chosenBlock
+                            },
+                                { block ->
+                                    isDragging = false
+                                    AddNewBlock(block)
+                                }, false, {}, false
+                            )
+                        }
+                    }
+                }
+                1 -> { var outPutList = remember{mutableListOf("")}
+                    Card(
+                    modifier = Modifier
+                        .background(Color(red = 230, green = 224, blue = 233))
                     )
+                    {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.SpaceAround,
+                            horizontalAlignment = Alignment.Start
+                        )
+                        {
+                            outPutList.forEach { text ->
+                                Text(text, fontSize = 16.sp, color = Color.White)
+                            }
+                        }
+                    }
                 }
             }
+            }
+
         }
     }
 }

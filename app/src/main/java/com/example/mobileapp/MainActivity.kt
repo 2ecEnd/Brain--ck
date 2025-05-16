@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 fun App(modifier: Modifier = Modifier){
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = "redactor") {
         composable("home") {
             HomePage(navController)
         }
@@ -57,6 +57,9 @@ fun App(modifier: Modifier = Modifier){
         }
         composable("createProject") {
             CreateProjectPage(navController)
+        }
+        composable("redactor") {
+            RedactorPage(navController)
         }
     }
 }
