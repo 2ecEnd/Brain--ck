@@ -3,7 +3,7 @@ package com.example.mobileapp.classes
 class SetVariable(var scope: ComplexBlock) : Block()
 {
     var name: String = ""
-    var value = 0
+    var value = Value.INT(0)
 
     override fun execute()
     {

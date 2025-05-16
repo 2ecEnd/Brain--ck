@@ -2,8 +2,8 @@ package com.example.mobileapp.classes
 
 class Constant : Block()
 {
-    var value: Int = 0
+    var value = Value.INT(0)
 
     // Нуждается в доработке
-    override fun execute() = value
+    override fun execute(): Value = value
 }
