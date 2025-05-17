@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
 import com.example.mobileapp.classes.SetVariable
 import kotlin.math.roundToInt

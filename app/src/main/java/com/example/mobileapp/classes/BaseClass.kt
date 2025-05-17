@@ -17,6 +17,8 @@ abstract class ComplexBlock: BlockTemplate()
     // Список переменных, доступных в области видимости данного блока
     abstract var varList: MutableMap<String, Value>
 
+    abstract fun deleteVariable(name: String)
+    abstract fun addVariable(name: String)
     abstract override fun execute(): Any
 }
 

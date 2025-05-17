@@ -5,11 +5,11 @@ class Context : ComplexBlock()
     override var blockList = mutableListOf<BlockTemplate>()
     override var varList = mutableMapOf<String, Value>()
 
-    fun deleteVariable(name: String)
+    override fun deleteVariable(name: String)
     {
         varList.remove(name)
     }
-    fun addVariable(name: String)
+    override fun addVariable(name: String)
     {
         varList.put(name, Value.INT(0))
     }
