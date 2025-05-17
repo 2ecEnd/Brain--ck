@@ -2,6 +2,7 @@ package com.example.mobileapp
 
 import android.R
 import android.R.bool
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -109,7 +110,11 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             .fillMaxHeight(0.7f),
                         value = value,
                         onValueChange = {
-                            newValue -> value = newValue
+                                newValue ->
+                            block.scope.deleteVariable(value)
+                            block.name = newValue
+                            block.scope.addVariable(newValue)
+                            value = newValue
                         },
                         textStyle = LocalTextStyle.current.copy(fontSize = 15.sp, textAlign = TextAlign.Center),
                         singleLine = true,
@@ -128,8 +133,8 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
             }}
         is SetVariable -> {var density = LocalDensity.current
             var expanded by remember { mutableStateOf(false) }
-            val items = listOf("my variable", "Option 2", "Option 3")
-            var selectedItem by remember { mutableStateOf(items.first()) }
+            var items = remember { block.scope.varList.keys.toMutableList()  }
+            var selectedItem by remember { mutableStateOf("my variable") }
 
             Card(
                 modifier = Modifier
@@ -188,11 +193,12 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             expanded = expanded,
                             onDismissRequest = { expanded = false }
                         ){
-                            items.forEach { item ->
+                            block.scope.varList.keys.toMutableList().forEach { item ->
                                 DropdownMenuItem(
                                     text = { Text(item) },
                                     onClick = {
                                         selectedItem = item
+                                        block.name = item
                                         expanded = false
                                     }
                                 )
@@ -207,7 +213,10 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         modifier = Modifier
                             .fillMaxHeight(0.7f),
                         value = value,
-                        onValueChange = { newValue -> value = newValue },
+                        onValueChange = {
+                            newValue -> value = newValue
+                            block.value = newValue
+                        },
                         textStyle = LocalTextStyle.current.copy(fontSize = 15.sp, textAlign = TextAlign.Center),
                         singleLine = true,
                         enabled = isActive,
@@ -240,4 +249,3 @@ fun DrawShadow(block: BlockTemplate?){
 
     }
 }
-

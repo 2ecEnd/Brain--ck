@@ -6,11 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -86,21 +84,17 @@ fun ExitButton(){
 
 @Composable
 fun HomeButton(navController: NavController){
+    val context = LocalContext.current
     Button(
-        onClick = {navController.navigate("home")},
+        onClick = {navController.navigate("projects")},
         modifier = Modifier
             .width(68.dp)
             .height(68.dp)
             .padding(8.dp),
         shape = RoundedCornerShape(12.dp),
-        contentPadding = PaddingValues(0.dp)
     )
     {
-        Image(
-            painter = painterResource(id = R.drawable.housefill_48px),
-            contentDescription = "button_icon",
-            modifier = Modifier.size(32.dp)
-        )
+
     }
 }
 
