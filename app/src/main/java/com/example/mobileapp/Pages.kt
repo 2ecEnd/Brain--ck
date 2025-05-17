@@ -240,7 +240,7 @@ fun RedactorPage(navController: NavController){
     }
 
 
-    // Основноц контецнер
+    // Основной контейнер
     Box(
         modifier = Modifier
             .fillMaxSize()

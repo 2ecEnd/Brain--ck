@@ -105,6 +105,8 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                 {
                     Text("declare", fontSize = 16.sp, color = Color.White)
                     var value by remember{ mutableStateOf("my variable") }
+                    block.name = value
+                    block.scope.addVariable(value)
                     BasicTextField(
                         modifier = Modifier
                             .fillMaxHeight(0.7f),
