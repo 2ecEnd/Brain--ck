@@ -1,16 +1,23 @@
 package com.example.mobileapp.classes
-
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 
 class SetVariable(var scope: ComplexBlock) : Block()
 {
     var name: String = ""
-    var value = Value.INT(0)
+    var value by mutableStateOf<BlockTemplate>(Constant())
     override var selfRect: Rect = Rect.Zero
 
     override fun execute()
     {
         // Нуждается в доработке
-        scope.varList[name] = value
+        val tmp = value.execute()
+        scope.varList[name] = when (tmp)
+        {
+            is Value -> tmp
+            else -> throw IllegalArgumentException("Ошибка")
+        }
     }
 }
