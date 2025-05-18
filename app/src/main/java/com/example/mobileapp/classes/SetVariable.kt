@@ -8,6 +8,7 @@ class SetVariable(var scope: ComplexBlock) : Block()
 {
     var name: String = ""
     var value by mutableStateOf<BlockTemplate>(Constant())
+    var valueRect: Rect = Rect.Zero
     override var selfRect: Rect = Rect.Zero
 
     override fun execute()

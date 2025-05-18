@@ -67,15 +67,17 @@ import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
 import com.example.mobileapp.classes.MathExpression
+import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetVariable
+import com.example.mobileapp.classes.UseVariable
 import com.example.mobileapp.classes.Value
 import kotlin.math.roundToInt
 
 @Composable
 fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit, isActive: Boolean){
 
-    when(block){
-        is DeclareVariable -> {var density = LocalDensity.current
+    when(block) {
+        is DeclareVariable -> {
             Card(
                 modifier = Modifier
                     .width(200.dp)
@@ -106,19 +108,23 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                 )
                 {
                     Text("declare", fontSize = 16.sp, color = Color.White)
-                    var value by remember{ mutableStateOf("my variable") }
+                    var value by remember { mutableStateOf("my variable") }
+                    block.name = value
+                    block.scope.addVariable(value)
                     BasicTextField(
                         modifier = Modifier
                             .fillMaxHeight(0.8f),
                         value = value,
-                        onValueChange = {
-                                newValue ->
+                        onValueChange = { newValue ->
                             block.scope.deleteVariable(value)
                             block.name = newValue
                             block.scope.addVariable(newValue)
                             value = newValue
                         },
-                        textStyle = LocalTextStyle.current.copy(fontSize = 15.sp, textAlign = TextAlign.Center),
+                        textStyle = LocalTextStyle.current.copy(
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.Center
+                        ),
                         singleLine = true,
                         enabled = isActive,
                         decorationBox = { innerTextField ->
@@ -132,16 +138,15 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         }
                     )
                 }
-            }}
-        is SetVariable -> {var density = LocalDensity.current
+            }
+        }
+        is SetVariable -> {
             var expanded by remember { mutableStateOf(false) }
-            var items = remember { block.scope.varList.keys.toMutableList()  }
             var selectedItem by remember { mutableStateOf("my variable") }
 
             Card(
                 modifier = Modifier
-                    .width(310.dp)
-                    .height(48.dp)
+                    .wrapContentSize()
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset -> onDragStart(offset, block) },
@@ -162,16 +167,17 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
             {
                 Row(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .wrapContentSize()
+                        .padding(5.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceAround
                 )
                 {
-                    Text("set", fontSize = 16.sp, color = Color.White)
+                    Text("set", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
 
                     Box(
                         modifier = Modifier
-                            .fillMaxHeight(0.8f),
+                            .height(38.dp),
                     )
                     {
                         Button(
@@ -182,7 +188,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         DropdownMenu(
                             expanded = expanded,
                             onDismissRequest = { expanded = false }
-                        ){
+                        ) {
                             block.scope.varList.keys.toMutableList().forEach { item ->
                                 DropdownMenuItem(
                                     text = { Text(item) },
@@ -196,34 +202,21 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         }
                     }
 
-                    Text("to", fontSize = 16.sp, color = Color.White)
+                    Text("to", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
 
-                    var value by remember{ mutableStateOf("0") }
-                    BasicTextField(
+                    Box(
                         modifier = Modifier
-                            .fillMaxHeight(0.8f),
-                        value = value,
-                        onValueChange = {
-                            newValue -> value = newValue
-                            block.value = Value.INT(newValue.toInt())
-                        },
-                        textStyle = LocalTextStyle.current.copy(fontSize = 15.sp, textAlign = TextAlign.Center),
-                        singleLine = true,
-                        enabled = isActive,
-                        decorationBox = { innerTextField ->
-                            Box(
-                                modifier = Modifier
-                                    .background(Color.White, RoundedCornerShape(20.dp)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                innerTextField()
+                            .onGloballyPositioned { coordinates ->
+                                block.valueRect = coordinates.boundsInWindow()
                             }
-                        }
                     )
+                    {
+                        DrawBlock(block.value, { _, _ -> }, {}, isActive)
+                    }
                 }
-            }}
+            }
+        }
         is MathExpression -> {
-            var density = LocalDensity.current
             Card(
                 modifier = Modifier
                     .wrapContentSize()
@@ -260,10 +253,15 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             }
                     )
                     {
-                        DrawBlock(block.leftValue, {_, _ ->}, {}, isActive)
+                        DrawBlock(block.leftValue, { _, _ -> }, {}, isActive)
                     }
 
-                    Text("+", fontSize = 24.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+                    Text(
+                        "+",
+                        fontSize = 24.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
 
                     Box(
                         modifier = Modifier
@@ -272,13 +270,12 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             }
                     )
                     {
-                        DrawBlock(block.rightValue, {_, _ ->}, {}, isActive)
+                        DrawBlock(block.rightValue, { _, _ -> }, {}, isActive)
                     }
                 }
             }
         }
         is Constant -> {
-            var density = LocalDensity.current
             Card(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -308,38 +305,39 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                     horizontalArrangement = Arrangement.SpaceAround
                 )
                 {
-                    var value by remember{ mutableStateOf(block.value.toString()) }
+                    var value by remember { mutableStateOf(block.value.toString()) }
                     var isFocused by remember { mutableStateOf(false) }
                     BasicTextField(
                         modifier = Modifier
                             .widthIn(min = 50.dp)
                             .fillMaxHeight()
-                            .width((12 + value.length*8.85).dp)
+                            .width((12 + value.length * 8.85).dp)
                             .onFocusChanged { focusState ->
                                 isFocused = focusState.isFocused
-                                if (!isFocused){
-                                    if(value.isNotEmpty()){
+                                if (!isFocused) {
+                                    if (value.isNotEmpty()) {
                                         block.value = Value.INT(value.toIntOrNull() ?: 0)
-                                    }
-                                    else{
+                                    } else {
                                         block.value = Value.INT(0)
                                     }
                                     value = block.value.toString()
                                 }
                             },
                         value = value,
-                        onValueChange = {
-                                newValue -> value = newValue
+                        onValueChange = { newValue ->
+                            value = newValue
                         },
-                        textStyle = LocalTextStyle.current.copy(fontSize = 15.sp, textAlign = TextAlign.Center),
+                        textStyle = LocalTextStyle.current.copy(
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.Center
+                        ),
                         singleLine = true,
                         enabled = isActive,
                         keyboardActions = KeyboardActions(
                             onDone = {
-                                if(value.isNotEmpty()){
+                                if (value.isNotEmpty()) {
                                     block.value = Value.INT(value.toIntOrNull() ?: 0)
-                                }
-                                else{
+                                } else {
                                     block.value = Value.INT(0)
                                 }
                                 value = block.value.toString()
@@ -358,8 +356,114 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                 }
             }
         }
-    }
+        is Print -> {
+            Card(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
+                    }
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .onGloballyPositioned { coordinates ->
+                        block.selfRect = coordinates.boundsInWindow()
+                    },
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+            )
+            {
+                Row(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                )
+                {
+                    Text("print", fontSize = 16.sp, color = Color.White)
 
+                    Box(
+                        modifier = Modifier
+                            .onGloballyPositioned { coordinates ->
+                                block.contentRect = coordinates.boundsInWindow()
+                            }
+                            .padding(horizontal = 8.dp)
+                    )
+                    {
+                        DrawBlock(block.content, { _, _ -> }, {}, isActive)
+                    }
+                }
+            }
+        }
+        is UseVariable -> {
+            var expanded by remember { mutableStateOf(false) }
+            var selectedItem by remember { mutableStateOf("my variable") }
+
+            Card(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
+                    }
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .onGloballyPositioned { coordinates ->
+                        block.selfRect = coordinates.boundsInWindow()
+                    },
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+            )
+            {
+                Row(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                )
+                {
+                    Box(
+                        modifier = Modifier
+                            .height(38.dp),
+                    )
+                    {
+                        Button(
+                            onClick = { if (isActive) expanded = true },
+                        )
+                        { Text(text = selectedItem) }
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            block.scope.varList.keys.toMutableList().forEach { item ->
+                                DropdownMenuItem(
+                                    text = { Text(item) },
+                                    onClick = {
+                                        selectedItem = item
+                                        block.name = item
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

@@ -28,6 +28,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -65,6 +66,7 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
+import androidx.core.content.contentValuesOf
 import androidx.navigation.NavController
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BlockTemplate
@@ -74,7 +76,9 @@ import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
 import com.example.mobileapp.classes.MathExpression
+import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetVariable
+import com.example.mobileapp.classes.UseVariable
 import com.example.mobileapp.classes.Value
 import kotlin.math.roundToInt
 
@@ -233,7 +237,7 @@ fun RedactorPage(navController: NavController){
     var varList = remember { mutableMapOf<String, Any>() }
     var blockList = remember { mutableStateListOf<BlockTemplate>(DeclareVariable(context)) }
     var blockChooserList = remember { mutableStateListOf<BlockTemplate>(DeclareVariable(context),
-        SetVariable(context), MathExpression(), Constant()) }
+        UseVariable(context), SetVariable(context), MathExpression(), Constant(), Print(console)) }
     var dropZones = remember { mutableStateListOf<Rect>() }
 
     var pagerState = rememberPagerState (pageCount = {2})
@@ -260,6 +264,8 @@ fun RedactorPage(navController: NavController){
             is SetVariable -> return SetVariable(context)
             is MathExpression -> return MathExpression()
             is Constant -> return Constant()
+            is Print -> return Print(console)
+            is UseVariable -> return UseVariable(context)
         }
         return TODO("Provide the return value")
     }
@@ -279,7 +285,32 @@ fun RedactorPage(navController: NavController){
                     }
                 }
             }
+            is SetVariable -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                    if (block.valueRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.value, true, {newBlock -> block.value = newBlock})
+                    }
+                    else if (isInsideBlock){
+                        onReplace(createNewBlock(draggingBlock))
+                    }
+                }
+            }
             is Constant -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
+                    onReplace(createNewBlock(draggingBlock))
+                }
+            }
+            is Print -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                    if (block.contentRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.content, true, {newBlock -> block.content = newBlock})
+                    }
+                    else if (isInsideBlock){
+                        onReplace(createNewBlock(draggingBlock))
+                    }
+                }
+            }
+            is UseVariable -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
                     onReplace(createNewBlock(draggingBlock))
                 }
@@ -290,9 +321,11 @@ fun RedactorPage(navController: NavController){
     fun AddNewBlock(block: BlockTemplate){
         for(i in dropZones.indices){
             if (dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
-                blockList.add(i+1, createNewBlock(block))
-                updateDropZones()
-                return
+                if (!(block is Constant) && !(block is UseVariable)){
+                    blockList.add(i+1, createNewBlock(block))
+                    updateDropZones()
+                    return
+                }
             }
         }
         blockList.forEach { item ->
@@ -323,7 +356,7 @@ fun RedactorPage(navController: NavController){
         }
     }
 
-    // Основноц контецнер
+    // Основной контейнер
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -435,20 +468,36 @@ fun RedactorPage(navController: NavController){
                 }
                 1 -> {
                     Card(
-                    modifier = Modifier
-                        .background(Color(red = 25, green = 25, blue = 25))
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        colors = CardDefaults.cardColors(containerColor = Color(100, 100, 100)),
                     )
                     {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceAround,
-                            horizontalAlignment = Alignment.Start
-                        )
-                        {
-                            console.text.forEach { text ->
-                                Text(text, fontSize = 16.sp, color = Color.White)
+                        Row {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth(0.8f),
+                                verticalArrangement = Arrangement.SpaceAround,
+                                horizontalAlignment = Alignment.Start
+                            )
+                            {
+                                console.text.forEach { text ->
+                                    Text(text, fontSize = 16.sp, color = Color.White)
+                                }
                             }
+
+                            Button(
+                                onClick = {
+                                    context.blockList = blockList
+                                    context.execute()
+                                },
+                                modifier = Modifier
+                                    .width(68.dp)
+                                    .height(68.dp)
+                                    .padding(8.dp),
+                                shape = RoundedCornerShape(12.dp),
+                            ){}
                         }
                     }
                 }
