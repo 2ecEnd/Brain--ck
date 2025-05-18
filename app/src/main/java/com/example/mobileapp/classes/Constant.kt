@@ -5,7 +5,7 @@ import androidx.compose.ui.geometry.Rect
 class Constant : Block()
 {
     var value: Value = Value.INT(0)
-    var selfRect: Rect = Rect.Zero
+    override var selfRect: Rect = Rect.Zero
 
     fun setValue(type: String, value_: Any)
     {

@@ -1,8 +1,11 @@
 package com.example.mobileapp.classes
 
+import androidx.compose.ui.geometry.Rect
+
 abstract class BlockTemplate
 {
     abstract fun execute(): Any
+    abstract var selfRect: Rect
 }
 
 abstract class Block: BlockTemplate()

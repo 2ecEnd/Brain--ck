@@ -1,9 +1,13 @@
 package com.example.mobileapp.classes
 
+import androidx.compose.ui.geometry.Rect
+
 class Context : ComplexBlock()
 {
     override var blockList = mutableListOf<BlockTemplate>()
     override var varList = mutableMapOf<String, Value>()
+
+    override var selfRect: Rect = Rect.Zero
 
     override fun deleteVariable(name: String)
     {

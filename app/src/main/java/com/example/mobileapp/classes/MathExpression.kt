@@ -11,7 +11,7 @@ class MathExpression: Block()
     var rightValue by mutableStateOf<BlockTemplate>(Constant())
     var operation: String = "+"
 
-    var selfRect: Rect = Rect.Zero
+    override var selfRect: Rect = Rect.Zero
     var leftValueRect: Rect = Rect.Zero
     var rightValueRect: Rect = Rect.Zero
 

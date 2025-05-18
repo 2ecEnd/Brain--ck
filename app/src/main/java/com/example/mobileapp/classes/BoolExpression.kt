@@ -1,10 +1,14 @@
 package com.example.mobileapp.classes
 
+import androidx.compose.ui.geometry.Rect
+
 class BoolExpression: Block()
 {
     var leftValue: BlockTemplate = Constant()
     var rightValue: BlockTemplate = Constant()
     var operation: String = "=="
+
+    override var selfRect: Rect = Rect.Zero
 
     override fun execute(): Value
     {

@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
@@ -230,12 +231,28 @@ fun RedactorPage(navController: NavController){
     var touchPoint by remember { mutableStateOf(Offset.Zero) }
 
     var varList = remember { mutableMapOf<String, Any>() }
-    var blockList = remember { mutableStateListOf<BlockTemplate>() }
+    var blockList = remember { mutableStateListOf<BlockTemplate>(DeclareVariable(context)) }
     var blockChooserList = remember { mutableStateListOf<BlockTemplate>(DeclareVariable(context),
         SetVariable(context), MathExpression(), Constant()) }
-    var dropZone by remember { mutableStateOf(Rect.Zero) }
+    var dropZones = remember { mutableStateListOf<Rect>() }
 
     var pagerState = rememberPagerState (pageCount = {2})
+
+    fun updateDropZones(){
+        dropZones.clear()
+        for(i in blockList.indices){
+            if (i != blockList.count()-1){
+                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
+                        ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
+                    bottom = blockList[i].selfRect.bottom + ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.25.toFloat())))
+            }
+            else{
+                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.bottom,
+                    bottom = blockList[i].selfRect.bottom + (blockList[i].selfRect.bottom-blockList[i].selfRect.top)))
+            }
+        }
+    }
+    updateDropZones()
 
     fun createNewBlock(oldBlock: BlockTemplate): BlockTemplate{
         when(oldBlock){
@@ -271,12 +288,37 @@ fun RedactorPage(navController: NavController){
     }
 
     fun AddNewBlock(block: BlockTemplate){
-        if (dropZone.contains(Offset(dragOffset.x, dragOffset.y))){
-            blockList.add(createNewBlock(block))
+        for(i in dropZones.indices){
+            if (dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
+                blockList.add(i+1, createNewBlock(block))
+                updateDropZones()
+                return
+            }
         }
-        else{
-            blockList.forEach { item ->
-                addBlockInsideAnother(item, false, {})
+        blockList.forEach { item ->
+            addBlockInsideAnother(item, false, {})
+        }
+        updateDropZones()
+    }
+
+    @Composable
+    fun RedactorArea(blockList: SnapshotStateList<BlockTemplate>){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.75f)
+                .background(Color(red = 249, green = 249, blue = 249))
+        )
+        {
+            blockList.forEach { block ->
+                DrawBlock(block, { offset, chosenBlock ->
+                    isDragging = true
+                    touchPoint = offset
+                    draggingBlock = chosenBlock
+                }, { draggedBlock ->
+                    isDragging = false
+                    AddNewBlock(draggedBlock)
+                }, true)
             }
         }
     }
@@ -299,7 +341,7 @@ fun RedactorPage(navController: NavController){
             }
     )
     {
-        if (isDragging && draggingBlock != null){
+        if (isDragging){
             Box(
                 modifier = Modifier
                     .offset {
@@ -311,22 +353,24 @@ fun RedactorPage(navController: NavController){
                     .zIndex(1f)
             )
             {
-                DrawBlock(draggingBlock, {_, _ ->}, {}, false, {}, false)
+                DrawBlock(draggingBlock, {_, _ ->}, {}, false)
             }
 
-            if(dropZone.contains(Offset(dragOffset.x, dragOffset.y))) {
-                Box(
-                    modifier = Modifier
-                        .offset {
-                            IntOffset(
-                                dropZone.left.roundToInt(),
-                                dropZone.top.roundToInt()
-                            )
-                        }
-                        .zIndex(0.95f)
-                )
-                {
-                    DrawShadow(null)
+            dropZones.forEach { rect ->
+                if(rect.contains(Offset(dragOffset.x, dragOffset.y))) {
+                    Box(
+                        modifier = Modifier
+                            .offset {
+                                IntOffset(
+                                    rect.left.roundToInt(),
+                                    rect.top.roundToInt()
+                                )
+                            }
+                            .zIndex(0.95f)
+                    )
+                    {
+                        DrawShadow(null)
+                    }
                 }
             }
         }
@@ -347,7 +391,7 @@ fun RedactorPage(navController: NavController){
                 HomeButton(navController)
             }
 
-            RedactorArea(blockList, {rect -> dropZone = rect})
+            RedactorArea(blockList)
 
             HorizontalPager(
                 state = pagerState,
@@ -382,7 +426,7 @@ fun RedactorPage(navController: NavController){
                                         { draggedBlock ->
                                             isDragging = false
                                             AddNewBlock(draggedBlock)
-                                        }, false, {}, false
+                                        }, false
                                     )
                                 }
                             }
@@ -411,44 +455,6 @@ fun RedactorPage(navController: NavController){
             }
             }
 
-        }
-    }
-}
-
-@Composable
-fun RedactorArea(blockList: SnapshotStateList<BlockTemplate>, dropZoneUpdated: (Rect) -> Unit){
-    var density = LocalDensity.current
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.75f)
-            .background(Color(red = 249, green = 249, blue = 249))
-    )
-    {
-        Card(
-            modifier = Modifier
-                .width(200.dp)
-                .height(24.dp)
-                .padding(top = 16.dp)
-                .onGloballyPositioned { coordinates ->
-                    with(density){
-                        var position = coordinates.positionInWindow()
-                        var newZone = Rect(
-                            left = position.x + 12.dp.toPx(),
-                            top = position.y + 8.dp.toPx(),
-                            right = position.x + 200.dp.toPx(),
-                            bottom = position.y + 24.dp.toPx() + 48.dp.toPx()
-                        )
-                        dropZoneUpdated(newZone)
-                    }
-                },
-            colors = CardDefaults.cardColors(containerColor = Color(25, 25, 25)),
-        )
-        {}
-
-        blockList.forEach { block ->
-            DrawBlock(block, {_, _ ->}, {}, true, dropZoneUpdated, true)
         }
     }
 }

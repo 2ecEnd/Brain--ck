@@ -1,12 +1,15 @@
 package com.example.mobileapp.classes
 
+import androidx.compose.ui.geometry.Rect
+
 class IfElse: Block()
 {
-
+    override var selfRect: Rect = Rect.Zero
     class If: ComplexBlock()
     {
         override var blockList = mutableListOf<BlockTemplate>()
         override var varList = mutableMapOf<String, Value>()
+        override var selfRect: Rect = Rect.Zero
 
         override fun deleteVariable(name: String)
         {
@@ -29,6 +32,7 @@ class IfElse: Block()
     {
         override var blockList = mutableListOf<BlockTemplate>()
         override var varList = mutableMapOf<String, Value>()
+        override var selfRect: Rect = Rect.Zero
 
         override fun deleteVariable(name: String)
         {

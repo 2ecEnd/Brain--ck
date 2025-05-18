@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -70,8 +72,7 @@ import com.example.mobileapp.classes.Value
 import kotlin.math.roundToInt
 
 @Composable
-fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isNeedToUpdateDropZone: Boolean, dropZoneUpdated: (Rect) -> Unit, isActive: Boolean){
+fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit, isActive: Boolean){
 
     when(block){
         is DeclareVariable -> {var density = LocalDensity.current
@@ -91,18 +92,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         shape = RoundedCornerShape(10.dp)
                     )
                     .onGloballyPositioned { coordinates ->
-                        if (isNeedToUpdateDropZone) {
-                            with(density) {
-                                var position = coordinates.positionInWindow()
-                                var newZone = Rect(
-                                    left = position.x,
-                                    top = position.y + 48.dp.toPx(),
-                                    right = position.x + 200.dp.toPx(),
-                                    bottom = position.y + 48.dp.toPx() + 48.dp.toPx()
-                                )
-                                dropZoneUpdated(newZone)
-                            }
-                        }
+                        block.selfRect = coordinates.boundsInWindow()
                     },
                 shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
@@ -164,18 +154,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         shape = RoundedCornerShape(10.dp)
                     )
                     .onGloballyPositioned { coordinates ->
-                        if (isNeedToUpdateDropZone) {
-                            with(density) {
-                                var position = coordinates.positionInWindow()
-                                var newZone = Rect(
-                                    left = position.x,
-                                    top = position.y + 48.dp.toPx(),
-                                    right = position.x + 200.dp.toPx(),
-                                    bottom = position.y + 48.dp.toPx() + 48.dp.toPx()
-                                )
-                                dropZoneUpdated(newZone)
-                            }
-                        }
+                        block.selfRect = coordinates.boundsInWindow()
                     },
                 shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
@@ -260,18 +239,6 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         shape = RoundedCornerShape(10.dp)
                     )
                     .onGloballyPositioned { coordinates ->
-                        if (isNeedToUpdateDropZone) {
-                            with(density) {
-                                var position = coordinates.positionInWindow()
-                                var newZone = Rect(
-                                    left = position.x,
-                                    top = position.y + 48.dp.toPx(),
-                                    right = position.x + 200.dp.toPx(),
-                                    bottom = position.y + 48.dp.toPx() + 48.dp.toPx()
-                                )
-                                dropZoneUpdated(newZone)
-                            }
-                        }
                         block.selfRect = coordinates.boundsInWindow()
                     },
                 shape = RoundedCornerShape(10.dp),
@@ -293,7 +260,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             }
                     )
                     {
-                        DrawBlock(block.leftValue, {_, _ ->}, {}, false, dropZoneUpdated, isActive)
+                        DrawBlock(block.leftValue, {_, _ ->}, {}, isActive)
                     }
 
                     Text("+", fontSize = 24.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
@@ -305,7 +272,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             }
                     )
                     {
-                        DrawBlock(block.rightValue, {_, _ ->}, {}, false, dropZoneUpdated, isActive)
+                        DrawBlock(block.rightValue, {_, _ ->}, {}, isActive)
                     }
                 }
             }
@@ -314,7 +281,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
             var density = LocalDensity.current
             Card(
                 modifier = Modifier
-                    .width(130.dp)
+                    .wrapContentWidth()
                     .height(38.dp)
                     .pointerInput(Unit) {
                         detectDragGestures(
@@ -328,18 +295,6 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         shape = RoundedCornerShape(20.dp)
                     )
                     .onGloballyPositioned { coordinates ->
-                        if (isNeedToUpdateDropZone) {
-                            with(density) {
-                                var position = coordinates.positionInWindow()
-                                var newZone = Rect(
-                                    left = position.x,
-                                    top = position.y + 48.dp.toPx(),
-                                    right = position.x + 200.dp.toPx(),
-                                    bottom = position.y + 48.dp.toPx() + 48.dp.toPx()
-                                )
-                                dropZoneUpdated(newZone)
-                            }
-                        }
                         block.selfRect = coordinates.boundsInWindow()
                     },
                 shape = RoundedCornerShape(20.dp),
@@ -348,16 +303,18 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
             {
                 Row(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .wrapContentWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceAround
                 )
                 {
-                    var value by remember{ mutableStateOf("0") }
+                    var value by remember{ mutableStateOf(block.value.toString()) }
                     var isFocused by remember { mutableStateOf(false) }
                     BasicTextField(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .widthIn(min = 50.dp)
+                            .fillMaxHeight()
+                            .width((12 + value.length*8.85).dp)
                             .onFocusChanged { focusState ->
                                 isFocused = focusState.isFocused
                                 if (!isFocused){
