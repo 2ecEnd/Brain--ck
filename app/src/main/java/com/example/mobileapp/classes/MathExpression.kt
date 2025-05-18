@@ -1,11 +1,19 @@
 package com.example.mobileapp.classes
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Rect
 import kotlin.math.pow
 
 class MathExpression: Block()
 {
-    var leftValue: BlockTemplate = Constant()
-    var rightValue: BlockTemplate = Constant()
+    var leftValue by mutableStateOf<BlockTemplate>(Constant())
+    var rightValue by mutableStateOf<BlockTemplate>(Constant())
     var operation: String = "+"
+
+    var selfRect: Rect = Rect.Zero
+    var leftValueRect: Rect = Rect.Zero
+    var rightValueRect: Rect = Rect.Zero
 
     override fun execute(): Value
     {

@@ -21,7 +21,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,28 +36,37 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
+import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.SetVariable
+import com.example.mobileapp.classes.Value
 import kotlin.math.roundToInt
 
 @Composable
@@ -67,7 +79,6 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                 modifier = Modifier
                     .width(200.dp)
                     .height(48.dp)
-                    .padding(start = 16.dp)
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset -> onDragStart(offset, block) },
@@ -80,7 +91,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         shape = RoundedCornerShape(10.dp)
                     )
                     .onGloballyPositioned { coordinates ->
-                        if(isNeedToUpdateDropZone) {
+                        if (isNeedToUpdateDropZone) {
                             with(density) {
                                 var position = coordinates.positionInWindow()
                                 var newZone = Rect(
@@ -108,7 +119,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                     var value by remember{ mutableStateOf("my variable") }
                     BasicTextField(
                         modifier = Modifier
-                            .fillMaxHeight(0.7f),
+                            .fillMaxHeight(0.8f),
                         value = value,
                         onValueChange = {
                                 newValue ->
@@ -141,7 +152,6 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                 modifier = Modifier
                     .width(310.dp)
                     .height(48.dp)
-                    .padding(start = 16.dp)
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset -> onDragStart(offset, block) },
@@ -154,7 +164,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         shape = RoundedCornerShape(10.dp)
                     )
                     .onGloballyPositioned { coordinates ->
-                        if(isNeedToUpdateDropZone) {
+                        if (isNeedToUpdateDropZone) {
                             with(density) {
                                 var position = coordinates.positionInWindow()
                                 var newZone = Rect(
@@ -182,7 +192,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
 
                     Box(
                         modifier = Modifier
-                            .fillMaxHeight(0.7f),
+                            .fillMaxHeight(0.8f),
                     )
                     {
                         Button(
@@ -212,11 +222,11 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                     var value by remember{ mutableStateOf("0") }
                     BasicTextField(
                         modifier = Modifier
-                            .fillMaxHeight(0.7f),
+                            .fillMaxHeight(0.8f),
                         value = value,
                         onValueChange = {
                             newValue -> value = newValue
-                            block.value = newValue
+                            block.value = Value.INT(newValue.toInt())
                         },
                         textStyle = LocalTextStyle.current.copy(fontSize = 15.sp, textAlign = TextAlign.Center),
                         singleLine = true,
@@ -233,6 +243,164 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                     )
                 }
             }}
+        is MathExpression -> {
+            var density = LocalDensity.current
+            Card(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
+                    }
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .onGloballyPositioned { coordinates ->
+                        if (isNeedToUpdateDropZone) {
+                            with(density) {
+                                var position = coordinates.positionInWindow()
+                                var newZone = Rect(
+                                    left = position.x,
+                                    top = position.y + 48.dp.toPx(),
+                                    right = position.x + 200.dp.toPx(),
+                                    bottom = position.y + 48.dp.toPx() + 48.dp.toPx()
+                                )
+                                dropZoneUpdated(newZone)
+                            }
+                        }
+                        block.selfRect = coordinates.boundsInWindow()
+                    },
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+            )
+            {
+                Row(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                )
+                {
+                    Box(
+                        modifier = Modifier
+                            .onGloballyPositioned { coordinates ->
+                                block.leftValueRect = coordinates.boundsInWindow()
+                            }
+                    )
+                    {
+                        DrawBlock(block.leftValue, {_, _ ->}, {}, false, dropZoneUpdated, isActive)
+                    }
+
+                    Text("+", fontSize = 24.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .onGloballyPositioned { coordinates ->
+                                block.rightValueRect = coordinates.boundsInWindow()
+                            }
+                    )
+                    {
+                        DrawBlock(block.rightValue, {_, _ ->}, {}, false, dropZoneUpdated, isActive)
+                    }
+                }
+            }
+        }
+        is Constant -> {
+            var density = LocalDensity.current
+            Card(
+                modifier = Modifier
+                    .width(130.dp)
+                    .height(38.dp)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
+                    }
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                    .onGloballyPositioned { coordinates ->
+                        if (isNeedToUpdateDropZone) {
+                            with(density) {
+                                var position = coordinates.positionInWindow()
+                                var newZone = Rect(
+                                    left = position.x,
+                                    top = position.y + 48.dp.toPx(),
+                                    right = position.x + 200.dp.toPx(),
+                                    bottom = position.y + 48.dp.toPx() + 48.dp.toPx()
+                                )
+                                dropZoneUpdated(newZone)
+                            }
+                        }
+                        block.selfRect = coordinates.boundsInWindow()
+                    },
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+            )
+            {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                )
+                {
+                    var value by remember{ mutableStateOf("0") }
+                    var isFocused by remember { mutableStateOf(false) }
+                    BasicTextField(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .onFocusChanged { focusState ->
+                                isFocused = focusState.isFocused
+                                if (!isFocused){
+                                    if(value.isNotEmpty()){
+                                        block.value = Value.INT(value.toIntOrNull() ?: 0)
+                                    }
+                                    else{
+                                        block.value = Value.INT(0)
+                                    }
+                                    value = block.value.toString()
+                                }
+                            },
+                        value = value,
+                        onValueChange = {
+                                newValue -> value = newValue
+                        },
+                        textStyle = LocalTextStyle.current.copy(fontSize = 15.sp, textAlign = TextAlign.Center),
+                        singleLine = true,
+                        enabled = isActive,
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                if(value.isNotEmpty()){
+                                    block.value = Value.INT(value.toIntOrNull() ?: 0)
+                                }
+                                else{
+                                    block.value = Value.INT(0)
+                                }
+                                value = block.value.toString()
+                            }
+                        ),
+                        decorationBox = { innerTextField ->
+                            Box(
+                                modifier = Modifier
+                                    .background(Color.White, RoundedCornerShape(20.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                innerTextField()
+                            }
+                        }
+                    )
+                }
+            }
+        }
     }
 
 }

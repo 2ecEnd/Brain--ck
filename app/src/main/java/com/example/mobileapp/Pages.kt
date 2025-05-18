@@ -19,12 +19,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.*
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -40,6 +47,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
@@ -53,15 +61,20 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BlockTemplate
 import com.example.mobileapp.classes.ComplexBlock
+import com.example.mobileapp.classes.Console
+import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
+import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.SetVariable
+import com.example.mobileapp.classes.Value
 import kotlin.math.roundToInt
 
 @Composable
@@ -209,6 +222,7 @@ fun ProjectNameForm(navController: NavController){
 @Composable
 fun RedactorPage(navController: NavController){
     var context = remember {Context()}
+    var console = remember {Console()}
 
     var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
     var isDragging by remember { mutableStateOf(false) }
@@ -217,28 +231,55 @@ fun RedactorPage(navController: NavController){
 
     var varList = remember { mutableMapOf<String, Any>() }
     var blockList = remember { mutableStateListOf<BlockTemplate>() }
+    var blockChooserList = remember { mutableStateListOf<BlockTemplate>(DeclareVariable(context),
+        SetVariable(context), MathExpression(), Constant()) }
     var dropZone by remember { mutableStateOf(Rect.Zero) }
 
     var pagerState = rememberPagerState (pageCount = {2})
 
-    fun AddNewBlock(block: BlockTemplate){
-        if (dropZone.contains(Offset(dragOffset.x, dragOffset.y))){
-            var className = block::class.simpleName
-            var newBlock: Block
-            when(className){
-                "DeclareVariable" -> {newBlock = DeclareVariable(context)
-                    var scope = newBlock.scope
-                    Log.i("block", "$scope")}
-                "SetVariable" -> {newBlock = SetVariable(context)
-                    var scope = newBlock.scope
-                    Log.i("block", "$scope")}
-                else -> newBlock = DeclareVariable(context)
-            }
-            blockList.add(newBlock)
+    fun createNewBlock(oldBlock: BlockTemplate): BlockTemplate{
+        when(oldBlock){
+            is DeclareVariable -> return DeclareVariable(context)
+            is SetVariable -> return SetVariable(context)
+            is MathExpression -> return MathExpression()
+            is Constant -> return Constant()
+        }
+        return TODO("Provide the return value")
+    }
 
+    fun addBlockInsideAnother(block: BlockTemplate, isInsideBlock: Boolean, onReplace: (newBlock: BlockTemplate) -> Unit){
+        when(block){
+            is MathExpression -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                    if (block.leftValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.leftValue, true, {newBlock -> block.leftValue = newBlock})
+                    }
+                    else if (block.rightValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.rightValue, true, {newBlock -> block.rightValue = newBlock})
+                    }
+                    else if (isInsideBlock){
+                        onReplace(createNewBlock(draggingBlock))
+                    }
+                }
+            }
+            is Constant -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
+                    onReplace(createNewBlock(draggingBlock))
+                }
+            }
         }
     }
 
+    fun AddNewBlock(block: BlockTemplate){
+        if (dropZone.contains(Offset(dragOffset.x, dragOffset.y))){
+            blockList.add(createNewBlock(block))
+        }
+        else{
+            blockList.forEach { item ->
+                addBlockInsideAnother(item, false, {})
+            }
+        }
+    }
 
     // Основноц контецнер
     Box(
@@ -320,43 +361,38 @@ fun RedactorPage(navController: NavController){
                             .background(Color(red = 230, green = 224, blue = 233))
                     )
                     {
+                        val scrollState = rememberScrollState()
+
                         Column(
                             modifier = Modifier
-                                .fillMaxSize(),
+                                .fillMaxSize()
+                                .verticalScroll(scrollState),
                             verticalArrangement = Arrangement.SpaceAround,
                             horizontalAlignment = Alignment.Start
                         )
                         {
-                            DrawBlock(
-                                block = DeclareVariable(context), { offset, chosenBlock ->
-                                isDragging = true
-                                touchPoint = offset
-                                draggingBlock = chosenBlock
-                            },
-                                { draggedBlock ->
-                                    isDragging = false
-                                    AddNewBlock(draggedBlock)
-                                }, false, {}, false
-                            )
-
-                            DrawBlock(
-                                block = SetVariable(context), { offset, chosenBlock ->
-                                isDragging = true
-                                touchPoint = offset
-                                draggingBlock = chosenBlock
-                            },
-                                { block ->
-                                    isDragging = false
-                                    AddNewBlock(block)
-                                }, false, {}, false
-                            )
+                            blockChooserList.forEach { item ->
+                                Box(modifier = Modifier.padding(12.dp)){
+                                    DrawBlock(
+                                        item, { offset, chosenBlock ->
+                                            isDragging = true
+                                            touchPoint = offset
+                                            draggingBlock = chosenBlock
+                                        },
+                                        { draggedBlock ->
+                                            isDragging = false
+                                            AddNewBlock(draggedBlock)
+                                        }, false, {}, false
+                                    )
+                                }
+                            }
                         }
                     }
                 }
-                1 -> { var outPutList = remember{mutableListOf("")}
+                1 -> {
                     Card(
                     modifier = Modifier
-                        .background(Color(red = 230, green = 224, blue = 233))
+                        .background(Color(red = 25, green = 25, blue = 25))
                     )
                     {
                         Column(
@@ -366,7 +402,7 @@ fun RedactorPage(navController: NavController){
                             horizontalAlignment = Alignment.Start
                         )
                         {
-                            outPutList.forEach { text ->
+                            console.text.forEach { text ->
                                 Text(text, fontSize = 16.sp, color = Color.White)
                             }
                         }

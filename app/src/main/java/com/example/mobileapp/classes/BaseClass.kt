@@ -24,7 +24,9 @@ abstract class ComplexBlock: BlockTemplate()
 
 sealed class Value
 {
-    data class INT(val value: Int) : Value()
+    data class INT(val value: Int) : Value(){
+        override fun toString() = value.toString()
+    }
     data class DOUBLE(val value: Double) : Value()
     data class BOOLEAN(val value: Boolean) : Value()
     data class STRING(val value: String) : Value()
