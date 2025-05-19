@@ -373,14 +373,11 @@ fun RedactorPage(navController: NavController){
 
     fun relocateBlock(block: BlockTemplate){
         blockList.remove(emptyBlock)
-        var newList = blockList.toMutableList()
         for(i in dropZones.indices){
             if (dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
                 if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
                     deleteBlock()
-                    newList.add(i+1, block)
-                    blockList.clear()
-                    blockList.addAll(newList)
+                    blockList.add(i+1, block)
                     updateDropZones()
                     return
                 }
