@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Rect
 class Empty: Block()
 {
     override var selfRect: Rect = Rect.Zero
+    override var parent: BlockTemplate? = null
 
     override fun execute()
     {

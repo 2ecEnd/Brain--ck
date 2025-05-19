@@ -6,6 +6,7 @@ class Constant : Block()
 {
     var value: Value = Value.INT(0)
     override var selfRect: Rect = Rect.Zero
+    override var parent: BlockTemplate? = null
 
     fun setValue(type: String, value_: Any)
     {

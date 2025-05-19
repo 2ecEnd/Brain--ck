@@ -98,15 +98,6 @@ fun HomeButton(navController: NavController){
     }
 }
 
-@Composable
-fun BackgroundImage(){
-    Image(
-        painter = painterResource(id = R.drawable.background),
-        contentDescription = "Background",
-        modifier = Modifier.fillMaxSize(),
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {

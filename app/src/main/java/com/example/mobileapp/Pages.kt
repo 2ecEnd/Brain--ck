@@ -41,6 +41,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
@@ -61,8 +63,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
@@ -75,6 +79,7 @@ import com.example.mobileapp.classes.Console
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
+import com.example.mobileapp.classes.Empty
 import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetVariable
@@ -230,7 +235,10 @@ fun RedactorPage(navController: NavController){
     var console = remember {Console()}
 
     var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
+    var emptyBlock by remember {mutableStateOf<BlockTemplate>(Empty())}
+    var isEmptyBlockAdded by remember { mutableStateOf<Boolean>(false) }
     var isDragging by remember { mutableStateOf(false) }
+    var isDeleting by remember { mutableStateOf(false) }
     var dragOffset by remember { mutableStateOf(Offset.Zero) }
     var touchPoint by remember { mutableStateOf(Offset.Zero) }
 
@@ -245,6 +253,7 @@ fun RedactorPage(navController: NavController){
     fun updateDropZones(){
         dropZones.clear()
         for(i in blockList.indices){
+            if(blockList[i] == draggingBlock) continue
             if (i != blockList.count()-1){
                 dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
                         ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
@@ -270,68 +279,111 @@ fun RedactorPage(navController: NavController){
         return TODO("Provide the return value")
     }
 
-    fun addBlockInsideAnother(block: BlockTemplate, isInsideBlock: Boolean, onReplace: (newBlock: BlockTemplate) -> Unit){
+    fun addBlockInsideAnother(block: BlockTemplate, isInsideBlock: Boolean,
+                              onReplace: (newBlock: BlockTemplate) -> Unit, isRelocating: Boolean){
         when(block){
             is MathExpression -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.leftValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.leftValue, true, {newBlock -> block.leftValue = newBlock})
+                        addBlockInsideAnother(block.leftValue, true, {newBlock -> block.leftValue = newBlock}, isRelocating)
                     }
                     else if (block.rightValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.rightValue, true, {newBlock -> block.rightValue = newBlock})
+                        addBlockInsideAnother(block.rightValue, true, {newBlock -> block.rightValue = newBlock}, isRelocating)
                     }
                     else if (isInsideBlock){
-                        onReplace(createNewBlock(draggingBlock))
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
                     }
                 }
             }
             is SetVariable -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.valueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.value, true, {newBlock -> block.value = newBlock})
+                        addBlockInsideAnother(block.value, true, {newBlock -> block.value = newBlock}, isRelocating)
                     }
                     else if (isInsideBlock){
-                        onReplace(createNewBlock(draggingBlock))
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
                     }
                 }
             }
             is Constant -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
-                    onReplace(createNewBlock(draggingBlock))
+                    onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
                 }
             }
             is Print -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.contentRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.content, true, {newBlock -> block.content = newBlock})
+                        addBlockInsideAnother(block.content, true, {newBlock -> block.content = newBlock}, isRelocating)
                     }
                     else if (isInsideBlock){
-                        onReplace(createNewBlock(draggingBlock))
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
                     }
                 }
             }
             is UseVariable -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
-                    onReplace(createNewBlock(draggingBlock))
+                    onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
                 }
             }
         }
+        updateDropZones()
     }
 
     fun AddNewBlock(block: BlockTemplate){
+        blockList.remove(emptyBlock)
         for(i in dropZones.indices){
             if (dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
-                if (!(block is Constant) && !(block is UseVariable)){
+                if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
                     blockList.add(i+1, createNewBlock(block))
                     updateDropZones()
                     return
                 }
             }
         }
+        if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)) return
         blockList.forEach { item ->
-            addBlockInsideAnother(item, false, {})
+            addBlockInsideAnother(item, false, {}, false)
         }
-        updateDropZones()
+    }
+
+    fun deleteFromParent(parent: BlockTemplate?, child: BlockTemplate){
+        when(parent) {
+            is MathExpression -> {
+                if (parent.leftValue == child) parent.leftValue = Constant()
+                else if (parent.rightValue == child) parent.rightValue = Constant()
+            }
+            is Print -> {
+                parent.content = Constant()
+            }
+            is SetVariable -> {
+                parent.value = Constant()
+            }
+        }
+    }
+
+    fun relocateBlock(block: BlockTemplate){
+        blockList.remove(emptyBlock)
+        var newList = blockList.toMutableList()
+        for(i in dropZones.indices){
+            if (dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
+                if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
+                    if(block.parent == null) newList.remove(block)
+                    else{
+                        deleteFromParent(block.parent, block)
+                        block.parent = null
+                    }
+                    newList.add(i+1, block)
+                    blockList.clear()
+                    blockList.addAll(newList)
+                    updateDropZones()
+                    return
+                }
+            }
+        }
+        if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)) return
+        blockList.forEach { item ->
+            addBlockInsideAnother(item, false, {}, true)
+        }
     }
 
     @Composable
@@ -344,14 +396,20 @@ fun RedactorPage(navController: NavController){
         )
         {
             blockList.forEach { block ->
-                DrawBlock(block, { offset, chosenBlock ->
-                    isDragging = true
-                    touchPoint = offset
-                    draggingBlock = chosenBlock
-                }, { draggedBlock ->
-                    isDragging = false
-                    AddNewBlock(draggedBlock)
-                }, true)
+                key(block.hashCode()) {
+                    var alpha = if (block == draggingBlock) 0.5f else 1f
+                    Box(modifier = Modifier.padding(start = 12.dp).alpha(alpha)) {
+                        DrawBlock(block, {offset, chosenBlock ->
+                            isDragging = true
+                            touchPoint = offset
+                            draggingBlock = chosenBlock
+                        }, { draggedBlock ->
+                            isDragging = false
+                            draggingBlock = DeclareVariable(context)
+                            if (!isDeleting) relocateBlock(draggedBlock) else blockList.remove(draggedBlock)
+                        }, true, remember{mutableStateOf(draggingBlock)})
+                    }
+                }
             }
         }
     }
@@ -386,17 +444,67 @@ fun RedactorPage(navController: NavController){
                     .zIndex(1f)
             )
             {
-                DrawBlock(draggingBlock, {_, _ ->}, {}, false)
+                DrawBlock(draggingBlock, {_, _ ->}, {}, false, remember{mutableStateOf(draggingBlock)})
             }
 
-            dropZones.forEach { rect ->
-                if(rect.contains(Offset(dragOffset.x, dragOffset.y))) {
+            if(blockList.contains(draggingBlock)){
+                val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+                val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+                var trashRect by remember { mutableStateOf(Rect.Zero) }
+                var alpha: Float
+                if(trashRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                    alpha = 0.3f
+                    isDeleting = true
+                }
+                else{
+                    alpha = 0f
+                    isDeleting = false
+                }
+                Card(
+                    modifier = Modifier
+                        .width(56.dp)
+                        .height(56.dp)
+                        .offset {
+                            IntOffset(
+                                x = ((screenWidth - 56.dp).toPx()).roundToInt(),
+                                y = ((screenHeight - 56.dp).toPx() / 2.5).roundToInt()
+                            )
+                        }
+                        .onGloballyPositioned { coordinates ->
+                            trashRect = coordinates.boundsInWindow()
+                        }
+                        .zIndex(0.95f),
+                    colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = alpha)),
+                    shape = RoundedCornerShape(10.dp)
+                )
+                {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Image(
+                            painter = painterResource(id = R.drawable.trash_fill),
+                            contentDescription = "trash",
+                            modifier = Modifier.fillMaxSize(0.8f),
+                        )
+                    }
+                }
+            }
+
+            var completed = true
+            for(i in dropZones.indices){
+                if(dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))) {
                     Box(
                         modifier = Modifier
                             .offset {
                                 IntOffset(
-                                    rect.left.roundToInt(),
-                                    rect.top.roundToInt()
+                                    dropZones[i].left.roundToInt(),
+                                    if(i != dropZones.count()-1){
+                                        (dropZones[i].top + (dropZones[i].bottom - dropZones[i].top)*0.5).roundToInt()
+                                    }
+                                    else{
+                                        dropZones[i].top.roundToInt()
+                                    }
                                 )
                             }
                             .zIndex(0.95f)
@@ -404,7 +512,18 @@ fun RedactorPage(navController: NavController){
                     {
                         DrawShadow(null)
                     }
+                    if (!isEmptyBlockAdded && i != dropZones.count()-1){
+                        if (blockList.contains(draggingBlock) && blockList.indexOf(draggingBlock) <= i) blockList.add(i+2, emptyBlock)
+                        else blockList.add(i+1, emptyBlock)
+                        isEmptyBlockAdded = true
+                    }
+                    completed = false
+                    break
                 }
+            }
+            if (completed && isEmptyBlockAdded){
+                blockList.remove(emptyBlock)
+                isEmptyBlockAdded = false
             }
         }
 
@@ -451,7 +570,7 @@ fun RedactorPage(navController: NavController){
                             blockChooserList.forEach { item ->
                                 Box(modifier = Modifier.padding(12.dp)){
                                     DrawBlock(
-                                        item, { offset, chosenBlock ->
+                                        item, {offset, chosenBlock ->
                                             isDragging = true
                                             touchPoint = offset
                                             draggingBlock = chosenBlock
@@ -459,7 +578,7 @@ fun RedactorPage(navController: NavController){
                                         { draggedBlock ->
                                             isDragging = false
                                             AddNewBlock(draggedBlock)
-                                        }, false
+                                        }, false, remember{mutableStateOf(draggingBlock)}
                                     )
                                 }
                             }
@@ -477,19 +596,22 @@ fun RedactorPage(navController: NavController){
                             Column(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .fillMaxWidth(0.8f),
-                                verticalArrangement = Arrangement.SpaceAround,
+                                    .fillMaxWidth(0.8f)
+                                    .padding(8.dp),
+                                verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.Start
                             )
                             {
                                 console.text.forEach { text ->
-                                    Text(text, fontSize = 16.sp, color = Color.White)
+                                    Text(text, fontSize = 24.sp, color = Color.White)
                                 }
+
                             }
 
                             Button(
                                 onClick = {
                                     context.blockList = blockList
+                                    console.text.clear()
                                     context.execute()
                                 },
                                 modifier = Modifier

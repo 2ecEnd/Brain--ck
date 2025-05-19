@@ -6,6 +6,7 @@ class Context : ComplexBlock()
 {
     override var blockList = mutableListOf<BlockTemplate>()
     override var varList = mutableMapOf<String, Value>()
+    override var parent: BlockTemplate? = null
 
     override var selfRect: Rect = Rect.Zero
 

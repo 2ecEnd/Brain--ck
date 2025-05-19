@@ -6,6 +6,7 @@ class UseVariable(var scope: ComplexBlock): Block()
 {
     var name: String = ""
     override var selfRect: Rect = Rect.Zero
+    override var parent: BlockTemplate? = null
 
     override fun execute(): Value
     {

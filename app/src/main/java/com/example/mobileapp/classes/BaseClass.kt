@@ -6,6 +6,7 @@ abstract class BlockTemplate
 {
     abstract fun execute(): Any
     abstract var selfRect: Rect
+    abstract var parent: BlockTemplate?
 }
 
 abstract class Block: BlockTemplate()
