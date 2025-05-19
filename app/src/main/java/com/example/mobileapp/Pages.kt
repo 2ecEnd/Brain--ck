@@ -236,6 +236,7 @@ fun RedactorPage(navController: NavController){
 
     var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
     var emptyBlock by remember {mutableStateOf<BlockTemplate>(Empty())}
+    var isDraggingBlockCanBeDeleted by remember { mutableStateOf<Boolean>(false) }
     var isEmptyBlockAdded by remember { mutableStateOf<Boolean>(false) }
     var isDragging by remember { mutableStateOf(false) }
     var isDeleting by remember { mutableStateOf(false) }
@@ -279,16 +280,38 @@ fun RedactorPage(navController: NavController){
         return TODO("Provide the return value")
     }
 
+    fun deleteBlock(){
+        if(draggingBlock.parent == null) blockList.remove(draggingBlock)
+        else{
+            var parent = draggingBlock.parent
+            var child = draggingBlock
+            when(parent) {
+                is MathExpression -> {
+                    if (parent.leftValue == child) parent.leftValue = Constant()
+                    else if (parent.rightValue == child) parent.rightValue = Constant()
+                }
+                is Print -> {
+                    parent.content = Constant()
+                }
+                is SetVariable -> {
+                    parent.value = Constant()
+                }
+            }
+        }
+    }
+
     fun addBlockInsideAnother(block: BlockTemplate, isInsideBlock: Boolean,
                               onReplace: (newBlock: BlockTemplate) -> Unit, isRelocating: Boolean){
         when(block){
             is MathExpression -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.leftValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.leftValue, true, {newBlock -> block.leftValue = newBlock}, isRelocating)
+                        addBlockInsideAnother(block.leftValue, true, {newBlock -> block.leftValue = newBlock
+                            deleteBlock()}, isRelocating)
                     }
                     else if (block.rightValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.rightValue, true, {newBlock -> block.rightValue = newBlock}, isRelocating)
+                        addBlockInsideAnother(block.rightValue, true, {newBlock -> block.rightValue = newBlock
+                            deleteBlock()}, isRelocating)
                     }
                     else if (isInsideBlock){
                         onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
@@ -298,7 +321,8 @@ fun RedactorPage(navController: NavController){
             is SetVariable -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.valueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.value, true, {newBlock -> block.value = newBlock}, isRelocating)
+                        addBlockInsideAnother(block.value, true, {newBlock -> block.value = newBlock
+                            deleteBlock()}, isRelocating)
                     }
                     else if (isInsideBlock){
                         onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
@@ -313,7 +337,8 @@ fun RedactorPage(navController: NavController){
             is Print -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.contentRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.content, true, {newBlock -> block.content = newBlock}, isRelocating)
+                        addBlockInsideAnother(block.content, true, {newBlock -> block.content = newBlock
+                            deleteBlock()}, isRelocating)
                     }
                     else if (isInsideBlock){
                         onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
@@ -346,32 +371,13 @@ fun RedactorPage(navController: NavController){
         }
     }
 
-    fun deleteFromParent(parent: BlockTemplate?, child: BlockTemplate){
-        when(parent) {
-            is MathExpression -> {
-                if (parent.leftValue == child) parent.leftValue = Constant()
-                else if (parent.rightValue == child) parent.rightValue = Constant()
-            }
-            is Print -> {
-                parent.content = Constant()
-            }
-            is SetVariable -> {
-                parent.value = Constant()
-            }
-        }
-    }
-
     fun relocateBlock(block: BlockTemplate){
         blockList.remove(emptyBlock)
         var newList = blockList.toMutableList()
         for(i in dropZones.indices){
             if (dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
                 if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
-                    if(block.parent == null) newList.remove(block)
-                    else{
-                        deleteFromParent(block.parent, block)
-                        block.parent = null
-                    }
+                    deleteBlock()
                     newList.add(i+1, block)
                     blockList.clear()
                     blockList.addAll(newList)
@@ -403,10 +409,12 @@ fun RedactorPage(navController: NavController){
                             isDragging = true
                             touchPoint = offset
                             draggingBlock = chosenBlock
+                            isDraggingBlockCanBeDeleted = true
                         }, { draggedBlock ->
                             isDragging = false
-                            draggingBlock = DeclareVariable(context)
-                            if (!isDeleting) relocateBlock(draggedBlock) else blockList.remove(draggedBlock)
+                            isDraggingBlockCanBeDeleted = false
+                            if (!isDeleting) relocateBlock(draggedBlock) else deleteBlock()
+                            draggingBlock = Constant()
                         }, true, remember{mutableStateOf(draggingBlock)})
                     }
                 }
@@ -447,7 +455,7 @@ fun RedactorPage(navController: NavController){
                 DrawBlock(draggingBlock, {_, _ ->}, {}, false, remember{mutableStateOf(draggingBlock)})
             }
 
-            if(blockList.contains(draggingBlock)){
+            if(isDraggingBlockCanBeDeleted){
                 val screenWidth = LocalConfiguration.current.screenWidthDp.dp
                 val screenHeight = LocalConfiguration.current.screenHeightDp.dp
                 var trashRect by remember { mutableStateOf(Rect.Zero) }
