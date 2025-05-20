@@ -221,6 +221,8 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
             }
         }
         is MathExpression -> {
+            var expanded by remember { mutableStateOf(false) }
+            var selectedOperation by remember { mutableStateOf("+") }
             block.leftValue.parent = block
             block.rightValue.parent = block
             Card(
@@ -263,12 +265,42 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                         DrawBlock(block.leftValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
                     }
 
-                    Text(
-                        "+",
-                        fontSize = 24.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
+                    Box(
+                        modifier = Modifier.height(38.dp)
+                    ) {
+                        Button(
+                            onClick = { if (isActive) expanded = true },
+                        )
+                        {
+                            Text(
+                                selectedOperation,
+                                fontSize = 24.sp,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            listOf("+", "-", "*", "/", "%", "^").forEach { operation ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            operation,
+                                            fontSize = 20.sp,
+                                            modifier = Modifier.padding(horizontal = 8.dp)
+                                        )
+                                    },
+                                    onClick = {
+                                        selectedOperation = operation
+                                        block.operation = operation
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
 
                     Box(
                         modifier = Modifier

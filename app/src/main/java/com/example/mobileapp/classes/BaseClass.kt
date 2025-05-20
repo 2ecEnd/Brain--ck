@@ -31,9 +31,13 @@ sealed class Value
     data class INT(val value: Int) : Value(){
         override fun toString() = value.toString()
     }
-    data class DOUBLE(val value: Double) : Value()
+    data class DOUBLE(val value: Double) : Value() {
+        override fun toString() = value.toString()
+    }
     data class BOOLEAN(val value: Boolean) : Value() {
         override fun toString() = value.toString()
     }
-    data class STRING(val value: String) : Value()
+    data class STRING(val value: String) : Value() {
+        override fun toString() = value.toString()
+    }
 }
