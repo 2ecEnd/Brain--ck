@@ -70,6 +70,7 @@ import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
 import com.example.mobileapp.classes.Empty
 import com.example.mobileapp.classes.MathExpression
+import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseVariable
@@ -479,6 +480,97 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                 shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
             ){}
+        }
+        is BoolExpression -> {
+            var expanded by remember { mutableStateOf(false) }
+            var selectedOperation by remember { mutableStateOf("==") }
+            block.leftValue.parent = block
+            block.rightValue.parent = block
+            Card(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
+                    }
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .onGloballyPositioned { coordinates ->
+                        block.selfRect = coordinates.boundsInWindow()
+                    },
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .onGloballyPositioned { coordinates ->
+                                block.leftValueRect = coordinates.boundsInWindow()
+                            }
+                            .alpha(if (block.leftValueRect == draggingBlock) 0.5f else 1f)
+                    ) {
+                        DrawBlock(block.leftValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                    }
+
+                    Box(
+                        modifier = Modifier.height(38.dp)
+                    ) {
+                        Button(
+                            onClick = { if (isActive) expanded = true },
+                        )
+                        {
+                            Text(
+                                selectedOperation,
+                                fontSize = 24.sp,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            listOf("==", "!=", ">", "<", ">=", "<=", "&&", "||").forEach { operation ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            operation,
+                                            fontSize = 20.sp,
+                                            modifier = Modifier.padding(horizontal = 8.dp)
+                                        )
+                                    },
+                                    onClick = {
+                                        selectedOperation = operation
+                                        block.operation = operation
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .onGloballyPositioned { coordinates ->
+                                block.rightValueRect = coordinates.boundsInWindow()
+                            }
+                            .alpha(if (block.rightValueRect == draggingBlock) 0.5f else 1f)
+                    ) {
+                        DrawBlock(block.rightValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                    }
+                }
+            }
         }
     }
 }

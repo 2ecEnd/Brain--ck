@@ -74,6 +74,7 @@ import androidx.core.content.contentValuesOf
 import androidx.navigation.NavController
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.ComplexBlock
 import com.example.mobileapp.classes.Console
 import com.example.mobileapp.classes.Constant
@@ -246,7 +247,7 @@ fun RedactorPage(navController: NavController){
     var varList = remember { mutableMapOf<String, Any>() }
     var blockList = remember { mutableStateListOf<BlockTemplate>(DeclareVariable(context)) }
     var blockChooserList = remember { mutableStateListOf<BlockTemplate>(DeclareVariable(context),
-        UseVariable(context), SetVariable(context), MathExpression(), Constant(), Print(console)) }
+        UseVariable(context), SetVariable(context), MathExpression(), BoolExpression(), Constant(), Print(console)) }
     var dropZones = remember { mutableStateListOf<Rect>() }
 
     var pagerState = rememberPagerState (pageCount = {2})
@@ -276,6 +277,7 @@ fun RedactorPage(navController: NavController){
             is Constant -> return Constant()
             is Print -> return Print(console)
             is UseVariable -> return UseVariable(context)
+            is BoolExpression -> return BoolExpression()
         }
         return TODO("Provide the return value")
     }
@@ -296,6 +298,11 @@ fun RedactorPage(navController: NavController){
                 is SetVariable -> {
                     parent.value = Constant()
                 }
+                is BoolExpression -> {
+                    if (parent.leftValue == child) parent.leftValue = Constant()
+                    else if (parent.rightValue == child) parent.rightValue = Constant()
+                }
+
             }
         }
     }
@@ -304,6 +311,21 @@ fun RedactorPage(navController: NavController){
                               onReplace: (newBlock: BlockTemplate) -> Unit, isRelocating: Boolean){
         when(block){
             is MathExpression -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                    if (block.leftValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.leftValue, true, {newBlock -> block.leftValue = newBlock
+                            deleteBlock()}, isRelocating)
+                    }
+                    else if (block.rightValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.rightValue, true, {newBlock -> block.rightValue = newBlock
+                            deleteBlock()}, isRelocating)
+                    }
+                    else if (isInsideBlock){
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
+                    }
+                }
+            }
+            is BoolExpression -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.leftValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
                         addBlockInsideAnother(block.leftValue, true, {newBlock -> block.leftValue = newBlock
@@ -358,14 +380,14 @@ fun RedactorPage(navController: NavController){
         blockList.remove(emptyBlock)
         for(i in dropZones.indices){
             if (dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
-                if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
+                if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression) && !(block is BoolExpression)){
                     blockList.add(i+1, createNewBlock(block))
                     updateDropZones()
                     return
                 }
             }
         }
-        if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)) return
+        if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression) && !(block is BoolExpression)) return
         blockList.forEach { item ->
             addBlockInsideAnother(item, false, {}, false)
         }
@@ -375,7 +397,7 @@ fun RedactorPage(navController: NavController){
         blockList.remove(emptyBlock)
         for(i in dropZones.indices){
             if (dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
-                if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
+                if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression) && !(block is BoolExpression)){
                     deleteBlock()
                     blockList.add(i+1, block)
                     updateDropZones()
@@ -383,7 +405,7 @@ fun RedactorPage(navController: NavController){
                 }
             }
         }
-        if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)) return
+        if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression) && !(block is BoolExpression)) return
         blockList.forEach { item ->
             addBlockInsideAnother(item, false, {}, true)
         }

@@ -10,6 +10,8 @@ class BoolExpression(): Block()
     override var parent: BlockTemplate? = null
 
     override var selfRect: Rect = Rect.Zero
+    var leftValueRect: Rect = Rect.Zero
+    var rightValueRect: Rect = Rect.Zero
 
     override fun execute(): Value
     {

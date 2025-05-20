@@ -32,6 +32,8 @@ sealed class Value
         override fun toString() = value.toString()
     }
     data class DOUBLE(val value: Double) : Value()
-    data class BOOLEAN(val value: Boolean) : Value()
+    data class BOOLEAN(val value: Boolean) : Value() {
+        override fun toString() = value.toString()
+    }
     data class STRING(val value: String) : Value()
 }
