@@ -2,10 +2,10 @@ package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
 
-class BoolExpression(): Block()
+class BoolExpression: Block()
 {
-    var leftValue: BlockTemplate = Constant()
-    var rightValue: BlockTemplate = Constant()
+    var leftValue: BlockTemplate = Constant(Value.BOOLEAN(true))
+    var rightValue: BlockTemplate = Constant(Value.BOOLEAN(true))
     var operation: String = "=="
     override var parent: BlockTemplate? = null
 
