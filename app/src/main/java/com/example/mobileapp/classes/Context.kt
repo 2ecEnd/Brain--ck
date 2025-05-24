@@ -23,7 +23,15 @@ class Context : ComplexBlock()
         // Нуждается в доработке
         for (i in 0..<blockList.size )
         {
-            blockList[i].execute()
+            try
+            {
+                blockList[i].execute()
+            }
+            catch (e: Exception)
+            {
+                println(e.message)
+            }
+
         }
     }
 }
