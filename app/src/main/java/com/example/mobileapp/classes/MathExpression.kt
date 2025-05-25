@@ -3,6 +3,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
+import com.example.mobileapp.R
 import kotlin.math.pow
 
 class MathExpression: Block()
@@ -25,7 +26,7 @@ class MathExpression: Block()
         {
             (left is Value.BOOLEAN || right is Value.BOOLEAN) ->
             {
-                throw IllegalArgumentException("Логический тип данных недопустим для математического выражения")
+                throw Exception(R.string.illegal_data_type.toString())
             }
             (left is Value.STRING || right is Value.STRING) ->
             {
@@ -34,20 +35,20 @@ class MathExpression: Block()
                     is Value.STRING -> left.value
                     is Value.INT -> left.value.toString()
                     is Value.DOUBLE -> left.value.toString()
-                    else -> throw IllegalArgumentException("Недопустимый тип данных для математического выражения")
+                    else -> throw Exception(R.string.illegal_data_type.toString())
                 }
                 val r = when(right)
                 {
                     is Value.STRING -> right.value
                     is Value.INT -> right.value.toString()
                     is Value.DOUBLE -> right.value.toString()
-                    else -> throw IllegalArgumentException("Недопустимый тип данных для математического выражения")
+                    else -> throw Exception(R.string.illegal_data_type.toString())
                 }
 
                 when (operation)
                 {
                     "+" -> Value.STRING(l + r)
-                    else -> throw IllegalArgumentException("Недопустимая операция для строк")
+                    else -> throw Exception(R.string.illegal_operation.toString())
                 }
             }
             (left is Value.INT || left is Value.DOUBLE &&
@@ -63,7 +64,7 @@ class MathExpression: Block()
                         "/" -> Value.INT(left.value / right.value)
                         "%" -> Value.INT(left.value % right.value)
                         "^" -> Value.DOUBLE((left.value.toDouble().pow(right.value)))
-                        else -> throw IllegalArgumentException("Недопустимая операция")
+                        else -> throw Exception(R.string.illegal_operation.toString())
                     }
                 }
                 else
@@ -72,13 +73,13 @@ class MathExpression: Block()
                     {
                         is Value.INT -> left.value.toDouble()
                         is Value.DOUBLE -> left.value
-                        else -> throw IllegalArgumentException("Недопустимый тип данных для математического выражения")
+                        else -> throw Exception(R.string.illegal_data_type.toString())
                     }
                     val r = when (right)
                     {
                         is Value.INT -> right.value.toDouble()
                         is Value.DOUBLE -> right.value
-                        else -> throw IllegalArgumentException("Недопустимый тип данных для математического выражения")
+                        else -> throw Exception(R.string.illegal_data_type.toString())
                     }
                     when (operation)
                     {
@@ -88,11 +89,11 @@ class MathExpression: Block()
                         "/" -> Value.DOUBLE(l / r)
                         "%" -> Value.DOUBLE(l % r)
                         "^" -> Value.DOUBLE((l.pow(r)))
-                        else -> throw IllegalArgumentException("Недопустимая операция")
+                        else -> throw Exception(R.string.illegal_operation.toString())
                     }
                 }
             }
-            else -> throw IllegalArgumentException("Недопустимый тип данных для математического выражения")
+            else -> throw Exception(R.string.illegal_data_type.toString())
         }
     }
 }

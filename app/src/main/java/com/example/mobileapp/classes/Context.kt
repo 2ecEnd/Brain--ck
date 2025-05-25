@@ -1,8 +1,10 @@
 package com.example.mobileapp.classes
 
+import android.content.res.Resources
 import androidx.compose.ui.geometry.Rect
+import com.example.mobileapp.R
 
-class Context(val console: Console) : ComplexBlock()
+class Context(val resources: Resources, val console: Console) : ComplexBlock()
 {
     override var blockList = mutableListOf<BlockTemplate>()
     override var varList = mutableMapOf<String, Value>()
@@ -14,13 +16,14 @@ class Context(val console: Console) : ComplexBlock()
     {
         varList.remove(name)
     }
+
     override fun addVariable(name: String)
     {
         varList.put(name, Value.INT(0))
     }
+
     override fun execute()
     {
-        // Нуждается в доработке
         for (i in 0..<blockList.size )
         {
             try
@@ -29,7 +32,10 @@ class Context(val console: Console) : ComplexBlock()
             }
             catch (e: Exception)
             {
-                console.addString(e.message ?: "Unknown error")
+                if (e.message == null)
+                    console.addString(resources.getString(R.string.unknown_error))
+                else
+                    console.addString(resources.getString(e.message!!.toInt()))
             }
 
         }

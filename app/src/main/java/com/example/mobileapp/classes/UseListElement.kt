@@ -1,6 +1,7 @@
 package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
+import com.example.mobileapp.R
 
 class UseListElement(var scope: ComplexBlock) : Block()
 {
@@ -18,19 +19,19 @@ class UseListElement(var scope: ComplexBlock) : Block()
 
     override fun execute(): Value
     {
-        val list = (list_ ?: throw IllegalArgumentException("Null")).execute()
-        val index = (index_ ?: throw IllegalArgumentException("Null")).execute()
+        val list = (list_ ?: throw Exception(R.string.null_pointer.toString())).execute()
+        val index = (index_ ?: throw Exception(R.string.null_pointer.toString())).execute()
 
-        if (list !is Value.LIST) throw IllegalArgumentException("Variable is not list")
-        if (index !is Value.INT) throw IllegalArgumentException("Index is ont int")
+        if (list !is Value.LIST) throw Exception(R.string.illegal_data_type.toString())
+        if (index !is Value.INT) throw Exception(R.string.index_is_not_int.toString())
 
         return try
         {
-            list.value[index.value];
+            list.value[index.value]
         }
         catch (e : Exception)
         {
-            throw IllegalArgumentException(e.message);
+            throw Exception(e.message)
         }
     }
 }

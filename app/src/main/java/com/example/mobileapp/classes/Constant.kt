@@ -1,6 +1,7 @@
 package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
+import com.example.mobileapp.R
 
 class Constant(var value: Value = Value.INT(0)): Block()
 {
@@ -21,30 +22,30 @@ class Constant(var value: Value = Value.INT(0)): Block()
                 if (value_ is String)
                     value = Value.STRING(value_)
                 else
-                    throw IllegalArgumentException("Ошибка")
+                    throw Exception(R.string.type_mismatch.toString())
             }
             "int" ->
             {
                 if (value_ is Int)
                     value = Value.INT(value_)
                 else
-                    throw IllegalArgumentException("Ошибка")
+                    throw Exception(R.string.type_mismatch.toString())
             }
             "double" ->
             {
                 if (value_ is Double)
                     value = Value.DOUBLE(value_)
                 else
-                    throw IllegalArgumentException("Ошибка")
+                    throw Exception(R.string.type_mismatch.toString())
             }
             "bool" ->
             {
                 if (value_ is Boolean)
                     value = Value.BOOLEAN(value_)
                 else
-                    throw IllegalArgumentException("Ошибка")
+                    throw Exception(R.string.type_mismatch.toString())
             }
-            else -> throw  IllegalArgumentException("Ошибка")
+            else -> throw Exception(R.string.illegal_data_type.toString())
         }
     }
 

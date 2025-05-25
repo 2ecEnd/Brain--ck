@@ -1,6 +1,7 @@
 package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
+import com.example.mobileapp.R
 
 class IfElse: Block()
 {
@@ -69,6 +70,6 @@ class IfElse: Block()
                 else_.execute()
         }
         else
-            throw IllegalArgumentException("Ошибка")
+            throw Exception(R.string.illegal_data_type.toString())
     }
 }

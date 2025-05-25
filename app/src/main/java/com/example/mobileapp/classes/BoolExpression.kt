@@ -1,6 +1,7 @@
 package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
+import com.example.mobileapp.R
 
 class BoolExpression: Block()
 {
@@ -33,7 +34,7 @@ class BoolExpression: Block()
                     ">=" -> left.value >= right.value
                     "<" -> left.value < right.value
                     "<=" -> left.value <= right.value
-                    else -> throw IllegalArgumentException("Некорректная операция")
+                    else -> throw Exception(R.string.illegal_operation.toString())
                 }
                 Value.BOOLEAN(result)
             }
@@ -47,7 +48,7 @@ class BoolExpression: Block()
                     ">=" -> left.value >= right.value
                     "<" -> left.value < right.value
                     "<=" -> left.value <= right.value
-                    else -> throw IllegalArgumentException("Некорректная операция")
+                    else -> throw Exception(R.string.illegal_operation.toString())
                 }
                 Value.BOOLEAN(result)
             }
@@ -58,13 +59,13 @@ class BoolExpression: Block()
                 {
                     is Value.INT -> left.value.toDouble()
                     is Value.DOUBLE -> left.value
-                    else -> throw IllegalArgumentException("Недопустимый тип данных для математического выражения")
+                    else -> throw Exception(R.string.illegal_data_type.toString())
                 }
                 val r = when (right)
                 {
                     is Value.INT -> right.value.toDouble()
                     is Value.DOUBLE -> right.value
-                    else -> throw IllegalArgumentException("Недопустимый тип данных для математического выражения")
+                    else -> throw Exception(R.string.illegal_data_type.toString())
                 }
 
                 val result = when (operation)
@@ -75,11 +76,11 @@ class BoolExpression: Block()
                     ">=" -> l >= r
                     "<" -> l < r
                     "<=" -> l <= r
-                    else -> throw IllegalArgumentException("Некорректная операция")
+                    else -> throw Exception(R.string.illegal_operation.toString())
                 }
                 Value.BOOLEAN(result)
             }
-            else -> throw IllegalArgumentException("Ошибка")
+            else -> throw Exception(R.string.illegal_data_type.toString())
         }
     }
 }
