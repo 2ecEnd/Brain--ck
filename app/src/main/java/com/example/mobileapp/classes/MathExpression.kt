@@ -61,7 +61,13 @@ class MathExpression: Block()
                         "+" -> Value.INT(left.value + right.value)
                         "-" -> Value.INT(left.value - right.value)
                         "*" -> Value.INT(left.value * right.value)
-                        "/" -> Value.INT(left.value / right.value)
+                        "/" ->
+                            {
+                                if (right.value == 0)
+                                    throw Exception(R.string.divide_by_zero.toString())
+                                else
+                                    Value.INT(left.value / right.value)
+                            }
                         "%" -> Value.INT(left.value % right.value)
                         "^" -> Value.DOUBLE((left.value.toDouble().pow(right.value)))
                         else -> throw Exception(R.string.illegal_operation.toString())
@@ -86,8 +92,20 @@ class MathExpression: Block()
                         "+" -> Value.DOUBLE(l + r)
                         "-" -> Value.DOUBLE(l - r)
                         "*" -> Value.DOUBLE(l * r)
-                        "/" -> Value.DOUBLE(l / r)
-                        "%" -> Value.DOUBLE(l % r)
+                        "/" ->
+                        {
+                            if (r == 0.0)
+                                throw Exception(R.string.divide_by_zero.toString())
+                            else
+                                Value.DOUBLE(l / r)
+                        }
+                        "%" ->
+                        {
+                            if (r == 0.0)
+                                throw Exception(R.string.divide_by_zero.toString())
+                            else
+                                Value.DOUBLE(l % r)
+                        }
                         "^" -> Value.DOUBLE((l.pow(r)))
                         else -> throw Exception(R.string.illegal_operation.toString())
                     }
