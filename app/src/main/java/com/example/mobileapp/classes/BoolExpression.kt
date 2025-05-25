@@ -3,7 +3,7 @@ package com.example.mobileapp.classes
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class BoolExpression: Block()
+class BoolExpression(override var scope: ComplexBlock): Block()
 {
     var leftValue: BlockTemplate = Constant(Value.BOOLEAN(true))
     var rightValue: BlockTemplate = Constant(Value.BOOLEAN(true))

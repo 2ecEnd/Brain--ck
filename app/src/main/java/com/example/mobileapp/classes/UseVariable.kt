@@ -3,7 +3,7 @@ package com.example.mobileapp.classes
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class UseVariable(var scope: ComplexBlock): Block()
+class UseVariable(override var scope: ComplexBlock): Block()
 {
     var name: String = ""
     override var selfRect: Rect = Rect.Zero

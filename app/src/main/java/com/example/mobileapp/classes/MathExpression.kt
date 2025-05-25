@@ -8,10 +8,10 @@ import androidx.compose.ui.res.stringResource
 import com.example.mobileapp.R
 import kotlin.math.pow
 
-class MathExpression: Block()
+class MathExpression(override var scope: ComplexBlock): Block()
 {
-    var leftValue by mutableStateOf<BlockTemplate>(Constant())
-    var rightValue by mutableStateOf<BlockTemplate>(Constant())
+    var leftValue by mutableStateOf<BlockTemplate>(Constant(scope))
+    var rightValue by mutableStateOf<BlockTemplate>(Constant(scope))
     var operation: String = "+"
 
     override var parent: BlockTemplate? = null

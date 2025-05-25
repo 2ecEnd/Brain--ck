@@ -9,6 +9,7 @@ import com.example.mobileapp.R
 
 class Context(val resources: Resources, val console: Console) : ComplexBlock()
 {
+    override var scope: ComplexBlock = this
     override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
     override var blockList = mutableStateListOf<BlockTemplate>(DeclareVariable(this))
     override var dropZones = mutableStateListOf<Rect>()

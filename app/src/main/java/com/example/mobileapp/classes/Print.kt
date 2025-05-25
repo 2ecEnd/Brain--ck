@@ -2,10 +2,10 @@ package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
 
-class Print(val console: Console): Block()
+class Print(override var scope: ComplexBlock, val console: Console): Block()
 {
     var contentRect: Rect = Rect.Zero
-    var content: BlockTemplate = Constant()
+    var content: BlockTemplate = Constant(scope)
     override var parent: BlockTemplate? = null
     override var selfRect: Rect = Rect.Zero
 

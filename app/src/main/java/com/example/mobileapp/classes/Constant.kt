@@ -3,12 +3,12 @@ package com.example.mobileapp.classes
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class Constant(var value: Value = Value.INT(0)): Block()
+class Constant(override var scope: ComplexBlock, var value: Value = Value.INT(0)): Block()
 {
     override var selfRect: Rect = Rect.Zero
     override var parent: BlockTemplate? = null
 
-    constructor(type: String, value_: Any) : this()
+    constructor(scope: ComplexBlock, type: String, value_: Any) : this(scope)
     {
         setValue(type, value_)
     }

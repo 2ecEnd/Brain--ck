@@ -2,7 +2,7 @@ package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
 
-class DeclareVariable(var scope: ComplexBlock) : Block()
+class DeclareVariable(override var scope: ComplexBlock) : Block()
 {
     var name: String = "my variable"
     var value = Value.INT(0)
