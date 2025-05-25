@@ -2,7 +2,7 @@ package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
 
-class Context : ComplexBlock()
+class Context(val console: Console) : ComplexBlock()
 {
     override var blockList = mutableListOf<BlockTemplate>()
     override var varList = mutableMapOf<String, Value>()
@@ -29,7 +29,7 @@ class Context : ComplexBlock()
             }
             catch (e: Exception)
             {
-                println(e.message)
+                console.addString(e.message ?: "Unknown error")
             }
 
         }
