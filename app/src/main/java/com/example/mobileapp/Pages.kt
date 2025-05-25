@@ -1,7 +1,9 @@
 package com.example.mobileapp
 
 import android.R.string
+import android.content.res.Resources
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -68,6 +70,7 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
@@ -234,8 +237,8 @@ fun ProjectNameForm(navController: NavController){
 
 @Composable
 fun RedactorPage(navController: NavController){
-    var context = remember {Context()}
     var console = remember {Console()}
+    var context = remember {Context(Resources.getSystem(), console = console)}
 
     var currentInteractionScope by remember { mutableStateOf<ComplexBlock>(context) }
     var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
