@@ -17,10 +17,14 @@ import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -39,6 +43,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,28 +52,34 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.ComplexBlock
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
 import com.example.mobileapp.classes.Empty
+import com.example.mobileapp.classes.IfElse
 import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.Print
@@ -259,7 +270,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             .onGloballyPositioned { coordinates ->
                                 block.leftValueRect = coordinates.boundsInWindow()
                             }
-                            .alpha(if (block.leftValueRect == draggingBlock) 0.5f else 1f)
+                            .alpha(if (block.leftValue == draggingBlock) 0.5f else 1f)
                     )
                     {
                         DrawBlock(block.leftValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
@@ -307,7 +318,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                             .onGloballyPositioned { coordinates ->
                                 block.rightValueRect = coordinates.boundsInWindow()
                             }
-                            .alpha(if (block.rightValueRect == draggingBlock) 0.5f else 1f)
+                            .alpha(if (block.rightValue == draggingBlock) 0.5f else 1f)
                     )
                     {
                         DrawBlock(block.rightValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
@@ -345,6 +356,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                     horizontalArrangement = Arrangement.SpaceAround
                 )
                 {
+                    var focusManager = LocalFocusManager.current
                     var value by remember { mutableStateOf(block.value.toString()) }
                     var isFocused by remember { mutableStateOf(false) }
                     BasicTextField(
@@ -381,6 +393,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                                     block.value = Value.INT(0)
                                 }
                                 value = block.value.toString()
+                                focusManager.clearFocus()
                             }
                         ),
                         decorationBox = { innerTextField ->
@@ -604,6 +617,149 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                 }
             }
         }
+        is IfElse -> {
+            Card(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
+                    }
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .onGloballyPositioned { coordinates ->
+                        block.selfRect = coordinates.boundsInWindow()
+                    },
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+            )
+            {
+                Column (
+
+                )
+                {
+                    Row(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceAround
+                    )
+                    {
+                        Text(
+                            "if",
+                            fontSize = 24.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .onGloballyPositioned { coordinates ->
+                                    block.conditionRect = coordinates.boundsInWindow()
+                                }
+                                .alpha(if (block.conditionRect == draggingBlock) 0.5f else 1f)
+                        )
+                        {
+                            DrawBlock(block.condition, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                        }
+                    }
+
+                    Card(
+                        modifier = Modifier
+                            .padding(start = 24.dp)
+                            .widthIn(min = 200.dp)
+                            .heightIn(min = 48.dp)
+                            .onGloballyPositioned { coordinates ->
+                                block.ifRect = coordinates.boundsInWindow()
+                                block.if_.selfRect = coordinates.boundsInWindow()
+                                if(block.if_.blockList.isEmpty()) block.if_.dropZones.add(coordinates.boundsInWindow())
+                            },
+                        shape = RoundedCornerShape(
+                            topStart = 10.dp,
+                            bottomStart = 10.dp,
+                            topEnd = 0.dp,
+                            bottomEnd = 0.dp
+                        ),
+                        colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
+                    )
+                    {
+                        Column ()
+                        {
+                            for(i in block.if_.blockList.indices){
+                                var localBlock = block.if_.blockList[i]
+                                if ((block.if_.spacerPair.value.first == i) && block.if_.spacerPair.value.second == block.if_){
+                                    Spacer(modifier = Modifier.height(48.dp))
+                                }
+                                key(block.hashCode()) {
+                                    var alpha = if (localBlock == draggingBlock) 0.5f else 1f
+                                    Box(modifier = Modifier.alpha(alpha)) {
+                                        DrawBlock(localBlock, onDragStart, onDragEnd, true, remember{draggingBlock})
+                                    }
+                                }
+                                if (i == block.if_.blockList.count() - 1 && block.if_.spacerPair.value.first
+                                    == block.if_.blockList.count() && block.if_.spacerPair.value.second == block.if_){
+                                    Spacer(modifier = Modifier.height(48.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    Text(
+                        "else",
+                        fontSize = 24.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+
+                    Card(
+                        modifier = Modifier
+                            .padding(start = 24.dp)
+                            .widthIn(min = 200.dp)
+                            .heightIn(min = 48.dp)
+                            .onGloballyPositioned { coordinates ->
+                                block.elseRect = coordinates.boundsInWindow()
+                                block.else_.selfRect = coordinates.boundsInWindow()
+                                if(block.else_.blockList.isEmpty()) block.else_.dropZones.add(coordinates.boundsInWindow())
+                            },
+                        shape = RoundedCornerShape(
+                            topStart = 10.dp,
+                            bottomStart = 10.dp,
+                            topEnd = 0.dp,
+                            bottomEnd = 0.dp
+                        ),
+                        colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
+                    )
+                    {
+                        Column ()
+                        {
+                            for(i in block.else_.blockList.indices){
+                                var localBlock = block.else_.blockList[i]
+                                if (block.else_.spacerPair.value.first == i && block.else_.spacerPair.value.second == block.else_){
+                                    Spacer(modifier = Modifier.height(48.dp))
+                                }
+                                key(block.hashCode()) {
+                                    var alpha = if (localBlock == draggingBlock) 0.5f else 1f
+                                    Box(modifier = Modifier.alpha(alpha)) {
+                                        DrawBlock(localBlock, onDragStart, onDragEnd, true, remember{draggingBlock})
+                                    }
+                                }
+                                if (i == block.else_.blockList.count() - 1 && block.else_.spacerPair.value.first
+                                    == block.else_.blockList.count() && block.else_.spacerPair.value.second == block.else_){
+                                    Spacer(modifier = Modifier.height(48.dp))
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
     }
 }
 
@@ -611,7 +767,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
 fun DrawShadow(block: BlockTemplate?){
     Card(
         modifier = Modifier
-            .width(184.dp)
+            .width(200.dp)
             .height(48.dp),
         shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(containerColor = Color(25, 25, 25).copy(alpha = 0.25f)),
