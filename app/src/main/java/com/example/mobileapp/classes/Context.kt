@@ -54,9 +54,27 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
             catch (e: Exception)
             {
                 if (e.message == null)
-                    console.addString(resources.getString(R.string.unknown_error))
+                {
+                    try
+                    {
+                        console.addString(resources.getString(R.string.unknown_error))
+                    }
+                    catch (e: Exception)
+                    {
+                        println(e.message)
+                    }
+                }
                 else
-                    console.addString(resources.getString(e.message!!.toInt()))
+                {
+                    try
+                    {
+                        console.addString(resources.getString(e.message!!.toInt()))
+                    }
+                    catch (e: Exception)
+                    {
+                        println(e.message)
+                    }
+                }
             }
 
         }

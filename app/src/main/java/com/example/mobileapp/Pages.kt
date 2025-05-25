@@ -238,7 +238,8 @@ fun ProjectNameForm(navController: NavController){
 @Composable
 fun RedactorPage(navController: NavController){
     var console = remember {Console()}
-    var context = remember {Context(Resources.getSystem(), console = console)}
+    val tmp = LocalContext.current.resources
+    var context = remember {Context(tmp, console = console)}
 
     var currentInteractionScope by remember { mutableStateOf<ComplexBlock>(context) }
     var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
