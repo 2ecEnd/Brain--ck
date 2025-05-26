@@ -243,7 +243,7 @@ fun RedactorPage(navController: NavController){
 
     var currentInteractionScope by remember { mutableStateOf<ComplexBlock>(context) }
     var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
-    var emptyBlock by remember {mutableStateOf<BlockTemplate>(Empty())}
+    var emptyBlock by remember {mutableStateOf<BlockTemplate>(Empty(context))}
     var isDraggingBlockCanBeDeleted by remember { mutableStateOf<Boolean>(false) }
     var isDragging by remember { mutableStateOf(false) }
     var isDeleting by remember { mutableStateOf(false) }
@@ -252,8 +252,8 @@ fun RedactorPage(navController: NavController){
 
     var blockList = remember { context.blockList }
     var scopesList = remember { mutableStateListOf<ComplexBlock>(context)}
-    var blockChooserList = remember { mutableStateListOf<BlockTemplate>(IfElse(), DeclareVariable(context),
-        UseVariable(context), SetVariable(context), MathExpression(), Constant(), Print(console)) }
+    var blockChooserList = remember { mutableStateListOf<BlockTemplate>(IfElse(context), DeclareVariable(context),
+        UseVariable(context), SetVariable(context), MathExpression(context), Constant(context), Print(context, console)) }
 
     var pagerState = rememberPagerState (pageCount = {2})
 
@@ -261,34 +261,39 @@ fun RedactorPage(navController: NavController){
 
     scopesList.forEach { scope -> scope.updateDropZones(draggingBlock) }
 
-    fun createNewBlock(oldBlock: BlockTemplate): BlockTemplate{
+    fun createNewBlock(oldBlock: BlockTemplate, scope: ComplexBlock): BlockTemplate{
         when(oldBlock){
-            is DeclareVariable -> return DeclareVariable(context)
-            is SetVariable -> return SetVariable(context)
-            is MathExpression -> return MathExpression()
-            is Constant -> return Constant()
-            is Print -> return Print(console)
+            is DeclareVariable -> return DeclareVariable(scope)
+            is SetVariable -> return SetVariable(scope)
+            is MathExpression -> return MathExpression(scope)
+            is BoolExpression -> return BoolExpression(scope)
+            is Constant -> return Constant(scope)
+            is Print -> return Print(scope, console)
             is UseVariable -> return UseVariable(context)
-            is IfElse -> return IfElse()
+            is IfElse -> return IfElse(scope)
         }
         return TODO("Provide the return value")
     }
 
     fun deleteBlock(localScope: ComplexBlock){
-        if(draggingBlock.parent == null) localScope.blockList.remove(draggingBlock)
+        if(draggingBlock.parent == null) draggingBlock.scope.blockList.remove(draggingBlock)
         else{
             var parent = draggingBlock.parent
             var child = draggingBlock
             when(parent) {
                 is MathExpression -> {
-                    if (parent.leftValue == child) parent.leftValue = Constant()
-                    else if (parent.rightValue == child) parent.rightValue = Constant()
+                    if (parent.leftValue == child) parent.leftValue = Constant(localScope)
+                    else if (parent.rightValue == child) parent.rightValue = Constant(localScope)
+                }
+                is BoolExpression -> {
+                    if (parent.leftValue == child) parent.leftValue = Constant(localScope)
+                    else if (parent.rightValue == child) parent.rightValue = Constant(localScope)
                 }
                 is Print -> {
-                    parent.content = Constant()
+                    parent.content = Constant(localScope)
                 }
                 is SetVariable -> {
-                    parent.value = Constant()
+                    parent.value = Constant(localScope)
                 }
             }
         }
@@ -298,52 +303,54 @@ fun RedactorPage(navController: NavController){
                               onReplace: (newBlock: BlockTemplate) -> Unit, isRelocating: Boolean,
                               relocateFunction: (BlockTemplate, ComplexBlock) -> Unit,
                               addBlockFunction: (BlockTemplate, ComplexBlock) -> Unit, localScope: ComplexBlock){
+        if (draggingBlock !is Constant && draggingBlock !is UseVariable && draggingBlock !is MathExpression
+                    && draggingBlock !is BoolExpression && block !is IfElse) return
         when(block){
             is MathExpression -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.leftValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.leftValue, true, {newBlock -> block.leftValue = newBlock
-                            deleteBlock(localScope)}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                        addBlockInsideAnother(block.leftValue, true, {newBlock -> deleteBlock(localScope)
+                            block.leftValue = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
                     }
                     else if (block.rightValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.rightValue, true, {newBlock -> block.rightValue = newBlock
-                            deleteBlock(localScope)}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                        addBlockInsideAnother(block.rightValue, true, {newBlock -> deleteBlock(localScope)
+                            block.rightValue = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
                     }
                     else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
                     }
                 }
             }
             is SetVariable -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.valueRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.value, true, {newBlock -> block.value = newBlock
-                            deleteBlock(localScope)}, isRelocating, relocateFunction, addBlockFunction, localScope)
+                        addBlockInsideAnother(block.value, true, {newBlock -> deleteBlock(localScope)
+                            block.value = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
                     }
                     else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
                     }
                 }
             }
             is Constant -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
-                    onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
+                    onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
                 }
             }
             is Print -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     if (block.contentRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        addBlockInsideAnother(block.content, true, {newBlock -> block.content = newBlock
-                            deleteBlock(localScope)}, isRelocating, relocateFunction, addBlockFunction, localScope)
+                        addBlockInsideAnother(block.content, true, {newBlock -> deleteBlock(localScope)
+                            block.content = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
                     }
                     else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
                     }
                 }
             }
             is UseVariable -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
-                    onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
+                    onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
                 }
             }
             is IfElse -> {
@@ -352,31 +359,37 @@ fun RedactorPage(navController: NavController){
                         addBlockInsideAnother(block.condition, true, {newBlock -> if (newBlock is BoolExpression) block.condition = newBlock
                             deleteBlock(localScope)}, isRelocating, relocateFunction, addBlockFunction, localScope)
                     }
-                    else if (block.ifRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        if (isRelocating) relocateFunction(draggingBlock, localScope)
-                        else addBlockFunction(draggingBlock, localScope)
+                    else if (isInsideBlock){
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
                     }
-                    else if (block.elseRect.contains(Offset(dragOffset.x, dragOffset.y))){
-                        if (isRelocating) relocateFunction(draggingBlock, localScope)
-                        else addBlockFunction(draggingBlock, localScope)
+                }
+            }
+            is BoolExpression -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                    if (block.leftValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.leftValue, true, {newBlock -> deleteBlock(localScope)
+                            block.leftValue = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                    }
+                    else if (block.rightValueRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.rightValue, true, {newBlock -> deleteBlock(localScope)
+                            block.rightValue = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
                     }
                     else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock) else draggingBlock)
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
                     }
                 }
             }
         }
-        //updateDropZones()
     }
 
     fun AddNewBlock(block: BlockTemplate, localScope: ComplexBlock){
-        localScope.blockList.remove(emptyBlock)
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
                 if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
                     val insertIndex = if (localScope.blockList.isEmpty()) 0 else i+1
-                    var newBlock = createNewBlock(block)
+                    var newBlock = createNewBlock(block, localScope)
                     localScope.blockList.add(insertIndex, newBlock)
+                    newBlock.scope = localScope
                     when(newBlock){
                         is IfElse -> {
                             newBlock.if_.spacerPair = mutableStateOf<Pair<Int, ComplexBlock>>(context.spacerPair.value)
@@ -385,30 +398,26 @@ fun RedactorPage(navController: NavController){
                             scopesList.add(newBlock.else_)
                         }
                     }
-                    //updateDropZones()
                     return
                 }
             }
         }
-        //if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)) return
         localScope.blockList.forEach { item ->
             addBlockInsideAnother(item, false, {}, false, {_, _ ->}, {block, scope -> AddNewBlock(block, scope)}, localScope)
         }
     }
 
     fun relocateBlock(block: BlockTemplate, localScope: ComplexBlock){
-        localScope.blockList.remove(emptyBlock)
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
                 if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
-                    deleteBlock(localScope)
-                    localScope.blockList.add(i+1, block)
-                    //updateDropZones()
+                    deleteBlock(block.scope)
+                    localScope.blockList.add(if (localScope.blockList.isEmpty()) i else i+1, block)
+                    block.scope = localScope
                     return
                 }
             }
         }
-        if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)) return
         localScope.blockList.forEach { item ->
             addBlockInsideAnother(item, false, {}, true, {block, scope -> relocateBlock(block, scope)}, {_, _ ->}, localScope)
         }
@@ -444,7 +453,7 @@ fun RedactorPage(navController: NavController){
                                 draggedBlock,
                                 currentInteractionScope
                             ) else deleteBlock(currentInteractionScope)
-                            draggingBlock = Constant()
+                            draggingBlock = Constant(context)
                         }, true, remember { mutableStateOf(draggingBlock) })
                     }
                 }
