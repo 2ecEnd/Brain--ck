@@ -5,8 +5,8 @@ import com.example.mobileapp.R
 
 class BoolExpression(override var scope: ComplexBlock): Block()
 {
-    var leftValue: BlockTemplate = Constant(Value.BOOLEAN(true))
-    var rightValue: BlockTemplate = Constant(Value.BOOLEAN(true))
+    var leftValue: BlockTemplate = Constant(scope, Value.BOOLEAN(true))
+    var rightValue: BlockTemplate = Constant(scope, Value.BOOLEAN(true))
     var operation: String = "=="
     override var parent: BlockTemplate? = null
 
