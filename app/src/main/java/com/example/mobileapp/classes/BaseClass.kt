@@ -10,17 +10,16 @@ abstract class BlockTemplate
     abstract fun execute(): Any
     abstract var selfRect: Rect
     abstract var parent: BlockTemplate?
+    abstract var scope: ComplexBlock
 }
 
 abstract class Block: BlockTemplate()
 {
-    abstract var scope: ComplexBlock
     abstract override fun execute(): Any
 }
 
 abstract class ComplexBlock: BlockTemplate()
 {
-    abstract var scope: ComplexBlock
     // Список блоков, которые будет содержать данный блок
     abstract var blockList: SnapshotStateList<BlockTemplate>
     // Список переменных, доступных в области видимости данного блока

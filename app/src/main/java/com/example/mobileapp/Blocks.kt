@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -277,16 +278,19 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                     }
 
                     Box(
-                        modifier = Modifier.height(38.dp)
+                        modifier = Modifier
+                            .height(38.dp)
+                            .width(54.dp)
+                            .padding(horizontal = 8.dp)
                     ) {
                         Button(
                             onClick = { if (isActive) expanded = true },
+                            contentPadding = PaddingValues(0.dp)
                         )
                         {
                             Text(
                                 selectedOperation,
                                 fontSize = 24.sp,
-                                modifier = Modifier.padding(horizontal = 8.dp)
                             )
                         }
 
@@ -569,16 +573,19 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                     }
 
                     Box(
-                        modifier = Modifier.height(38.dp)
+                        modifier = Modifier
+                            .height(38.dp)
+                            .width(54.dp)
+                            .padding(horizontal = 8.dp)
                     ) {
                         Button(
                             onClick = { if (isActive) expanded = true },
+                            contentPadding = PaddingValues(0.dp)
                         )
                         {
                             Text(
                                 selectedOperation,
                                 fontSize = 24.sp,
-                                modifier = Modifier.padding(horizontal = 8.dp)
                             )
                         }
 
@@ -639,9 +646,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
                 colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
             )
             {
-                Column (
-
-                )
+                Column ()
                 {
                     Row(
                         modifier = Modifier
@@ -772,7 +777,5 @@ fun DrawShadow(block: BlockTemplate?){
         shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(containerColor = Color(25, 25, 25).copy(alpha = 0.25f)),
     )
-    {
-
-    }
+    {}
 }
