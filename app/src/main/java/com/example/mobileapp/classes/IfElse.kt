@@ -50,7 +50,7 @@ class IfElse(override var scope: ComplexBlock): Block()
         }
         override fun addVariable(name: String)
         {
-            varList.put(name, Value.INT(0))
+            varList[name] = Value.INT(0)
         }
         override fun updateDropZones(draggingBlock: BlockTemplate)
         {
