@@ -60,7 +60,7 @@ class For(override var scope: ComplexBlock): ComplexBlock()
                 for (block in blockList)
                     block.execute()
 
-                changeIterableVar.execute()
+                varList[iterableVar.name] = changeIterableVar.execute()
             }
         }
         catch (e: Exception)

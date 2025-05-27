@@ -14,9 +14,6 @@ abstract class BlockTemplate
 }
 
 abstract class Block: BlockTemplate()
-{
-    abstract override fun execute(): Any
-}
 
 abstract class ComplexBlock: BlockTemplate()
 {
