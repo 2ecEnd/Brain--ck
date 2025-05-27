@@ -15,7 +15,6 @@ class SetVariable(override var scope: ComplexBlock) : Block()
 
     override fun execute()
     {
-        // Нуждается в доработке
         val tmp = value.execute()
         scope.varList[name] = when (tmp)
         {
