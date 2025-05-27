@@ -7,6 +7,11 @@ import androidx.compose.ui.geometry.Rect
 
 class For(override var scope: ComplexBlock): ComplexBlock()
 {
+    lateinit var iterableVar: DeclareVariable
+    lateinit var startValue: SetVariable
+    lateinit var stopCondition: BoolExpression
+    lateinit var changeIterableVar: MathExpression
+
     override var varList = mutableMapOf<String, Value>()
     override var blockList = SnapshotStateList<BlockTemplate>()
 
@@ -46,16 +51,21 @@ class For(override var scope: ComplexBlock): ComplexBlock()
 
     override fun execute()
     {
-        for (block in blockList)
+        try
         {
-            try
+            startValue.execute()
+
+            while (!(stopCondition.execute() as Value.BOOLEAN).value)
             {
-                block.execute()
+                for (block in blockList)
+                    block.execute()
+
+                changeIterableVar.execute()
             }
-            catch (e: Exception)
-            {
-                throw e
-            }
+        }
+        catch (e: Exception)
+        {
+            throw e
         }
     }
 }
