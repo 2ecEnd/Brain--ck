@@ -10,8 +10,8 @@ import kotlin.math.pow
 
 class MathExpression(override var scope: ComplexBlock): Block()
 {
-    var leftValue by mutableStateOf<BlockTemplate>(Constant(scope))
-    var rightValue by mutableStateOf<BlockTemplate>(Constant(scope))
+    var leftValue by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
+    var rightValue by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
     var operation: String = "+"
 
     override var parent: BlockTemplate? = null

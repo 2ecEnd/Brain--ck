@@ -1,12 +1,15 @@
 package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.example.mobileapp.R
 
 class BoolExpression(override var scope: ComplexBlock): Block()
 {
-    var leftValue: BlockTemplate = Constant(scope, Value.BOOLEAN(true))
-    var rightValue: BlockTemplate = Constant(scope, Value.BOOLEAN(true))
+    var leftValue by mutableStateOf<BlockTemplate>(Constant(scope, "bool", true))
+    var rightValue by mutableStateOf<BlockTemplate>(Constant(scope, "bool", true))
     var operation: String = "=="
     override var parent: BlockTemplate? = null
 

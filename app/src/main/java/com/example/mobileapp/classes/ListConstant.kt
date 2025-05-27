@@ -10,6 +10,7 @@ class ListConstant(
 ) : Block()
 {
     var blockList: MutableList<BlockTemplate> = mutableStateListOf()
+    var addBlockRect: Rect = Rect.Zero
     override var parent: BlockTemplate? = null
     override var selfRect: Rect = Rect.Zero
 

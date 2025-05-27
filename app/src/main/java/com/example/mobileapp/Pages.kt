@@ -76,6 +76,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
 import androidx.core.content.contentValuesOf
 import androidx.navigation.NavController
+import com.example.mobileapp.classes.AddListElement
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BlockTemplate
 import com.example.mobileapp.classes.BoolExpression
@@ -85,7 +86,9 @@ import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
 import com.example.mobileapp.classes.Empty
+import com.example.mobileapp.classes.For
 import com.example.mobileapp.classes.IfElse
+import com.example.mobileapp.classes.ListConstant
 import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetVariable
@@ -243,7 +246,6 @@ fun RedactorPage(navController: NavController){
 
     var currentInteractionScope by remember { mutableStateOf<ComplexBlock>(context) }
     var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
-    var emptyBlock by remember {mutableStateOf<BlockTemplate>(Empty(context))}
     var isDraggingBlockCanBeDeleted by remember { mutableStateOf<Boolean>(false) }
     var isDragging by remember { mutableStateOf(false) }
     var isDeleting by remember { mutableStateOf(false) }
@@ -252,8 +254,11 @@ fun RedactorPage(navController: NavController){
 
     var blockList = remember { context.blockList }
     var scopesList = remember { mutableStateListOf<ComplexBlock>(context)}
-    var blockChooserList = remember { mutableStateListOf<BlockTemplate>(IfElse(context), DeclareVariable(context),
-        UseVariable(context), SetVariable(context), MathExpression(context), Constant(context), Print(context, console)) }
+    var blockChooserList = remember { mutableStateListOf<BlockTemplate>(For(context, "i"), IfElse(context), DeclareVariable(context),
+        UseVariable(context), SetVariable(context), MathExpression(context), Print(context, console),
+        AddListElement(context), Constant(context, "int", 0), Constant(context, "string", "str"),
+        Constant(context, "double", 0.0), Constant(context, "bool", true),
+        ListConstant(context)) }
 
     var pagerState = rememberPagerState (pageCount = {2})
 
@@ -267,10 +272,19 @@ fun RedactorPage(navController: NavController){
             is SetVariable -> return SetVariable(scope)
             is MathExpression -> return MathExpression(scope)
             is BoolExpression -> return BoolExpression(scope)
-            is Constant -> return Constant(scope)
+            is Constant -> return Constant(scope, oldBlock.type, when(oldBlock.type){
+                "int" -> 0
+                "string" -> "str"
+                "bool" -> true
+                "double" -> 0.0
+                else -> 0
+            })
+            is ListConstant -> return ListConstant(scope)
             is Print -> return Print(scope, console)
             is UseVariable -> return UseVariable(context)
             is IfElse -> return IfElse(scope)
+            is AddListElement -> return AddListElement(scope)
+            is For -> return For(scope, "i")
         }
         return TODO("Provide the return value")
     }
@@ -282,18 +296,18 @@ fun RedactorPage(navController: NavController){
             var child = draggingBlock
             when(parent) {
                 is MathExpression -> {
-                    if (parent.leftValue == child) parent.leftValue = Constant(localScope)
-                    else if (parent.rightValue == child) parent.rightValue = Constant(localScope)
+                    if (parent.leftValue == child) parent.leftValue = Constant(localScope, "int", 0)
+                    else if (parent.rightValue == child) parent.rightValue = Constant(localScope, "int", 0)
                 }
                 is BoolExpression -> {
-                    if (parent.leftValue == child) parent.leftValue = Constant(localScope)
-                    else if (parent.rightValue == child) parent.rightValue = Constant(localScope)
+                    if (parent.leftValue == child) parent.leftValue = Constant(localScope, "bool", true)
+                    else if (parent.rightValue == child) parent.rightValue = Constant(localScope, "bool", true)
                 }
                 is Print -> {
-                    parent.content = Constant(localScope)
+                    parent.content = Constant(localScope, "string", "str")
                 }
                 is SetVariable -> {
-                    parent.value = Constant(localScope)
+                    parent.value = Constant(localScope, "int", 0)
                 }
             }
         }
@@ -303,7 +317,7 @@ fun RedactorPage(navController: NavController){
                               onReplace: (newBlock: BlockTemplate) -> Unit, isRelocating: Boolean,
                               relocateFunction: (BlockTemplate, ComplexBlock) -> Unit,
                               addBlockFunction: (BlockTemplate, ComplexBlock) -> Unit, localScope: ComplexBlock){
-        if (draggingBlock !is Constant && draggingBlock !is UseVariable && draggingBlock !is MathExpression
+        if (draggingBlock !is Constant && draggingBlock !is ListConstant && draggingBlock !is UseVariable && draggingBlock !is MathExpression
                     && draggingBlock !is BoolExpression && block !is IfElse) return
         when(block){
             is MathExpression -> {
@@ -335,6 +349,16 @@ fun RedactorPage(navController: NavController){
             is Constant -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
                     onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
+                }
+            }
+            is ListConstant -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y)) && isInsideBlock){
+                    if (block.addBlockRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        block.blockList.add(createNewBlock(draggingBlock, localScope))
+                    }
+                    else{
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
+                    }
                 }
             }
             is Print -> {
@@ -379,13 +403,24 @@ fun RedactorPage(navController: NavController){
                     }
                 }
             }
+            is AddListElement -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                    if (block.valueRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.value, true, {newBlock -> deleteBlock(localScope)
+                            block.value = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                    }
+                    else if (isInsideBlock){
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
+                    }
+                }
+            }
         }
     }
 
     fun AddNewBlock(block: BlockTemplate, localScope: ComplexBlock){
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
-                if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
+                if (block !is Constant && block !is ListConstant && block !is UseVariable && block !is MathExpression){
                     val insertIndex = if (localScope.blockList.isEmpty()) 0 else i+1
                     var newBlock = createNewBlock(block, localScope)
                     localScope.blockList.add(insertIndex, newBlock)
@@ -396,6 +431,10 @@ fun RedactorPage(navController: NavController){
                             newBlock.else_.spacerPair = mutableStateOf<Pair<Int, ComplexBlock>>(context.spacerPair.value)
                             scopesList.add(newBlock.if_)
                             scopesList.add(newBlock.else_)
+                        }
+                        is For -> {
+                            newBlock.spacerPair = mutableStateOf<Pair<Int, ComplexBlock>>(context.spacerPair.value)
+                            scopesList.add(newBlock)
                         }
                     }
                     return

@@ -8,7 +8,7 @@ import com.example.mobileapp.R
 class SetVariable(override var scope: ComplexBlock) : Block()
 {
     var name: String = ""
-    var value by mutableStateOf<BlockTemplate>(Constant(scope))
+    var value by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
     var valueRect: Rect = Rect.Zero
     override var parent: BlockTemplate? = null
     override var selfRect: Rect = Rect.Zero

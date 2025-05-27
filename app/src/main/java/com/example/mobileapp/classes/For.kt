@@ -4,9 +4,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Rect
+import com.example.mobileapp.classes.Constant
 
 class For(override var scope: ComplexBlock): ComplexBlock()
 {
+    var contentRect: Rect = Rect.Zero
+
     lateinit var iterableVar: DeclareVariable
     lateinit var startValue: SetVariable
     lateinit var stopCondition: BoolExpression
@@ -19,6 +22,24 @@ class For(override var scope: ComplexBlock): ComplexBlock()
     override var selfRect = Rect.Zero
     override var dropZones = mutableStateListOf<Rect>()
     override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
+
+    constructor(scope: ComplexBlock, iterableVarName: String) : this(scope)
+    {
+        iterableVar = DeclareVariable(scope)
+        iterableVar.name = iterableVarName
+
+        startValue = SetVariable(scope)
+        startValue.name = iterableVarName
+
+        stopCondition = BoolExpression(scope)
+        stopCondition.rightValue = Constant(scope, "int", 10)
+        stopCondition.operation = "<"
+        stopCondition.leftValue = UseVariable(scope, iterableVarName)
+
+        changeIterableVar = MathExpression(scope)
+        changeIterableVar.rightValue = Constant(scope, "int", 1)
+        changeIterableVar.leftValue = UseVariable(scope, iterableVarName)
+    }
 
     override fun deleteVariable(name: String)
     {

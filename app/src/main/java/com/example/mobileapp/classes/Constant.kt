@@ -1,16 +1,22 @@
 package com.example.mobileapp.classes
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class Constant(override var scope: ComplexBlock, var value: Value = Value.INT(0)): Block()
+class Constant(override var scope: ComplexBlock): Block()
 {
     override var selfRect: Rect = Rect.Zero
     override var parent: BlockTemplate? = null
+    lateinit var type: String
+    var value by mutableStateOf<Value>(Value.INT(0))
 
     constructor(scope: ComplexBlock, type: String, value_: Any) : this(scope)
     {
         setValue(type, value_)
+        this.type = type
     }
 
     fun setValue(type: String, value_: Any)

@@ -1,12 +1,16 @@
 package com.example.mobileapp.classes
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
 class AddListElement(override var scope: ComplexBlock) : Block()
 {
     var source: String? = null
-    var value: Block = Constant(scope)
+    var value by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
+    var valueRect: Rect = Rect.Zero
 
     override var selfRect: Rect = Rect.Zero
     override var parent: BlockTemplate? = null
