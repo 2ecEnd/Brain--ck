@@ -8,7 +8,7 @@ import com.example.mobileapp.R
 
 class AddListElement(override var scope: ComplexBlock) : Block()
 {
-    var source: String? = null
+    var source: BlockTemplate? = null
     var value by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
     var valueRect: Rect = Rect.Zero
 
@@ -21,7 +21,7 @@ class AddListElement(override var scope: ComplexBlock) : Block()
         if (tmp == null || source == null)
             throw Exception(R.string.null_pointer.toString())
 
-        val list = scope.varList[source!!]
+        val list = (source ?: throw Exception(R.string.null_pointer.toString())).execute()
         if (list !is Value.LIST)
             throw Exception(R.string.is_not_list.toString())
 

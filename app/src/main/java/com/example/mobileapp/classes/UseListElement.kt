@@ -5,7 +5,7 @@ import com.example.mobileapp.R
 
 class UseListElement(override var scope: ComplexBlock) : Block()
 {
-    var list_: BlockTemplate? = null
+    var source: BlockTemplate? = null
     var index_: BlockTemplate? = null
 
     override var parent: BlockTemplate? = null
@@ -13,13 +13,13 @@ class UseListElement(override var scope: ComplexBlock) : Block()
 
     fun setData(list: BlockTemplate, index: BlockTemplate)
     {
-        list_ = list
+        source = list
         index_ = index
     }
 
     override fun execute(): Value
     {
-        val list = (list_ ?: throw Exception(R.string.null_pointer.toString())).execute()
+        val list = (source ?: throw Exception(R.string.null_pointer.toString())).execute()
         val index = (index_ ?: throw Exception(R.string.null_pointer.toString())).execute()
 
         if (list !is Value.LIST) throw Exception(R.string.illegal_data_type.toString())

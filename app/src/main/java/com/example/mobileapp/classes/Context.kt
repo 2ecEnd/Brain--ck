@@ -13,10 +13,23 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
     override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
     override var blockList = mutableStateListOf<BlockTemplate>(DeclareVariable(this))
     override var dropZones = mutableStateListOf<Rect>()
-    override var varList = mutableMapOf<String, Value>()
+    override var allowedVariables = mutableListOf<String>()
+    var varList = mutableMapOf<String, Value>()
     override var parent: BlockTemplate? = null
 
     override var selfRect: Rect = Rect.Zero
+
+    override fun deleteVariable(name: String)
+    {
+        varList.remove(name)
+        super.deleteVariable(name)
+    }
+
+    override fun addVariable(name: String)
+    {
+        varList[name] = Value.INT(0)
+        super.addVariable(name)
+    }
 
     override fun updateDropZones(draggingBlock: BlockTemplate)
     {

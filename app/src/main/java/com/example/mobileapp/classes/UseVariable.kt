@@ -2,22 +2,24 @@ package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
-import com.example.mobileapp.classes.For
 
-class UseVariable(override var scope: ComplexBlock): Block()
+class UseVariable(
+    override var scope: ComplexBlock,
+    val varList: MutableMap<String, Value>
+) : Block()
 {
     var name: String = ""
     override var selfRect: Rect = Rect.Zero
     override var parent: BlockTemplate? = null
 
-    constructor(scope: ComplexBlock, varName: String) : this(scope)
+    constructor(scope: ComplexBlock, varList: MutableMap<String, Value>, varName: String) : this(scope, varList)
     {
         name = varName
     }
 
     override fun execute(): Value
     {
-        val result: Value? = scope.varList[name]
+        val result: Value? = varList[name]
         return result ?: throw Exception(R.string.null_pointer.toString())
     }
 }

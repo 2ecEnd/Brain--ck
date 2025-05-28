@@ -5,7 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 
-class DeclareVariable(override var scope: ComplexBlock) : Block()
+class DeclareVariable(
+    override var scope: ComplexBlock,
+    val varList: MutableMap<String, Value>
+) : Block()
 {
     var name by mutableStateOf<String>("my variable")
     var value = Value.INT(0)
@@ -15,6 +18,6 @@ class DeclareVariable(override var scope: ComplexBlock) : Block()
     override fun execute()
     {
         // Нуждается в доработке
-        scope.varList.plus((name to value))
+        varList.plus(name to value)
     }
 }

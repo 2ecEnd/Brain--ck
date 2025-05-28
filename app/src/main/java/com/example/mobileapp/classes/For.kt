@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Rect
-import com.example.mobileapp.classes.Constant
 
 class For(override var scope: ComplexBlock): ComplexBlock()
 {
@@ -15,7 +14,7 @@ class For(override var scope: ComplexBlock): ComplexBlock()
     lateinit var stopCondition: BoolExpression
     lateinit var changeIterableVar: MathExpression
 
-    override var varList = mutableMapOf<String, Value>()
+    override var allowedVariables = mutableListOf<String>()
     override var blockList = SnapshotStateList<BlockTemplate>()
 
     override var parent: BlockTemplate? = null
@@ -71,7 +70,7 @@ class For(override var scope: ComplexBlock): ComplexBlock()
                 for (block in blockList)
                     block.execute()
 
-                varList[iterableVar.name] = changeIterableVar.execute()
+                allowedVariables[iterableVar.name] = changeIterableVar.execute()
             }
         }
         catch (e: Exception)

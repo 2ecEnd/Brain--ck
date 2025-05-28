@@ -5,7 +5,7 @@ import com.example.mobileapp.R
 
 class DeleteListElement(override var scope: ComplexBlock) : Block()
 {
-    var source: String? = null
+    var source: BlockTemplate? = null
     var index: BlockTemplate = Constant(scope)
 
     override var selfRect: Rect = Rect.Zero
@@ -16,7 +16,7 @@ class DeleteListElement(override var scope: ComplexBlock) : Block()
         if (source == null)
             throw Exception(R.string.null_pointer.toString())
 
-        val list = scope.varList[source!!]
+        val list = (source ?: throw Exception(R.string.null_pointer.toString())).execute()
         if (list !is Value.LIST)
             throw Exception(R.string.is_not_list.toString())
 

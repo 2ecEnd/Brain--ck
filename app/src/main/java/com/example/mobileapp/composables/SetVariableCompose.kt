@@ -86,7 +86,7 @@ fun DrawSetVariable(block: SetVariable, onDragStart: (Offset, BlockTemplate) -> 
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    block.scope.varList.keys.toMutableList().forEach { item ->
+                    block.scope.allowedVariables.keys.toMutableList().forEach { item ->
                         DropdownMenuItem(
                             text = { Text(item) },
                             onClick = {

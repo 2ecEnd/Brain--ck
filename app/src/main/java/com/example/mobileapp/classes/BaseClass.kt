@@ -1,7 +1,6 @@
 package com.example.mobileapp.classes
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Rect
 
@@ -20,18 +19,30 @@ abstract class ComplexBlock: BlockTemplate()
     // Список блоков, которые будет содержать данный блок
     abstract var blockList: SnapshotStateList<BlockTemplate>
     // Список переменных, доступных в области видимости данного блока
-    abstract var varList: MutableMap<String, Value>
+    abstract var allowedVariables: MutableList<String>
     abstract var dropZones: SnapshotStateList<Rect>
     abstract var spacerPair: MutableState<Pair<Int, ComplexBlock>>
 
-    fun deleteVariable(name: String)
+    open fun deleteVariable(name: String)
     {
-        varList.remove(name)
+        allowedVariables.remove(name)
+
+        for (block in blockList)
+        {
+            if (block is ComplexBlock)
+                block.deleteVariable(name)
+        }
     }
 
-    fun addVariable(name: String)
+    open fun addVariable(name: String)
     {
-        varList[name] = Value.INT(0)
+        allowedVariables.remove(name)
+
+        for (block in blockList)
+        {
+            if (block is ComplexBlock)
+                block.addVariable(name)
+        }
     }
 
     open fun updateDropZones(draggingBlock: BlockTemplate)

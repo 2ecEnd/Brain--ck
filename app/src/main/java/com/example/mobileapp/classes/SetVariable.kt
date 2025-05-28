@@ -5,7 +5,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class SetVariable(override var scope: ComplexBlock) : Block()
+class SetVariable(
+    override var scope: ComplexBlock,
+    val varList: MutableMap<String, Value>
+) : Block()
 {
     var name: String = ""
     var value by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
@@ -16,7 +19,7 @@ class SetVariable(override var scope: ComplexBlock) : Block()
     override fun execute()
     {
         val tmp = value.execute()
-        scope.varList[name] = when (tmp)
+        varList[name] = when (tmp)
         {
             is Value -> tmp
             else -> throw Exception(R.string.illegal_data_type.toString())
