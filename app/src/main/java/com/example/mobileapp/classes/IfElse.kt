@@ -58,7 +58,7 @@ class IfElse(override var scope: ComplexBlock): Block()
         override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
         override var blockList = mutableStateListOf<BlockTemplate>()
         override var dropZones = mutableStateListOf<Rect>()
-        override var allowedVariables = mutableMapOf<String, Value>()
+        override var allowedVariables = mutableListOf<String>()
         override var selfRect: Rect = Rect.Zero
         override var parent: BlockTemplate? = null
 

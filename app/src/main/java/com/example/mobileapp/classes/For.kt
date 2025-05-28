@@ -5,7 +5,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Rect
 
-class For(override var scope: ComplexBlock): ComplexBlock()
+class For(
+    override var scope: ComplexBlock,
+    var varList: MutableMap<String, Value>
+): ComplexBlock()
 {
     var contentRect: Rect = Rect.Zero
 
@@ -22,22 +25,26 @@ class For(override var scope: ComplexBlock): ComplexBlock()
     override var dropZones = mutableStateListOf<Rect>()
     override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
 
-    constructor(scope: ComplexBlock, iterableVarName: String) : this(scope)
+    constructor(
+        scope: ComplexBlock,
+        varList: MutableMap<String, Value>,
+        iterableVarName: String
+    ) : this(scope, varList)
     {
-        iterableVar = DeclareVariable(this)
+        iterableVar = DeclareVariable(this, varList)
         iterableVar.name = iterableVarName
 
-        startValue = SetVariable(this)
+        startValue = SetVariable(this, varList)
         startValue.name = iterableVarName
 
         stopCondition = BoolExpression(scope)
         stopCondition.rightValue = Constant(scope, "int", 10)
         stopCondition.operation = "<"
-        stopCondition.leftValue = UseVariable(this, iterableVarName)
+        stopCondition.leftValue = UseVariable(this, varList)
 
         changeIterableVar = MathExpression(scope)
         changeIterableVar.rightValue = Constant(scope, "int", 1)
-        changeIterableVar.leftValue = UseVariable(this, iterableVarName)
+        changeIterableVar.leftValue = UseVariable(this, varList)
     }
 
     override fun updateDropZones(draggingBlock: BlockTemplate)
@@ -70,7 +77,7 @@ class For(override var scope: ComplexBlock): ComplexBlock()
                 for (block in blockList)
                     block.execute()
 
-                allowedVariables[iterableVar.name] = changeIterableVar.execute()
+                varList[iterableVar.name] = changeIterableVar.execute()
             }
         }
         catch (e: Exception)
