@@ -44,32 +44,6 @@ class IfElse(override var scope: ComplexBlock): Block()
         override var selfRect: Rect = Rect.Zero
         override var parent: BlockTemplate? = null
 
-        override fun deleteVariable(name: String)
-        {
-            varList.remove(name)
-        }
-        override fun addVariable(name: String)
-        {
-            varList[name] = Value.INT(0)
-        }
-        override fun updateDropZones(draggingBlock: BlockTemplate)
-        {
-            dropZones.clear()
-            if (blockList.isEmpty())
-            {
-                dropZones.add(selfRect)
-            }
-            else
-            {
-                for(i in blockList.indices)
-                {
-                    if(blockList[i] == draggingBlock) continue
-                    dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
-                            ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
-                        bottom = blockList[i].selfRect.bottom + ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.25.toFloat())))
-                }
-            }
-        }
         override fun execute()
         {
             for (i in 0..<blockList.size)
@@ -88,32 +62,6 @@ class IfElse(override var scope: ComplexBlock): Block()
         override var selfRect: Rect = Rect.Zero
         override var parent: BlockTemplate? = null
 
-        override fun deleteVariable(name: String)
-        {
-            varList.remove(name)
-        }
-        override fun addVariable(name: String)
-        {
-            varList.put(name, Value.INT(0))
-        }
-        override fun updateDropZones(draggingBlock: BlockTemplate)
-        {
-            dropZones.clear()
-            if (blockList.isEmpty())
-            {
-                dropZones.add(selfRect)
-            }
-            else
-            {
-                for(i in blockList.indices)
-                {
-                    if(blockList[i] == draggingBlock) continue
-                    dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
-                            ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
-                        bottom = blockList[i].selfRect.bottom + ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.25.toFloat())))
-                }
-            }
-        }
         override fun execute() 
         {
             for (i in 0..<blockList.size)

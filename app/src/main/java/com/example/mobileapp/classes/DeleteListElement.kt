@@ -22,7 +22,7 @@ class DeleteListElement(override var scope: ComplexBlock) : Block()
 
         val tmpIndex = (index.execute()) as? Value.INT ?:
         throw Exception(R.string.illegal_data_type.toString())
-        
+
         list.value.removeAt(tmpIndex.value)
     }
 }

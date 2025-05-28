@@ -18,34 +18,28 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
 
     override var selfRect: Rect = Rect.Zero
 
-    override fun deleteVariable(name: String)
+    override fun updateDropZones(draggingBlock: BlockTemplate)
     {
-        varList.remove(name)
-    }
-
-    override fun addVariable(name: String)
-    {
-        varList.put(name, Value.INT(0))
-    }
-
-    override fun updateDropZones(draggingBlock: BlockTemplate){
         dropZones.clear()
-        for(i in blockList.indices){
+        for(i in blockList.indices)
+        {
             if(blockList[i] == draggingBlock) continue
-            if (i != blockList.count()-1){
+            if (i != blockList.count() - 1)
+            {
                 dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
                         ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
                     bottom = blockList[i].selfRect.bottom + ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.25.toFloat())))
             }
-            else{
+            else
+            {
                 dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.bottom,
                     bottom = blockList[i].selfRect.bottom + (blockList[i].selfRect.bottom-blockList[i].selfRect.top)))
             }
         }
     }
+
     override fun execute()
     {
-        // Нуждается в доработке
         for (i in 0..<blockList.size )
         {
             try

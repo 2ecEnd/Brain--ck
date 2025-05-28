@@ -24,8 +24,34 @@ abstract class ComplexBlock: BlockTemplate()
     abstract var dropZones: SnapshotStateList<Rect>
     abstract var spacerPair: MutableState<Pair<Int, ComplexBlock>>
 
-    abstract fun deleteVariable(name: String)
-    abstract fun addVariable(name: String)
-    abstract fun updateDropZones(draggingBlock: BlockTemplate)
+    fun deleteVariable(name: String)
+    {
+        varList.remove(name)
+    }
+
+    fun addVariable(name: String)
+    {
+        varList[name] = Value.INT(0)
+    }
+
+    open fun updateDropZones(draggingBlock: BlockTemplate)
+    {
+        dropZones.clear()
+        if (blockList.isEmpty())
+        {
+            dropZones.add(selfRect)
+        }
+        else
+        {
+            for(i in blockList.indices)
+            {
+                if(blockList[i] == draggingBlock) continue
+                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
+                        ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
+                    bottom = blockList[i].selfRect.bottom + ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.25.toFloat())))
+            }
+        }
+    }
+
     abstract override fun execute(): Any
 }

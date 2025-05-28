@@ -25,30 +25,20 @@ class For(override var scope: ComplexBlock): ComplexBlock()
 
     constructor(scope: ComplexBlock, iterableVarName: String) : this(scope)
     {
-        iterableVar = DeclareVariable(scope)
+        iterableVar = DeclareVariable(this)
         iterableVar.name = iterableVarName
 
-        startValue = SetVariable(scope)
+        startValue = SetVariable(this)
         startValue.name = iterableVarName
 
         stopCondition = BoolExpression(scope)
         stopCondition.rightValue = Constant(scope, "int", 10)
         stopCondition.operation = "<"
-        stopCondition.leftValue = UseVariable(scope, iterableVarName)
+        stopCondition.leftValue = UseVariable(this, iterableVarName)
 
         changeIterableVar = MathExpression(scope)
         changeIterableVar.rightValue = Constant(scope, "int", 1)
-        changeIterableVar.leftValue = UseVariable(scope, iterableVarName)
-    }
-
-    override fun deleteVariable(name: String)
-    {
-        varList.remove(name)
-    }
-
-    override fun addVariable(name: String)
-    {
-        varList[name] = Value.INT(0)
+        changeIterableVar.leftValue = UseVariable(this, iterableVarName)
     }
 
     override fun updateDropZones(draggingBlock: BlockTemplate)
@@ -76,7 +66,7 @@ class For(override var scope: ComplexBlock): ComplexBlock()
         {
             startValue.execute()
 
-            while (!(stopCondition.execute() as Value.BOOLEAN).value)
+            while ((stopCondition.execute() as Value.BOOLEAN).value)
             {
                 for (block in blockList)
                     block.execute()
