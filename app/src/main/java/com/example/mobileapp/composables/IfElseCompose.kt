@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +42,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
@@ -120,7 +122,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, BlockTemplate) -> Unit, onDr
                     .onGloballyPositioned { coordinates ->
                         block.ifRect = coordinates.boundsInWindow()
                         block.if_.selfRect = coordinates.boundsInWindow()
-                        if(block.if_.blockList.isEmpty()) block.if_.dropZones.add(coordinates.boundsInWindow())
+                        if(block.if_.blockList.isEmpty()) block.if_.dropZones = mutableStateListOf<Rect>(coordinates.boundsInWindow())
                     },
                 shape = RoundedCornerShape(
                     topStart = 10.dp,
@@ -167,7 +169,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, BlockTemplate) -> Unit, onDr
                     .onGloballyPositioned { coordinates ->
                         block.elseRect = coordinates.boundsInWindow()
                         block.else_.selfRect = coordinates.boundsInWindow()
-                        if(block.else_.blockList.isEmpty()) block.else_.dropZones.add(coordinates.boundsInWindow())
+                        if(block.else_.blockList.isEmpty()) block.else_.dropZones = mutableStateListOf<Rect>(coordinates.boundsInWindow())
                     },
                 shape = RoundedCornerShape(
                     topStart = 10.dp,

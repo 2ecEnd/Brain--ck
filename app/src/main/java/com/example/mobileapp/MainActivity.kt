@@ -2,10 +2,13 @@ package com.example.mobileapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,27 +16,46 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.foundation.shape.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import com.example.mobileapp.ui.theme.MobileAppTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.mobileapp.pages.CreateProjectPage
+import com.example.mobileapp.pages.HomePage
+import com.example.mobileapp.pages.ProjectsPage
+import com.example.mobileapp.pages.RedactorPage
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MobileAppTheme {
+
+                val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+                windowInsetsController.apply {
+                    hide(WindowInsetsCompat.Type.navigationBars())
+                    hide(WindowInsetsCompat.Type.statusBars())
+                    systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                }
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     App(
                         modifier = Modifier.padding(innerPadding)
@@ -61,40 +83,6 @@ fun App(modifier: Modifier = Modifier){
         composable("redactor") {
             RedactorPage(navController)
         }
-    }
-}
-
-@Composable
-fun ExitButton(){
-    val context = LocalContext.current
-    Button(
-        onClick = {
-            val homeIntent = Intent(Intent.ACTION_MAIN).apply {
-                addCategory(Intent.CATEGORY_HOME)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context.startActivity(homeIntent)
-        },
-        modifier = buttonModifier
-    )
-    {
-        Text("Выйти", fontSize = 24.sp)
-    }
-}
-
-@Composable
-fun HomeButton(navController: NavController){
-    val context = LocalContext.current
-    Button(
-        onClick = {navController.navigate("projects")},
-        modifier = Modifier
-            .width(68.dp)
-            .height(68.dp)
-            .padding(8.dp),
-        shape = RoundedCornerShape(12.dp),
-    )
-    {
-
     }
 }
 

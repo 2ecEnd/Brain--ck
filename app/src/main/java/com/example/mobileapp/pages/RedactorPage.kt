@@ -1,12 +1,7 @@
-package com.example.mobileapp
+package com.example.mobileapp.pages
 
-import android.R.string
-import android.content.res.Resources
-import android.util.Log
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,65 +14,48 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.*
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.core.content.contentValuesOf
 import androidx.navigation.NavController
+import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.DrawShadow
+import com.example.mobileapp.R
 import com.example.mobileapp.classes.AddListElement
-import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BlockTemplate
 import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.ComplexBlock
@@ -85,7 +63,6 @@ import com.example.mobileapp.classes.Console
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
-import com.example.mobileapp.classes.Empty
 import com.example.mobileapp.classes.For
 import com.example.mobileapp.classes.IfElse
 import com.example.mobileapp.classes.ListConstant
@@ -93,150 +70,8 @@ import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseVariable
-import com.example.mobileapp.classes.Value
+import com.example.mobileapp.redactorspage_components.Toolbar
 import kotlin.math.roundToInt
-
-@Composable
-fun HomePage(navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize()){
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = "background",
-        )
-
-        Card(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .width(325.dp)
-                .height(200.dp),
-            shape = RoundedCornerShape(15.dp)
-        )
-        {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ){
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                )
-                {
-                    Button(
-                        onClick = {navController.navigate("projects")},
-                        modifier = Modifier
-                            .width(275.dp)
-                            .height(50.dp)
-                    )
-                    {
-                        Text("Проекты", fontSize = 24.sp)
-                    }
-
-                    ExitButton()
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ProjectsPage(navController: NavController){
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Green)){
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = "background",
-        )
-
-        HomeButton(navController)
-
-        Card(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .width(325.dp)
-                .height(200.dp),
-            shape = RoundedCornerShape(15.dp)
-        )
-        {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ){
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                )
-                {
-                    Button(
-                        onClick = {navController.navigate("createProject")},
-                        modifier = Modifier
-                            .width(275.dp)
-                            .height(50.dp)
-                    )
-                    {
-                        Text("+", fontSize = 24.sp)
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun CreateProjectPage(navController: NavController){
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Green)){
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = "background",
-        )
-
-        HomeButton(navController)
-
-        Card(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .width(325.dp)
-                .height(200.dp),
-            shape = RoundedCornerShape(15.dp)
-        )
-        {
-            ProjectNameForm(navController)
-        }
-    }
-}
-
-@Composable
-fun ProjectNameForm(navController: NavController){
-    var text by remember{ mutableStateOf("") }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        )
-        {
-            TextField(
-                modifier = Modifier
-                    .width(275.dp)
-                    .height(80.dp),
-                value = text,
-                onValueChange = { newText -> text = newText },
-                textStyle = LocalTextStyle.current.copy(fontSize = 24.sp)
-            )
-
-            Button(
-                onClick = {navController.navigate("redactor")},
-                modifier = Modifier
-                    .width(275.dp)
-                    .height(50.dp)
-            )
-            {
-                Text("Создать", fontSize = 24.sp)
-            }
-        }
-    }
-}
 
 @Composable
 fun RedactorPage(navController: NavController){
@@ -311,6 +146,15 @@ fun RedactorPage(navController: NavController){
                 }
             }
         }
+        when(draggingBlock){
+            is IfElse -> {
+                scopesList.remove((draggingBlock as IfElse).if_)
+                scopesList.remove((draggingBlock as IfElse).else_)
+            }
+            is For -> {
+                scopesList.remove(draggingBlock)
+            }
+        }
     }
 
     fun addBlockInsideAnother(block: BlockTemplate, isInsideBlock: Boolean,
@@ -318,7 +162,7 @@ fun RedactorPage(navController: NavController){
                               relocateFunction: (BlockTemplate, ComplexBlock) -> Unit,
                               addBlockFunction: (BlockTemplate, ComplexBlock) -> Unit, localScope: ComplexBlock){
         if (draggingBlock !is Constant && draggingBlock !is ListConstant && draggingBlock !is UseVariable && draggingBlock !is MathExpression
-                    && draggingBlock !is BoolExpression && block !is IfElse) return
+            && draggingBlock !is BoolExpression && block !is IfElse) return
         when(block){
             is MathExpression -> {
                 if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
@@ -610,22 +454,14 @@ fun RedactorPage(navController: NavController){
                         scopesList.forEach { scope ->
                             scope.spacerPair.value = scope.spacerPair.value.copy(
                                 first = if (localScope.blockList.contains(draggingBlock)
-                                        && localScope.blockList.indexOf(draggingBlock) <= i)
-                                        i + 2 else i + 1,
+                                    && localScope.blockList.indexOf(draggingBlock) <= i)
+                                    i + 2 else i + 1,
                                 second = localScope
                             )
                         }
                     }
                     completed = false
                     break
-//                    if (!isEmptyBlockAdded && i != localScope.dropZones.count()-1){
-//                        if (localScope.blockList.contains(draggingBlock) && localScope.blockList.indexOf(draggingBlock) <= i) localScope.blockList.add(i+2, emptyBlock)
-//                        else localScope.blockList.add(i+1, emptyBlock)
-//                        scopesList.forEach { scope -> scope.updateDropZones(draggingBlock) }
-//                        isEmptyBlockAdded = true
-//                    }
-//                    completed = false
-//                    break
                 }
             }
             if (completed){
@@ -640,21 +476,12 @@ fun RedactorPage(navController: NavController){
             }
         }
 
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
         )
         {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.1f)
-                    .background(Color(red = 230, green = 224, blue = 233))
-            )
-            {
-                HomeButton(navController)
-            }
+            Toolbar(navController)
 
             RedactorArea(blockList)
 
@@ -663,11 +490,12 @@ fun RedactorPage(navController: NavController){
                 modifier = Modifier.fillMaxSize()
             )
             {
-                page -> when(page) {
+                    page -> when(page) {
                 0 -> {
                     Card(
                         modifier = Modifier
-                            .background(Color(red = 230, green = 224, blue = 233))
+                            .background(Color(red = 230, green = 224, blue = 233)),
+                        colors = CardDefaults.cardColors(containerColor = Color(230, 224, 233))
                     )
                     {
                         val scrollState = rememberScrollState()
@@ -704,6 +532,7 @@ fun RedactorPage(navController: NavController){
                         modifier = Modifier
                             .fillMaxSize(),
                         colors = CardDefaults.cardColors(containerColor = Color(100, 100, 100)),
+                        shape = RoundedCornerShape(0.dp),
                     )
                     {
                         Row {
@@ -719,7 +548,6 @@ fun RedactorPage(navController: NavController){
                                 console.text.forEach { text ->
                                     Text(text, fontSize = 24.sp, color = Color.White)
                                 }
-
                             }
 
                             Button(
@@ -727,13 +555,25 @@ fun RedactorPage(navController: NavController){
                                     context.blockList = blockList
                                     console.text.clear()
                                     context.execute()
+                                    console.text.add("Программа завершилась штатно")
                                 },
                                 modifier = Modifier
                                     .width(68.dp)
                                     .height(68.dp)
                                     .padding(8.dp),
                                 shape = RoundedCornerShape(12.dp),
-                            ){}
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(red = 87, green = 150, blue = 92),
+                                )
+                            ){
+                                Image(
+                                    painter = painterResource(id = R.drawable.play_128px),
+                                    contentDescription = "icon",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Fit,
+                                )
+                            }
                         }
                     }
                 }
