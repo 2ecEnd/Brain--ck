@@ -6,7 +6,7 @@ import com.example.mobileapp.R
 class DeleteListElement(override var scope: ComplexBlock) : Block()
 {
     var source: String? = null
-    var index: Int = 0
+    var index: BlockTemplate = Constant(scope)
 
     override var selfRect: Rect = Rect.Zero
     override var parent: BlockTemplate? = null
@@ -20,6 +20,9 @@ class DeleteListElement(override var scope: ComplexBlock) : Block()
         if (list !is Value.LIST)
             throw Exception(R.string.is_not_list.toString())
 
-        list.value.removeAt(index)
+        val tmpIndex = (index.execute()) as? Value.INT ?:
+        throw Exception(R.string.illegal_data_type.toString())
+        
+        list.value.removeAt(tmpIndex.value)
     }
 }
