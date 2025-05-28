@@ -1,0 +1,100 @@
+package com.example.mobileapp.pages
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.mobileapp.R
+import com.example.mobileapp.visual_components.HomeButton
+
+@Composable
+fun CreateProjectPage(navController: NavController){
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Green)){
+        Image(
+            painter = painterResource(id = R.drawable.background),
+            contentDescription = "background",
+        )
+
+        HomeButton(navController)
+
+        Card(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .width(325.dp)
+                .height(200.dp),
+            shape = RoundedCornerShape(15.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(230, 224, 233))
+        )
+        {
+            ProjectNameForm(navController)
+        }
+    }
+}
+
+@Composable
+fun ProjectNameForm(navController: NavController){
+    var text by remember{ mutableStateOf("") }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ){
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        )
+        {
+            TextField(
+                modifier = Modifier
+                    .width(275.dp)
+                    .height(80.dp),
+                value = text,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color(250, 250, 250),
+                    unfocusedContainerColor = Color(250, 250, 250),
+                    disabledContainerColor = Color(250, 250, 250)
+                ),
+                onValueChange = { newText -> text = newText },
+                textStyle = LocalTextStyle.current.copy(fontSize = 24.sp)
+            )
+
+            Button(
+                onClick = {navController.navigate("redactor")},
+                modifier = Modifier
+                    .width(275.dp)
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(red = 103, green = 80, blue = 164),
+                )
+            )
+            {
+                Text("Создать", fontSize = 24.sp, color = Color.White)
+            }
+        }
+    }
+}

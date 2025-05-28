@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +42,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
@@ -85,192 +87,7 @@ fun DrawFor(block: For, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd:
     {
         Column ()
         {
-            Row(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(5.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            )
-            {
-                var value = block.iterableVar.name
-                if (isActive) block.scope.addVariable(value)
-                BasicTextField(
-                    modifier = Modifier
-                        .widthIn(min = 50.dp)
-                        .height(38.dp)
-                        .width((12 + value.length * 8.85).dp),
-                    value = value,
-                    onValueChange = { newValue ->
-                        block.scope.deleteVariable(value)
-                        block.iterableVar.name = newValue
-                        block.scope.addVariable(newValue)
-                        value = newValue
-                    },
-                    textStyle = LocalTextStyle.current.copy(
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center
-                    ),
-                    singleLine = true,
-                    enabled = isActive,
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .background(Color.White, RoundedCornerShape(20.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            innerTextField()
-                        }
-                    }
-                )
 
-                Text(
-                    "=",
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .onGloballyPositioned { coordinates ->
-                            block.startValue.valueRect = coordinates.boundsInWindow()
-                        }
-                )
-                {
-                    DrawBlock(block.startValue.value, onDragStart, onDragEnd, isActive, remember{draggingBlock})
-                }
-
-                Text(
-                    ";",
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
-
-                Text(
-                    block.iterableVar.name,
-                    fontSize = 24.sp,
-                    color = Color.White,
-                )
-
-                var boolExpanded by remember { mutableStateOf(false) }
-                var selectedBoolOperation by remember { mutableStateOf("<") }
-                Box(
-                    modifier = Modifier
-                        .height(38.dp)
-                        .width(54.dp)
-                        .padding(horizontal = 8.dp)
-                ) {
-                    Button(
-                        onClick = { if (isActive) boolExpanded = true },
-                        contentPadding = PaddingValues(0.dp)
-                    )
-                    {
-                        Text(
-                            selectedBoolOperation,
-                            fontSize = 24.sp,
-                        )
-                    }
-
-                    DropdownMenu(
-                        expanded = boolExpanded,
-                        onDismissRequest = { boolExpanded = false }
-                    ) {
-                        listOf("==", "!=", ">", "<", ">=", "<=", "&&", "||").forEach { operation ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        operation,
-                                        fontSize = 20.sp,
-                                        modifier = Modifier.padding(horizontal = 8.dp)
-                                    )
-                                },
-                                onClick = {
-                                    selectedBoolOperation = operation
-                                    block.stopCondition.operation = operation
-                                    boolExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-
-                Box(
-                    modifier = Modifier
-                        .onGloballyPositioned { coordinates ->
-                            block.stopCondition.rightValueRect = coordinates.boundsInWindow()
-                        }
-                ) {
-                    DrawBlock(block.stopCondition.rightValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
-                }
-
-                Text(
-                    ";",
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
-
-                Text(
-                    block.iterableVar.name,
-                    fontSize = 24.sp,
-                    color = Color.White,
-                )
-
-                var mathExpanded by remember { mutableStateOf(false) }
-                var selectedMathOperation by remember { mutableStateOf("+") }
-                Box(
-                    modifier = Modifier
-                        .height(38.dp)
-                        .width(54.dp)
-                        .padding(horizontal = 8.dp)
-                ) {
-                    Button(
-                        onClick = { if (isActive) mathExpanded = true },
-                        contentPadding = PaddingValues(0.dp)
-                    )
-                    {
-                        Text(
-                            selectedMathOperation,
-                            fontSize = 24.sp,
-                        )
-                    }
-
-                    DropdownMenu(
-                        expanded = mathExpanded,
-                        onDismissRequest = { mathExpanded = false }
-                    ) {
-                        listOf("+", "-", "*", "/", "%", "^").forEach { operation ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        operation,
-                                        fontSize = 20.sp,
-                                        modifier = Modifier.padding(horizontal = 8.dp)
-                                    )
-                                },
-                                onClick = {
-                                    selectedMathOperation = operation
-                                    block.changeIterableVar.operation = operation
-                                    mathExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-
-                Box(
-                    modifier = Modifier
-                        .onGloballyPositioned { coordinates ->
-                            block.changeIterableVar.rightValueRect = coordinates.boundsInWindow()
-                        }
-                        .alpha(if (block.changeIterableVar.rightValue == draggingBlock) 0.5f else 1f)
-                )
-                {
-                    DrawBlock(block.changeIterableVar.rightValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
-                }
-            }
 
             Card(
                 modifier = Modifier
@@ -279,7 +96,7 @@ fun DrawFor(block: For, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd:
                     .heightIn(min = 48.dp)
                     .onGloballyPositioned { coordinates ->
                         block.contentRect = coordinates.boundsInWindow()
-                        if(block.blockList.isEmpty()) block.dropZones.add(coordinates.boundsInWindow())
+                        if(block.blockList.isEmpty()) block.dropZones = mutableStateListOf<Rect>(coordinates.boundsInWindow())
                     },
                 shape = RoundedCornerShape(
                     topStart = 10.dp,
