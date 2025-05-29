@@ -12,10 +12,10 @@ class For(
 {
     var contentRect: Rect = Rect.Zero
 
-    lateinit var iterableVar: DeclareVariable
-    lateinit var startValue: SetVariable
-    lateinit var stopCondition: BoolExpression
-    lateinit var changeIterableVar: MathExpression
+    private lateinit var iterableVar: DeclareVariable
+    private lateinit var startValue: SetVariable
+    private lateinit var stopCondition: BoolExpression
+    private lateinit var changeIterableVar: MathExpression
 
     override var allowedVariables = mutableSetOf<String>()
     override var blockList = SnapshotStateList<BlockTemplate>()
@@ -41,11 +41,38 @@ class For(
         stopCondition.rightValue = Constant(scope, "int", 10)
         stopCondition.operation = "<"
         stopCondition.leftValue = UseVariable(this, varList)
+        (stopCondition.leftValue as UseVariable).name = "i"
 
         changeIterableVar = MathExpression(scope)
         changeIterableVar.rightValue = Constant(scope, "int", 1)
         changeIterableVar.leftValue = UseVariable(this, varList)
+        (changeIterableVar.leftValue as UseVariable).name = "i"
     }
+
+
+    //-=-=-=-=-=-Setters-=-=-=-=-=-
+    fun setIterableVar(newIterableVar: DeclareVariable)
+    {
+        iterableVar = newIterableVar
+    }
+    fun setStartValue(newStartValue: SetVariable)
+    {
+        startValue = newStartValue
+    }
+    fun setStopCondition(newStopCondition: BoolExpression)
+    {
+        stopCondition = newStopCondition
+    }
+    fun setChangeIterableVar(newChangeIterableVar: MathExpression)
+    {
+        changeIterableVar = newChangeIterableVar
+    }
+    //-=-=-=-=-=-Getters-=-=-=-=-=-
+    fun getIterableVar() = iterableVar
+    fun getStartValue() = startValue
+    fun getStopCondition() = stopCondition
+    fun getChangeIterableVar() = changeIterableVar
+
 
     override fun updateDropZones(draggingBlock: BlockTemplate)
     {

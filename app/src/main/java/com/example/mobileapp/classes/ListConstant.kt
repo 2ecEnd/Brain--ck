@@ -16,6 +16,8 @@ class ListConstant(
 
     override fun execute() : Value
     {
+        value = Value.LIST(mutableStateListOf())
+
         for (block in blockList)
         {
             when (block)

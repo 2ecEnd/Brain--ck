@@ -73,6 +73,8 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
 
     override fun execute()
     {
+        varList.clear()
+
         for (i in 0..<blockList.size )
         {
             try
