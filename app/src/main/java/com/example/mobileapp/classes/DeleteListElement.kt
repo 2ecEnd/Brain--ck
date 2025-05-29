@@ -5,8 +5,10 @@ import com.example.mobileapp.R
 
 class DeleteListElement(override var scope: ComplexBlock) : Block()
 {
+    var sourceRect: Rect = Rect.Zero
     var source: BlockTemplate? = null
-    var index: BlockTemplate = Constant(scope)
+    var index: BlockTemplate = Constant(scope, "int", 0)
+    var indexRect: Rect = Rect.Zero
 
     override var selfRect: Rect = Rect.Zero
     override var parent: BlockTemplate? = null

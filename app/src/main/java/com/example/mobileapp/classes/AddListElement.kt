@@ -8,6 +8,7 @@ import com.example.mobileapp.R
 
 class AddListElement(override var scope: ComplexBlock) : Block()
 {
+    var sourceRect: Rect = Rect.Zero
     var source: BlockTemplate? = null
     var value by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
     var valueRect: Rect = Rect.Zero

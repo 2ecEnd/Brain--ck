@@ -48,21 +48,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.classes.AddListElement
 import com.example.mobileapp.classes.BlockTemplate
-import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.Constant
+import com.example.mobileapp.classes.DeleteListElement
 import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseVariable
 
 @Composable
-fun DrawBoolExpression(block: BoolExpression, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
+fun DrawDeleteListElement(block: DeleteListElement, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
               isActive: Boolean){
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOperation by remember { mutableStateOf("==") }
-    block.leftValue.parent = block
-    block.rightValue.parent = block
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -82,73 +79,55 @@ fun DrawBoolExpression(block: BoolExpression, onDragStart: (Offset, BlockTemplat
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
-    ) {
+    )
+    {
         Row(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Box(
-                modifier = Modifier
-                    .onGloballyPositioned { coordinates ->
-                        block.leftValueRect = coordinates.boundsInWindow()
-                    }
-            ) {
-                key(block.leftValue) {
-                    DrawBlock(block.leftValue, onDragStart, onDragEnd, isActive)
-                }
-            }
+        )
+        {
+            Text("remove at index", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
 
             Box(
                 modifier = Modifier
-                    .height(38.dp)
-                    .width(54.dp)
-                    .padding(horizontal = 8.dp)
-            ) {
-                Button(
-                    onClick = { if (isActive) expanded = true },
-                    contentPadding = PaddingValues(0.dp)
-                )
-                {
-                    Text(
-                        selectedOperation,
-                        fontSize = 24.sp,
+                    .onGloballyPositioned { coordinates ->
+                        block.indexRect = coordinates.boundsInWindow()
+                    }
+            )
+            {
+                key(block.source) {
+                    DrawBlock(block.index, onDragStart, onDragEnd, isActive)
+                }
+            }
+
+            Text("from list", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+
+            Box(
+                modifier = Modifier
+                    .onGloballyPositioned { coordinates ->
+                        block.sourceRect = coordinates.boundsInWindow()
+                    }
+            )
+            {
+                if (block.source != null) {
+                    key(block.source) {
+                        DrawBlock(block.source as BlockTemplate, onDragStart, onDragEnd, isActive)
+                    }
+                }
+                else{
+                    Card(
+                        modifier = Modifier
+                            .height(38.dp)
+                            .width(56.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(150, 150, 150))
                     )
-                }
+                    {
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    listOf("==", "!=", ">", "<", ">=", "<=", "&&", "||").forEach { operation ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    operation,
-                                    fontSize = 20.sp,
-                                    modifier = Modifier.padding(horizontal = 8.dp)
-                                )
-                            },
-                            onClick = {
-                                selectedOperation = operation
-                                block.operation = operation
-                                expanded = false
-                            }
-                        )
                     }
-                }
-            }
-
-            Box(
-                modifier = Modifier
-                    .onGloballyPositioned { coordinates ->
-                        block.rightValueRect = coordinates.boundsInWindow()
-                    }
-            ) {
-                key(block.rightValue) {
-                    DrawBlock(block.rightValue, onDragStart, onDragEnd, isActive)
                 }
             }
         }

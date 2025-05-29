@@ -8,6 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -18,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,9 +41,7 @@ import com.example.mobileapp.classes.BlockTemplate
 
 @Composable
 fun DrawAddListElement(block: AddListElement, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
-    var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("") }
+              isActive: Boolean){
     block.value.parent = block
     Card(
         modifier = Modifier
@@ -79,34 +81,33 @@ fun DrawAddListElement(block: AddListElement, onDragStart: (Offset, BlockTemplat
                     }
             )
             {
-                DrawBlock(block.value, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                DrawBlock(block.value, onDragStart, onDragEnd, isActive)
             }
 
             Text("to list", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
 
             Box(
                 modifier = Modifier
-                    .height(38.dp),
+                    .onGloballyPositioned { coordinates ->
+                        block.sourceRect = coordinates.boundsInWindow()
+                    }
             )
             {
-                Button(
-                    onClick = { if (isActive) expanded = true },
-                )
-                { Text(text = selectedItem) }
+                if (block.source != null) {
+                    key(block.source) {
+                        DrawBlock(block.source as BlockTemplate, onDragStart, onDragEnd, isActive)
+                    }
+                }
+                else{
+                    Card(
+                        modifier = Modifier
+                            .height(38.dp)
+                            .width(56.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(150, 150, 150))
+                    )
+                    {
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    block.scope.allowedVariables.keys.toMutableList().forEach { item ->
-                        DropdownMenuItem(
-                            text = { Text(item) },
-                            onClick = {
-                                selectedItem = item
-                                block.source = item
-                                expanded = false
-                            }
-                        )
                     }
                 }
             }

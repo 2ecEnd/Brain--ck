@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,7 +56,7 @@ import com.example.mobileapp.classes.SetVariable
 
 @Composable
 fun DrawPrint(block: Print, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
     block.content.parent = block
     Card(
         modifier = Modifier
@@ -96,7 +97,9 @@ fun DrawPrint(block: Print, onDragStart: (Offset, BlockTemplate) -> Unit, onDrag
                     .padding(horizontal = 8.dp)
             )
             {
-                DrawBlock(block.content, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                key(block.content) {
+                    DrawBlock(block.content, onDragStart, onDragEnd, isActive)
+                }
             }
         }
     }

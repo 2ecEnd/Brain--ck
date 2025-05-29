@@ -17,7 +17,7 @@ class For(
     lateinit var stopCondition: BoolExpression
     lateinit var changeIterableVar: MathExpression
 
-    override var allowedVariables = mutableListOf<String>()
+    override var allowedVariables = mutableSetOf<String>()
     override var blockList = SnapshotStateList<BlockTemplate>()
 
     override var parent: BlockTemplate? = null
@@ -52,7 +52,7 @@ class For(
         dropZones.clear()
         if (blockList.isEmpty())
         {
-            dropZones.add(selfRect)
+            dropZones.add(contentRect)
         }
         else
         {

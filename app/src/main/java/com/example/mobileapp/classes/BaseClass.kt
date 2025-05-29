@@ -19,7 +19,7 @@ abstract class ComplexBlock: BlockTemplate()
     // Список блоков, которые будет содержать данный блок
     abstract var blockList: SnapshotStateList<BlockTemplate>
     // Список переменных, доступных в области видимости данного блока
-    abstract var allowedVariables: MutableList<String>
+    abstract var allowedVariables: MutableSet<String>
     abstract var dropZones: SnapshotStateList<Rect>
     abstract var spacerPair: MutableState<Pair<Int, ComplexBlock>>
 
@@ -31,17 +31,25 @@ abstract class ComplexBlock: BlockTemplate()
         {
             if (block is ComplexBlock)
                 block.deleteVariable(name)
+            else if (block is IfElse){
+                block.if_.deleteVariable(name)
+                block.else_.deleteVariable(name)
+            }
         }
     }
 
     open fun addVariable(name: String)
     {
-        allowedVariables.remove(name)
+        allowedVariables.add(name)
 
         for (block in blockList)
         {
             if (block is ComplexBlock)
                 block.addVariable(name)
+            else if (block is IfElse){
+                block.if_.addVariable(name)
+                block.else_.addVariable(name)
+            }
         }
     }
 

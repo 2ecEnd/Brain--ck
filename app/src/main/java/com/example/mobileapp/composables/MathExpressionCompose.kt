@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,7 +42,7 @@ import com.example.mobileapp.classes.SetVariable
 
 @Composable
 fun DrawMathExpression(block: MathExpression, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
     var expanded by remember { mutableStateOf(false) }
     var selectedOperation by remember { mutableStateOf("+") }
     block.leftValue.parent = block
@@ -80,10 +81,11 @@ fun DrawMathExpression(block: MathExpression, onDragStart: (Offset, BlockTemplat
                     .onGloballyPositioned { coordinates ->
                         block.leftValueRect = coordinates.boundsInWindow()
                     }
-                    .alpha(if (block.leftValue == draggingBlock) 0.5f else 1f)
             )
             {
-                DrawBlock(block.leftValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                key(block.leftValue) {
+                    DrawBlock(block.leftValue, onDragStart, onDragEnd, isActive)
+                }
             }
 
             Box(
@@ -131,10 +133,11 @@ fun DrawMathExpression(block: MathExpression, onDragStart: (Offset, BlockTemplat
                     .onGloballyPositioned { coordinates ->
                         block.rightValueRect = coordinates.boundsInWindow()
                     }
-                    .alpha(if (block.rightValue == draggingBlock) 0.5f else 1f)
             )
             {
-                DrawBlock(block.rightValue, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                key(block.rightValue) {
+                    DrawBlock(block.rightValue, onDragStart, onDragEnd, isActive)
+                }
             }
         }
     }

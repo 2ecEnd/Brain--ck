@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +64,7 @@ import com.example.mobileapp.classes.UseVariable
 
 @Composable
 fun DrawFor(block: For, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -87,16 +88,57 @@ fun DrawFor(block: For, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd:
     {
         Column ()
         {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            )
+            {
+                Text(
+                    "for (var",
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
 
+                var value = block.iterableVar.name
+                if (isActive) block.iterableVar.scope.addVariable(value)
+                BasicTextField(
+                    modifier = Modifier
+                        .widthIn(min = 50.dp)
+                        .height(38.dp)
+                        .width((12 + value.length * 8.85).dp),
+                    value = value,
+                    onValueChange = { newValue ->
+                        block.iterableVar.scope.deleteVariable(value)
+                        block.iterableVar.name = newValue
+                        block.iterableVar.scope.addVariable(newValue)
+                        value = newValue
+                    },
+                    textStyle = LocalTextStyle.current.copy(
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center
+                    ),
+                    singleLine = true,
+                    enabled = isActive,
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier
+                                .background(Color.White, RoundedCornerShape(20.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            innerTextField()
+                        }
+                    }
+                )
+            }
 
             Card(
                 modifier = Modifier
                     .padding(start = 24.dp)
                     .widthIn(min = 200.dp)
                     .heightIn(min = 48.dp)
-                    .onGloballyPositioned { coordinates ->
+                    .onPlaced { coordinates ->
                         block.contentRect = coordinates.boundsInWindow()
-                        if(block.blockList.isEmpty()) block.dropZones = mutableStateListOf<Rect>(coordinates.boundsInWindow())
                     },
                 shape = RoundedCornerShape(
                     topStart = 10.dp,
@@ -115,9 +157,8 @@ fun DrawFor(block: For, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd:
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                         key(block.hashCode()) {
-                            var alpha = if (localBlock == draggingBlock) 0.5f else 1f
-                            Box(modifier = Modifier.alpha(alpha)) {
-                                DrawBlock(localBlock, onDragStart, onDragEnd, true, remember{draggingBlock})
+                            Box() {
+                                DrawBlock(localBlock, onDragStart, onDragEnd, true)
                             }
                         }
                         if (i == block.blockList.count() - 1 && block.spacerPair.value.first

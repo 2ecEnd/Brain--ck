@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +64,7 @@ import com.example.mobileapp.classes.UseVariable
 
 @Composable
 fun DrawIfElse(block: IfElse, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -107,10 +108,11 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, BlockTemplate) -> Unit, onDr
                         .onGloballyPositioned { coordinates ->
                             block.conditionRect = coordinates.boundsInWindow()
                         }
-                        .alpha(if (block.conditionRect == draggingBlock) 0.5f else 1f)
                 )
                 {
-                    DrawBlock(block.condition, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                    key(block.condition) {
+                        DrawBlock(block.condition, onDragStart, onDragEnd, isActive)
+                    }
                 }
             }
 
@@ -119,10 +121,9 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, BlockTemplate) -> Unit, onDr
                     .padding(start = 24.dp)
                     .widthIn(min = 200.dp)
                     .heightIn(min = 48.dp)
-                    .onGloballyPositioned { coordinates ->
+                    .onPlaced { coordinates ->
                         block.ifRect = coordinates.boundsInWindow()
                         block.if_.selfRect = coordinates.boundsInWindow()
-                        if(block.if_.blockList.isEmpty()) block.if_.dropZones = mutableStateListOf<Rect>(coordinates.boundsInWindow())
                     },
                 shape = RoundedCornerShape(
                     topStart = 10.dp,
@@ -141,9 +142,8 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, BlockTemplate) -> Unit, onDr
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                         key(block.hashCode()) {
-                            var alpha = if (localBlock == draggingBlock) 0.5f else 1f
-                            Box(modifier = Modifier.alpha(alpha)) {
-                                DrawBlock(localBlock, onDragStart, onDragEnd, true, remember{draggingBlock})
+                            Box() {
+                                DrawBlock(localBlock, onDragStart, onDragEnd, true)
                             }
                         }
                         if (i == block.if_.blockList.count() - 1 && block.if_.spacerPair.value.first
@@ -166,10 +166,9 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, BlockTemplate) -> Unit, onDr
                     .padding(start = 24.dp)
                     .widthIn(min = 200.dp)
                     .heightIn(min = 48.dp)
-                    .onGloballyPositioned { coordinates ->
+                    .onPlaced { coordinates ->
                         block.elseRect = coordinates.boundsInWindow()
                         block.else_.selfRect = coordinates.boundsInWindow()
-                        if(block.else_.blockList.isEmpty()) block.else_.dropZones = mutableStateListOf<Rect>(coordinates.boundsInWindow())
                     },
                 shape = RoundedCornerShape(
                     topStart = 10.dp,
@@ -188,9 +187,8 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, BlockTemplate) -> Unit, onDr
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                         key(block.hashCode()) {
-                            var alpha = if (localBlock == draggingBlock) 0.5f else 1f
-                            Box(modifier = Modifier.alpha(alpha)) {
-                                DrawBlock(localBlock, onDragStart, onDragEnd, true, remember{draggingBlock})
+                            Box() {
+                                DrawBlock(localBlock, onDragStart, onDragEnd, true)
                             }
                         }
                         if (i == block.else_.blockList.count() - 1 && block.else_.spacerPair.value.first

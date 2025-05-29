@@ -5,6 +5,7 @@ import com.example.mobileapp.R
 
 class UseListElement(override var scope: ComplexBlock) : Block()
 {
+    var sourceRect: Rect = Rect.Zero
     var source: BlockTemplate? = null
     var index_: BlockTemplate? = null
 

@@ -35,7 +35,7 @@ import com.example.mobileapp.classes.UseVariable
 
 @Composable
 fun DrawUseVariable(block: UseVariable, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("") }
 
@@ -82,7 +82,7 @@ fun DrawUseVariable(block: UseVariable, onDragStart: (Offset, BlockTemplate) -> 
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    block.scope.allowedVariables.keys.toMutableList().forEach { item ->
+                    block.scope.allowedVariables.toMutableList().forEach { item ->
                         DropdownMenuItem(
                             text = { Text(item) },
                             onClick = {

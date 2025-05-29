@@ -58,6 +58,7 @@ import com.example.mobileapp.classes.Empty
 import com.example.mobileapp.classes.IfElse
 import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.BoolExpression
+import com.example.mobileapp.classes.DeleteListElement
 import com.example.mobileapp.classes.For
 import com.example.mobileapp.classes.ListConstant
 import com.example.mobileapp.classes.Print
@@ -67,6 +68,7 @@ import com.example.mobileapp.composables.DrawAddListElement
 import com.example.mobileapp.composables.DrawBoolExpression
 import com.example.mobileapp.composables.DrawConstant
 import com.example.mobileapp.composables.DrawDeclareVariable
+import com.example.mobileapp.composables.DrawDeleteListElement
 import com.example.mobileapp.composables.DrawFor
 import com.example.mobileapp.composables.DrawIfElse
 import com.example.mobileapp.composables.DrawListConstant
@@ -77,20 +79,21 @@ import com.example.mobileapp.composables.DrawUseVariable
 
 @Composable
 fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
 
     when(block) {
-        is DeclareVariable -> DrawDeclareVariable(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is SetVariable -> DrawSetVariable(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is MathExpression -> DrawMathExpression(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is Constant -> DrawConstant(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is ListConstant -> DrawListConstant(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is Print -> DrawPrint(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is UseVariable -> DrawUseVariable(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is BoolExpression -> DrawBoolExpression(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is IfElse -> DrawIfElse(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is AddListElement -> DrawAddListElement(block, onDragStart, onDragEnd, isActive, draggingBlock)
-        is For -> DrawFor(block, onDragStart, onDragEnd, isActive, draggingBlock)
+        is DeclareVariable -> DrawDeclareVariable(block, onDragStart, onDragEnd, isActive)
+        is SetVariable -> DrawSetVariable(block, onDragStart, onDragEnd, isActive)
+        is MathExpression -> DrawMathExpression(block, onDragStart, onDragEnd, isActive)
+        is Constant -> DrawConstant(block, onDragStart, onDragEnd, isActive)
+        is ListConstant -> DrawListConstant(block, onDragStart, onDragEnd, isActive)
+        is Print -> DrawPrint(block, onDragStart, onDragEnd, isActive)
+        is UseVariable -> DrawUseVariable(block, onDragStart, onDragEnd, isActive)
+        is BoolExpression -> DrawBoolExpression(block, onDragStart, onDragEnd, isActive)
+        is IfElse -> DrawIfElse(block, onDragStart, onDragEnd, isActive)
+        is AddListElement -> DrawAddListElement(block, onDragStart, onDragEnd, isActive)
+        is DeleteListElement -> DrawDeleteListElement(block, onDragStart, onDragEnd, isActive)
+        is For -> DrawFor(block, onDragStart, onDragEnd, isActive)
     }
 }
 

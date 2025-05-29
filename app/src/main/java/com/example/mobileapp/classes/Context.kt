@@ -12,7 +12,7 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
     override var scope: ComplexBlock = this
     override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
     override var dropZones = mutableStateListOf<Rect>()
-    override var allowedVariables = mutableListOf<String>()
+    override var allowedVariables = mutableSetOf<String>()
     var varList = mutableMapOf<String, Value>()
     override var blockList = mutableStateListOf<BlockTemplate>(DeclareVariable(this, varList))
     override var parent: BlockTemplate? = null
@@ -22,13 +22,33 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
     override fun deleteVariable(name: String)
     {
         varList.remove(name)
-        super.deleteVariable(name)
+        allowedVariables.remove(name)
+
+        for (block in blockList)
+        {
+            if (block is ComplexBlock)
+                block.deleteVariable(name)
+            else if (block is IfElse){
+                block.if_.deleteVariable(name)
+                block.else_.deleteVariable(name)
+            }
+        }
     }
 
     override fun addVariable(name: String)
     {
         varList[name] = Value.INT(0)
-        super.addVariable(name)
+        allowedVariables.add(name)
+
+        for (block in blockList)
+        {
+            if (block is ComplexBlock)
+                block.addVariable(name)
+            else if (block is IfElse){
+                block.if_.addVariable(name)
+                block.else_.addVariable(name)
+            }
+        }
     }
 
     override fun updateDropZones(draggingBlock: BlockTemplate)

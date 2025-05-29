@@ -32,7 +32,7 @@ import com.example.mobileapp.classes.DeclareVariable
 
 @Composable
 fun DrawDeclareVariable(block: DeclareVariable, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
     Card(
         modifier = Modifier
             .width(200.dp)

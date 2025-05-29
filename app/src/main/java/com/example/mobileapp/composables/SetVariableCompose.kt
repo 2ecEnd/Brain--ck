@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,7 +38,7 @@ import com.example.mobileapp.classes.SetVariable
 
 @Composable
 fun DrawSetVariable(block: SetVariable, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("") }
     block.value.parent = block
@@ -86,7 +87,7 @@ fun DrawSetVariable(block: SetVariable, onDragStart: (Offset, BlockTemplate) -> 
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    block.scope.allowedVariables.keys.toMutableList().forEach { item ->
+                    block.scope.allowedVariables.toMutableList().forEach { item ->
                         DropdownMenuItem(
                             text = { Text(item) },
                             onClick = {
@@ -108,7 +109,9 @@ fun DrawSetVariable(block: SetVariable, onDragStart: (Offset, BlockTemplate) -> 
                     }
             )
             {
-                DrawBlock(block.value, onDragStart, onDragEnd, isActive, remember{draggingBlock})
+                key(block.value) {
+                    DrawBlock(block.value, onDragStart, onDragEnd, isActive)
+                }
             }
         }
     }

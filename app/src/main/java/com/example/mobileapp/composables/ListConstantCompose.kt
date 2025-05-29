@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,7 +57,10 @@ import com.example.mobileapp.classes.SetVariable
 
 @Composable
 fun DrawListConstant(block: ListConstant, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
+    block.blockList.forEach { item ->
+        item.parent = block
+    }
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -88,7 +92,9 @@ fun DrawListConstant(block: ListConstant, onDragStart: (Offset, BlockTemplate) -
         {
             block.blockList.forEach{ block ->
                 Box(modifier = Modifier.padding(horizontal = 4.dp)){
-                    DrawBlock(block, onDragStart, onDragEnd, isActive, draggingBlock)
+                    key(block.hashCode()) {
+                        DrawBlock(block, onDragStart, onDragEnd, isActive)
+                    }
                 }
             }
 

@@ -54,7 +54,7 @@ import com.example.mobileapp.classes.SetVariable
 
 @Composable
 fun DrawConstant(block: Constant, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
-              isActive: Boolean, draggingBlock: MutableState<BlockTemplate>){
+              isActive: Boolean){
     var selectedType = block.type
 
     Card(

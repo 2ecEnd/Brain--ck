@@ -63,6 +63,7 @@ import com.example.mobileapp.classes.Console
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
 import com.example.mobileapp.classes.DeclareVariable
+import com.example.mobileapp.classes.DeleteListElement
 import com.example.mobileapp.classes.For
 import com.example.mobileapp.classes.IfElse
 import com.example.mobileapp.classes.ListConstant
@@ -80,7 +81,7 @@ fun RedactorPage(navController: NavController){
     var context = remember {Context(tmp, console = console)}
 
     var currentInteractionScope by remember { mutableStateOf<ComplexBlock>(context) }
-    var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context))}
+    var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context, context.varList))}
     var isDraggingBlockCanBeDeleted by remember { mutableStateOf<Boolean>(false) }
     var isDragging by remember { mutableStateOf(false) }
     var isDeleting by remember { mutableStateOf(false) }
@@ -89,9 +90,9 @@ fun RedactorPage(navController: NavController){
 
     var blockList = remember { context.blockList }
     var scopesList = remember { mutableStateListOf<ComplexBlock>(context)}
-    var blockChooserList = remember { mutableStateListOf<BlockTemplate>(For(context, "i"), IfElse(context), DeclareVariable(context),
-        UseVariable(context), SetVariable(context), MathExpression(context), Print(context, console),
-        AddListElement(context), Constant(context, "int", 0), Constant(context, "string", "str"),
+    var blockChooserList = remember { mutableStateListOf<BlockTemplate>(For(context, context.varList, "i"), IfElse(context), DeclareVariable(context, context.varList),
+        UseVariable(context, context.varList), SetVariable(context, context.varList), MathExpression(context), Print(context, console),
+        AddListElement(context), DeleteListElement(context), Constant(context, "int", 0), Constant(context, "string", "str"),
         Constant(context, "double", 0.0), Constant(context, "bool", true),
         ListConstant(context)) }
 
@@ -103,8 +104,8 @@ fun RedactorPage(navController: NavController){
 
     fun createNewBlock(oldBlock: BlockTemplate, scope: ComplexBlock): BlockTemplate{
         when(oldBlock){
-            is DeclareVariable -> return DeclareVariable(scope)
-            is SetVariable -> return SetVariable(scope)
+            is DeclareVariable -> return DeclareVariable(scope, context.varList)
+            is SetVariable -> return SetVariable(scope, context.varList)
             is MathExpression -> return MathExpression(scope)
             is BoolExpression -> return BoolExpression(scope)
             is Constant -> return Constant(scope, oldBlock.type, when(oldBlock.type){
@@ -116,10 +117,11 @@ fun RedactorPage(navController: NavController){
             })
             is ListConstant -> return ListConstant(scope)
             is Print -> return Print(scope, console)
-            is UseVariable -> return UseVariable(context)
+            is UseVariable -> return UseVariable(scope, context.varList)
             is IfElse -> return IfElse(scope)
             is AddListElement -> return AddListElement(scope)
-            is For -> return For(scope, "i")
+            is DeleteListElement -> return DeleteListElement(scope)
+            is For -> return For(scope, context.varList, "i")
         }
         return TODO("Provide the return value")
     }
@@ -138,6 +140,15 @@ fun RedactorPage(navController: NavController){
                     if (parent.leftValue == child) parent.leftValue = Constant(localScope, "bool", true)
                     else if (parent.rightValue == child) parent.rightValue = Constant(localScope, "bool", true)
                 }
+                is ListConstant -> {
+                    parent.blockList.remove(child)
+                }
+                is AddListElement -> {
+                    if (parent.source == child) parent.source = null
+                }
+                is DeleteListElement -> {
+                    if (parent.source == child) parent.source = null
+                }
                 is Print -> {
                     parent.content = Constant(localScope, "string", "str")
                 }
@@ -153,6 +164,9 @@ fun RedactorPage(navController: NavController){
             }
             is For -> {
                 scopesList.remove(draggingBlock)
+            }
+            is DeclareVariable -> {
+                draggingBlock.scope.deleteVariable((draggingBlock as DeclareVariable).name)
             }
         }
     }
@@ -253,6 +267,39 @@ fun RedactorPage(navController: NavController){
                         addBlockInsideAnother(block.value, true, {newBlock -> deleteBlock(localScope)
                             block.value = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
                     }
+                    else if (block.sourceRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        if (block.source != null) {
+                            addBlockInsideAnother(block.source as BlockTemplate, true, { newBlock ->
+                                deleteBlock(localScope)
+                                block.source = newBlock
+                            }, isRelocating, relocateFunction, addBlockFunction, localScope)
+                        }
+                        else{
+                            block.source = if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock
+                        }
+                    }
+                    else if (isInsideBlock){
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
+                    }
+                }
+            }
+            is DeleteListElement -> {
+                if (block.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                    if (block.indexRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        addBlockInsideAnother(block.index, true, {newBlock -> deleteBlock(localScope)
+                            block.index = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                    }
+                    else if (block.sourceRect.contains(Offset(dragOffset.x, dragOffset.y))){
+                        if (block.source != null) {
+                            addBlockInsideAnother(block.source as BlockTemplate, true, { newBlock ->
+                                deleteBlock(localScope)
+                                block.source = newBlock
+                            }, isRelocating, relocateFunction, addBlockFunction, localScope)
+                        }
+                        else{
+                            block.source = if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock
+                        }
+                    }
                     else if (isInsideBlock){
                         onReplace(if(!isRelocating) createNewBlock(draggingBlock, localScope) else draggingBlock)
                     }
@@ -337,7 +384,7 @@ fun RedactorPage(navController: NavController){
                                 currentInteractionScope
                             ) else deleteBlock(currentInteractionScope)
                             draggingBlock = Constant(context)
-                        }, true, remember { mutableStateOf(draggingBlock) })
+                        }, true)
                     }
                 }
             }
@@ -374,7 +421,7 @@ fun RedactorPage(navController: NavController){
                     .zIndex(1f)
             )
             {
-                DrawBlock(draggingBlock, {_, _ ->}, {}, false, remember{mutableStateOf(draggingBlock)})
+                DrawBlock(draggingBlock, {_, _ ->}, {}, false)
             }
 
             if(isDraggingBlockCanBeDeleted){
@@ -520,7 +567,7 @@ fun RedactorPage(navController: NavController){
                                         { draggedBlock ->
                                             isDragging = false
                                             AddNewBlock(draggedBlock, currentInteractionScope)
-                                        }, false, remember{mutableStateOf(draggingBlock)}
+                                        }, false
                                     )
                                 }
                             }
@@ -555,7 +602,7 @@ fun RedactorPage(navController: NavController){
                                     context.blockList = blockList
                                     console.text.clear()
                                     context.execute()
-                                    console.text.add("Программа завершилась штатно")
+                                    //console.text.add("Программа завершилась штатно")
                                 },
                                 modifier = Modifier
                                     .width(68.dp)
