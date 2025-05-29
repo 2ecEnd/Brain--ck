@@ -6,13 +6,11 @@ import com.example.mobileapp.R
 
 class ListConstant(
     override var scope: NewScope,
-    var value: Value.LIST = Value.LIST(mutableStateListOf())
+    var value: Value.LIST = Value.LIST()
 ) : Block()
 {
     var blockList: MutableList<Block> = mutableStateListOf()
     var addBlockRect: Rect = Rect.Zero
-    override var parent: Block? = null
-    override var selfRect: Rect = Rect.Zero
 
     override fun execute() : Value
     {

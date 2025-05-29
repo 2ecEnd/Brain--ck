@@ -8,24 +8,21 @@ import com.example.mobileapp.R
 
 class AddListElement(override var scope: NewScope) : Block()
 {
-    var sourceRect: Rect = Rect.Zero
     var source: Block? = null
-    var value by mutableStateOf<Block>(Constant(scope, "int", 0))
+    var sourceRect: Rect = Rect.Zero
+    var value by mutableStateOf<Block>(Constant(scope, "int"))
     var valueRect: Rect = Rect.Zero
-
-    override var selfRect: Rect = Rect.Zero
-    override var parent: Block? = null
 
     override fun execute()
     {
-        val tmp = (value.execute()) as? Value
-        if (tmp == null || source == null)
-            throw Exception(R.string.null_pointer.toString())
+        val executedValue = (value.execute()) as? Value
+            ?: throw Exception(R.string.null_pointer.toString())
+        val list = (source
+            ?: throw Exception(R.string.null_pointer.toString())).execute()
 
-        val list = (source ?: throw Exception(R.string.null_pointer.toString())).execute()
         if (list !is Value.LIST)
             throw Exception(R.string.is_not_list.toString())
 
-        list.value.add(tmp)
+        list.value.add(executedValue)
     }
 }

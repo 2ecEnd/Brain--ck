@@ -1,114 +1,109 @@
 package com.example.mobileapp.classes
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.res.stringResource
 import com.example.mobileapp.R
 import kotlin.math.pow
 
 class MathExpression(override var scope: NewScope): BinaryExpression()
 {
-    override var leftValue by mutableStateOf<Block>(Constant(scope, "int", 0))
-    override var rightValue by mutableStateOf<Block>(Constant(scope, "int", 0))
-    override var operator: String = "+"
-
-    override var parent: Block? = null
-    override var selfRect: Rect = Rect.Zero
-    override var leftValueRect: Rect = Rect.Zero
-    override var rightValueRect: Rect = Rect.Zero
+    override var leftValue by mutableStateOf<Block>(Constant(scope, "int"))
+    override var rightValue by mutableStateOf<Block>(Constant(scope, "int"))
+    override var operator = "+"
 
     override fun execute(): Value
     {
-        val left = (leftValue.execute()) as Value
-        val right = (rightValue.execute()) as Value
+        val executedLeftValue = (leftValue.execute()) as? Value
+        val executedRightValue = (rightValue.execute()) as? Value
 
         return when
         {
-            (left is Value.BOOLEAN || right is Value.BOOLEAN) ->
+            (executedLeftValue is Value.BOOLEAN || executedRightValue is Value.BOOLEAN) ->
             {
                 throw Exception(R.string.illegal_data_type.toString())
             }
-            (left is Value.STRING || right is Value.STRING) ->
+            (executedLeftValue is Value.STRING || executedRightValue is Value.STRING) ->
             {
-                val l = when(left)
+                val left = when(executedLeftValue)
                 {
-                    is Value.STRING -> left.value
-                    is Value.INT -> left.value.toString()
-                    is Value.DOUBLE -> left.value.toString()
+                    is Value.STRING -> executedLeftValue.value
+                    is Value.INT -> executedLeftValue.value.toString()
+                    is Value.DOUBLE -> executedLeftValue.value.toString()
                     else -> throw Exception(R.string.illegal_data_type.toString())
                 }
-                val r = when(right)
+                val right = when(executedRightValue)
                 {
-                    is Value.STRING -> right.value
-                    is Value.INT -> right.value.toString()
-                    is Value.DOUBLE -> right.value.toString()
+                    is Value.STRING -> executedRightValue.value
+                    is Value.INT -> executedRightValue.value.toString()
+                    is Value.DOUBLE -> executedRightValue.value.toString()
                     else -> throw Exception(R.string.illegal_data_type.toString())
                 }
 
                 when (operator)
                 {
-                    "+" -> Value.STRING(l + r)
+                    "+" -> Value.STRING(left + right)
                     else -> throw Exception(R.string.illegal_operation.toString())
                 }
             }
-            (left is Value.INT || left is Value.DOUBLE &&
-            right is Value.INT || right is Value.DOUBLE) ->
+            (executedLeftValue is Value.INT || executedLeftValue is Value.DOUBLE &&
+            executedRightValue is Value.INT || executedRightValue is Value.DOUBLE) ->
             {
-                if (left is Value.INT && right is Value.INT)
+                if (executedLeftValue is Value.INT && executedRightValue is Value.INT)
                 {
+                    val left = executedLeftValue.value
+                    val right = executedRightValue.value
                     when (operator)
                     {
-                        "+" -> Value.INT(left.value + right.value)
-                        "-" -> Value.INT(left.value - right.value)
-                        "*" -> Value.INT(left.value * right.value)
+                        "+" -> Value.INT(left + right)
+                        "-" -> Value.INT(left - right)
+                        "*" -> Value.INT(left * right)
                         "/" ->
                             {
-                                if (right.value == 0)
+                                if (right == 0)
                                     throw Exception(R.string.divide_by_zero.toString())
                                 else
-                                    Value.INT(left.value / right.value)
+                                    Value.INT(left/ right)
                             }
-                        "%" -> Value.INT(left.value % right.value)
-                        "^" -> Value.DOUBLE((left.value.toDouble().pow(right.value)))
+                        "%" -> Value.INT(left % right)
+                        "^" -> Value.DOUBLE((left.toDouble().pow(right)))
                         else -> throw Exception(R.string.illegal_operation.toString())
                     }
                 }
                 else
                 {
-                    val l = when (left)
+                    val left = when (executedLeftValue)
                     {
-                        is Value.INT -> left.value.toDouble()
-                        is Value.DOUBLE -> left.value
+                        is Value.INT -> executedLeftValue.value.toDouble()
+                        is Value.DOUBLE -> executedLeftValue.value
                         else -> throw Exception(R.string.illegal_data_type.toString())
                     }
-                    val r = when (right)
+                    val right = when (executedRightValue)
                     {
-                        is Value.INT -> right.value.toDouble()
-                        is Value.DOUBLE -> right.value
+                        is Value.INT -> executedRightValue.value.toDouble()
+                        is Value.DOUBLE -> executedRightValue.value
                         else -> throw Exception(R.string.illegal_data_type.toString())
                     }
+
                     when (operator)
                     {
-                        "+" -> Value.DOUBLE(l + r)
-                        "-" -> Value.DOUBLE(l - r)
-                        "*" -> Value.DOUBLE(l * r)
+                        "+" -> Value.DOUBLE(left + right)
+                        "-" -> Value.DOUBLE(left - right)
+                        "*" -> Value.DOUBLE(left * right)
                         "/" ->
                         {
-                            if (r == 0.0)
+                            if (right == 0.0)
                                 throw Exception(R.string.divide_by_zero.toString())
                             else
-                                Value.DOUBLE(l / r)
+                                Value.DOUBLE(left / right)
                         }
                         "%" ->
                         {
-                            if (r == 0.0)
+                            if (right == 0.0)
                                 throw Exception(R.string.divide_by_zero.toString())
                             else
-                                Value.DOUBLE(l % r)
+                                Value.DOUBLE(left % right)
                         }
-                        "^" -> Value.DOUBLE((l.pow(r)))
+                        "^" -> Value.DOUBLE((left.pow(right)))
                         else -> throw Exception(R.string.illegal_operation.toString())
                     }
                 }

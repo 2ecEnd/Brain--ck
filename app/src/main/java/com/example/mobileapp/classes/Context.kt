@@ -3,11 +3,13 @@ package com.example.mobileapp.classes
 import android.content.res.Resources
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class Context(val resources: Resources, val console: Console) : NewScope()
+class Context(
+    private val resources: Resources,
+    val console: Console
+) : NewScope()
 {
     override var scope: NewScope = this
     override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
@@ -15,9 +17,6 @@ class Context(val resources: Resources, val console: Console) : NewScope()
     override var allowedVariables = mutableSetOf<String>()
     var varList = mutableMapOf<String, Value>()
     override var blockList = mutableStateListOf<Block>(DeclareVariable(this, varList))
-    override var parent: Block? = null
-
-    override var selfRect: Rect = Rect.Zero
 
     override fun deleteVariable(name: String)
     {
@@ -29,8 +28,8 @@ class Context(val resources: Resources, val console: Console) : NewScope()
             if (block is NewScope)
                 block.deleteVariable(name)
             else if (block is IfElse){
-                block.if_.deleteVariable(name)
-                block.else_.deleteVariable(name)
+                block.ifBlock.deleteVariable(name)
+                block.elseBlock.deleteVariable(name)
             }
         }
     }
@@ -45,8 +44,8 @@ class Context(val resources: Resources, val console: Console) : NewScope()
             if (block is NewScope)
                 block.addVariable(name)
             else if (block is IfElse){
-                block.if_.addVariable(name)
-                block.else_.addVariable(name)
+                block.ifBlock.addVariable(name)
+                block.elseBlock.addVariable(name)
             }
         }
     }

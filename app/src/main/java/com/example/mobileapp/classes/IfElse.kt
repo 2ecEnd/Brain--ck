@@ -11,11 +11,8 @@ class IfElse(override var scope: NewScope): Block()
     var elseRect: Rect = Rect.Zero
     var conditionRect: Rect = Rect.Zero
     var condition = BoolExpression(scope)
-    var if_ = If(scope)
-    var else_ = Else(scope)
-
-    override var selfRect: Rect = Rect.Zero
-    override var parent: Block? = null
+    var ifBlock = If(scope)
+    var elseBlock = Else(scope)
 
     override fun execute()
     {
@@ -23,9 +20,9 @@ class IfElse(override var scope: NewScope): Block()
         if (condRes is Value.BOOLEAN)
         {
             if (condRes.value)
-                if_.execute()
+                ifBlock.execute()
             else
-                else_.execute()
+                elseBlock.execute()
         }
         else
             throw Exception(R.string.illegal_data_type.toString())
@@ -33,12 +30,10 @@ class IfElse(override var scope: NewScope): Block()
 
     class If(override var scope: NewScope): NewScope()
     {
-        override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
         override var blockList = mutableStateListOf<Block>()
-        override var dropZones = mutableStateListOf<Rect>()
         override var allowedVariables = mutableSetOf<String>()
-        override var selfRect: Rect = Rect.Zero
-        override var parent: Block? = null
+        override var dropZones = mutableStateListOf<Rect>()
+        override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
 
         override fun execute()
         {
@@ -51,12 +46,10 @@ class IfElse(override var scope: NewScope): Block()
 
     class Else(override var scope: NewScope): NewScope()
     {
-        override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
         override var blockList = mutableStateListOf<Block>()
-        override var dropZones = mutableStateListOf<Rect>()
         override var allowedVariables = mutableSetOf<String>()
-        override var selfRect: Rect = Rect.Zero
-        override var parent: Block? = null
+        override var dropZones = mutableStateListOf<Rect>()
+        override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
 
         override fun execute() 
         {

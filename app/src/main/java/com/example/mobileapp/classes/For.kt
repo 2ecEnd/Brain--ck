@@ -11,7 +11,6 @@ class For(
 ): NewScope()
 {
     var contentRect: Rect = Rect.Zero
-
     lateinit var iterableVar: DeclareVariable
     lateinit var startValue: SetVariable
     lateinit var stopCondition: BoolExpression
@@ -19,9 +18,6 @@ class For(
 
     override var allowedVariables = mutableSetOf<String>()
     override var blockList = SnapshotStateList<Block>()
-
-    override var parent: Block? = null
-    override var selfRect = Rect.Zero
     override var dropZones = mutableStateListOf<Rect>()
     override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
 

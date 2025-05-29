@@ -12,23 +12,22 @@ class SetListElement(
 ) : Block()
 {
     var name: String = ""
-    var value by mutableStateOf<Block>(Constant(scope, "int", 0))
-    var index: Block = Constant(scope)
+    var value by mutableStateOf<Block>(Constant(scope, "int"))
     var valueRect: Rect = Rect.Zero
-    override var parent: Block? = null
-    override var selfRect: Rect = Rect.Zero
+    var index: Block = Constant(scope)
+    var indexRect: Rect = Rect.Zero
 
     override fun execute()
     {
-        val tmpValue = (value.execute() as? Value)
-        val tmpIndex = (index.execute() as? Value.INT)
-        if (tmpValue == null || tmpIndex == null)
+        val executedValue = (value.execute() as? Value)
+        val executedIndex = (index.execute() as? Value.INT)
+        if (executedValue == null || executedIndex == null)
             throw Exception(R.string.illegal_data_type.toString())
 
 
         val list = (varList[name] as? Value.LIST)
             ?: throw Exception(R.string.is_not_list.toString())
 
-        list.value[tmpIndex.value] = tmpValue
+        list.value[executedIndex.value] = executedValue
     }
 }

@@ -159,8 +159,8 @@ fun RedactorPage(navController: NavController){
         }
         when(draggingBlock){
             is IfElse -> {
-                scopesList.remove((draggingBlock as IfElse).if_)
-                scopesList.remove((draggingBlock as IfElse).else_)
+                scopesList.remove((draggingBlock as IfElse).ifBlock)
+                scopesList.remove((draggingBlock as IfElse).elseBlock)
             }
             is For -> {
                 scopesList.remove(draggingBlock)
@@ -318,10 +318,10 @@ fun RedactorPage(navController: NavController){
                     newBlock.scope = localScope
                     when(newBlock){
                         is IfElse -> {
-                            newBlock.if_.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
-                            newBlock.else_.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
-                            scopesList.add(newBlock.if_)
-                            scopesList.add(newBlock.else_)
+                            newBlock.ifBlock.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                            newBlock.elseBlock.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                            scopesList.add(newBlock.ifBlock)
+                            scopesList.add(newBlock.elseBlock)
                         }
                         is For -> {
                             newBlock.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)

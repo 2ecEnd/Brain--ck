@@ -5,13 +5,10 @@ import com.example.mobileapp.R
 
 class DeleteListElement(override var scope: NewScope) : Block()
 {
-    var sourceRect: Rect = Rect.Zero
     var source: Block? = null
-    var index: Block = Constant(scope, "int", 0)
+    var sourceRect: Rect = Rect.Zero
+    var index: Block = Constant(scope, "int")
     var indexRect: Rect = Rect.Zero
-
-    override var selfRect: Rect = Rect.Zero
-    override var parent: Block? = null
 
     override fun execute()
     {
@@ -22,9 +19,9 @@ class DeleteListElement(override var scope: NewScope) : Block()
         if (list !is Value.LIST)
             throw Exception(R.string.is_not_list.toString())
 
-        val tmpIndex = (index.execute()) as? Value.INT ?:
-        throw Exception(R.string.illegal_data_type.toString())
+        val executedIndex = (index.execute()) as? Value.INT
+            ?: throw Exception(R.string.illegal_data_type.toString())
 
-        list.value.removeAt(tmpIndex.value)
+        list.value.removeAt(executedIndex.value)
     }
 }

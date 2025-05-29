@@ -1,7 +1,6 @@
 package com.example.mobileapp.composables
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -9,58 +8,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onPlaced
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.classes.Block
-import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.IfElse
-import com.example.mobileapp.classes.MathExpression
-import com.example.mobileapp.classes.Print
-import com.example.mobileapp.classes.SetVariable
-import com.example.mobileapp.classes.UseVariable
 
 @Composable
 fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
@@ -123,7 +94,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     .heightIn(min = 48.dp)
                     .onPlaced { coordinates ->
                         block.ifRect = coordinates.boundsInWindow()
-                        block.if_.selfRect = coordinates.boundsInWindow()
+                        block.ifBlock.selfRect = coordinates.boundsInWindow()
                     },
                 shape = RoundedCornerShape(
                     topStart = 10.dp,
@@ -136,9 +107,9 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
             {
                 Column ()
                 {
-                    for(i in block.if_.blockList.indices){
-                        var localBlock = block.if_.blockList[i]
-                        if ((block.if_.spacerPair.value.first == i) && block.if_.spacerPair.value.second == block.if_){
+                    for(i in block.ifBlock.blockList.indices){
+                        var localBlock = block.ifBlock.blockList[i]
+                        if ((block.ifBlock.spacerPair.value.first == i) && block.ifBlock.spacerPair.value.second == block.ifBlock){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                         key(block.hashCode()) {
@@ -146,8 +117,8 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                                 DrawBlock(localBlock, onDragStart, onDragEnd, true)
                             }
                         }
-                        if (i == block.if_.blockList.count() - 1 && block.if_.spacerPair.value.first
-                            == block.if_.blockList.count() && block.if_.spacerPair.value.second == block.if_){
+                        if (i == block.ifBlock.blockList.count() - 1 && block.ifBlock.spacerPair.value.first
+                            == block.ifBlock.blockList.count() && block.ifBlock.spacerPair.value.second == block.ifBlock){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                     }
@@ -168,7 +139,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     .heightIn(min = 48.dp)
                     .onPlaced { coordinates ->
                         block.elseRect = coordinates.boundsInWindow()
-                        block.else_.selfRect = coordinates.boundsInWindow()
+                        block.elseBlock.selfRect = coordinates.boundsInWindow()
                     },
                 shape = RoundedCornerShape(
                     topStart = 10.dp,
@@ -181,9 +152,9 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
             {
                 Column ()
                 {
-                    for(i in block.else_.blockList.indices){
-                        var localBlock = block.else_.blockList[i]
-                        if (block.else_.spacerPair.value.first == i && block.else_.spacerPair.value.second == block.else_){
+                    for(i in block.elseBlock.blockList.indices){
+                        var localBlock = block.elseBlock.blockList[i]
+                        if (block.elseBlock.spacerPair.value.first == i && block.elseBlock.spacerPair.value.second == block.elseBlock){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                         key(block.hashCode()) {
@@ -191,8 +162,8 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                                 DrawBlock(localBlock, onDragStart, onDragEnd, true)
                             }
                         }
-                        if (i == block.else_.blockList.count() - 1 && block.else_.spacerPair.value.first
-                            == block.else_.blockList.count() && block.else_.spacerPair.value.second == block.else_){
+                        if (i == block.elseBlock.blockList.count() - 1 && block.elseBlock.spacerPair.value.first
+                            == block.elseBlock.blockList.count() && block.elseBlock.spacerPair.value.second == block.elseBlock){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                     }

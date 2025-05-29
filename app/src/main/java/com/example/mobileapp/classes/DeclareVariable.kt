@@ -11,13 +11,10 @@ class DeclareVariable(
 ) : Block()
 {
     var name by mutableStateOf<String>("my variable")
-    var value = Value.INT(0)
-    override var selfRect: Rect = Rect.Zero
-    override var parent: Block? = null
+    var value = Value.INT()
 
     override fun execute()
     {
-        // Нуждается в доработке
         varList[name] = value
     }
 }

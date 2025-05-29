@@ -11,10 +11,8 @@ class SetVariable(
 ) : Block()
 {
     var name: String = ""
-    var value by mutableStateOf<Block>(Constant(scope, "int", 0))
+    var value by mutableStateOf<Block>(Constant(scope, "int"))
     var valueRect: Rect = Rect.Zero
-    override var parent: Block? = null
-    override var selfRect: Rect = Rect.Zero
 
     override fun execute()
     {

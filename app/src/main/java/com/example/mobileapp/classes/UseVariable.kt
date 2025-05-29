@@ -9,8 +9,6 @@ class UseVariable(
 ) : Block()
 {
     var name: String = ""
-    override var selfRect: Rect = Rect.Zero
-    override var parent: Block? = null
 
     constructor(scope: NewScope, varList: MutableMap<String, Value>, varName: String) : this(scope, varList)
     {

@@ -7,8 +7,8 @@ import androidx.compose.ui.geometry.Rect
 abstract class Block
 {
     abstract var scope: NewScope
-    abstract var parent: Block?
-    abstract var selfRect: Rect
+    open var parent: Block? = null
+    open var selfRect: Rect = Rect.Zero
 
     abstract fun execute(): Any
 }
@@ -16,9 +16,9 @@ abstract class Block
 abstract class BinaryExpression : Block()
 {
     abstract var leftValue: Block
-    abstract var leftValueRect: Rect
+    open var leftValueRect: Rect = Rect.Zero
     abstract var rightValue: Block
-    abstract var rightValueRect: Rect
+    open var rightValueRect: Rect = Rect.Zero
     abstract var operator: String
 }
 
@@ -39,8 +39,8 @@ abstract class NewScope : Block()
                 block.deleteVariable(name)
             else if (block is IfElse)
             {
-                block.if_.deleteVariable(name)
-                block.else_.deleteVariable(name)
+                block.ifBlock.deleteVariable(name)
+                block.elseBlock.deleteVariable(name)
             }
         }
     }
@@ -54,8 +54,8 @@ abstract class NewScope : Block()
             if (block is NewScope)
                 block.addVariable(name)
             else if (block is IfElse){
-                block.if_.addVariable(name)
-                block.else_.addVariable(name)
+                block.ifBlock.addVariable(name)
+                block.elseBlock.addVariable(name)
             }
         }
     }
