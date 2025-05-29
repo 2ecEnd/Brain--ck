@@ -8,7 +8,7 @@ import com.example.mobileapp.R
 
 class AddListElement(override var scope: NewScope) : Block()
 {
-    var source: Block? = null
+    var source by mutableStateOf<Block?>(null)
     var sourceRect: Rect = Rect.Zero
     var value by mutableStateOf<Block>(Constant(scope, "int"))
     var valueRect: Rect = Rect.Zero

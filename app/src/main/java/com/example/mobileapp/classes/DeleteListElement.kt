@@ -1,13 +1,16 @@
 package com.example.mobileapp.classes
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
 class DeleteListElement(override var scope: NewScope) : Block()
 {
-    var source: Block? = null
+    var source by mutableStateOf<Block?>(null)
     var sourceRect: Rect = Rect.Zero
-    var index: Block = Constant(scope, "int")
+    var index by mutableStateOf<Block>(Constant(scope, "int"))
     var indexRect: Rect = Rect.Zero
 
     override fun execute()

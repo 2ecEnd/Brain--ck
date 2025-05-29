@@ -81,7 +81,7 @@ fun App(modifier: Modifier = Modifier){
             CreateProjectPage(navController)
         }
         composable("redactor") {
-            RedactorPage(navController)
+            RedactorPage(navController, RedactorViewModel(LocalContext.current.resources))
         }
     }
 }

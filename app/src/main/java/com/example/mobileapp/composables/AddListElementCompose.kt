@@ -81,7 +81,9 @@ fun DrawAddListElement(block: AddListElement, onDragStart: (Offset, Block) -> Un
                     }
             )
             {
-                DrawBlock(block.value, onDragStart, onDragEnd, isActive)
+                key(block.value) {
+                    DrawBlock(block.value, onDragStart, onDragEnd, isActive)
+                }
             }
 
             Text("to list", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
@@ -93,21 +95,21 @@ fun DrawAddListElement(block: AddListElement, onDragStart: (Offset, Block) -> Un
                     }
             )
             {
-                if (block.source != null) {
-                    key(block.source) {
-                        DrawBlock(block.source as Block, onDragStart, onDragEnd, isActive)
+                key(block.source) {
+                    if (block.source != null) {
+                            DrawBlock(block.source as Block, onDragStart, onDragEnd, isActive)
                     }
-                }
-                else{
-                    Card(
-                        modifier = Modifier
-                            .height(38.dp)
-                            .width(56.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(150, 150, 150))
-                    )
-                    {
+                    else{
+                        Card(
+                            modifier = Modifier
+                                .height(38.dp)
+                                .width(56.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(150, 150, 150))
+                        )
+                        {
 
+                        }
                     }
                 }
             }

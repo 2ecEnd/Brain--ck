@@ -1,0 +1,53 @@
+package com.example.mobileapp.redactorspage_components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.classes.Block
+import com.example.mobileapp.classes.NewScope
+
+@Composable
+fun RedactorArea(
+    blockList: SnapshotStateList<Block>,
+    context: NewScope,
+    currentInteractionScope: NewScope,
+    draggingBlock: Block?,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit
+)
+{
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.75f)
+            .background(Color(red = 249, green = 249, blue = 249))
+    )
+    {
+        for(i in blockList.indices){
+            if (currentInteractionScope.spacerPair.value.first == i && currentInteractionScope.spacerPair.value.second == context){
+                Spacer(modifier = Modifier.height(48.dp))
+            }
+            var block = blockList[i]
+            key(block) {
+                var alpha = if (block == draggingBlock) 0.5f else 1f
+                Box(modifier = Modifier.padding(start = 12.dp).alpha(alpha)) {
+                    DrawBlock(block, onDragStart, onDragEnd, true)
+                }
+            }
+        }
+    }
+}
