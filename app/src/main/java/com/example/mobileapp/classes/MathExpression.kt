@@ -8,16 +8,16 @@ import androidx.compose.ui.res.stringResource
 import com.example.mobileapp.R
 import kotlin.math.pow
 
-class MathExpression(override var scope: ComplexBlock): Block()
+class MathExpression(override var scope: NewScope): BinaryExpression()
 {
-    var leftValue by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
-    var rightValue by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
-    var operation: String = "+"
+    override var leftValue by mutableStateOf<Block>(Constant(scope, "int", 0))
+    override var rightValue by mutableStateOf<Block>(Constant(scope, "int", 0))
+    override var operator: String = "+"
 
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
     override var selfRect: Rect = Rect.Zero
-    var leftValueRect: Rect = Rect.Zero
-    var rightValueRect: Rect = Rect.Zero
+    override var leftValueRect: Rect = Rect.Zero
+    override var rightValueRect: Rect = Rect.Zero
 
     override fun execute(): Value
     {
@@ -47,7 +47,7 @@ class MathExpression(override var scope: ComplexBlock): Block()
                     else -> throw Exception(R.string.illegal_data_type.toString())
                 }
 
-                when (operation)
+                when (operator)
                 {
                     "+" -> Value.STRING(l + r)
                     else -> throw Exception(R.string.illegal_operation.toString())
@@ -58,7 +58,7 @@ class MathExpression(override var scope: ComplexBlock): Block()
             {
                 if (left is Value.INT && right is Value.INT)
                 {
-                    when (operation)
+                    when (operator)
                     {
                         "+" -> Value.INT(left.value + right.value)
                         "-" -> Value.INT(left.value - right.value)
@@ -89,7 +89,7 @@ class MathExpression(override var scope: ComplexBlock): Block()
                         is Value.DOUBLE -> right.value
                         else -> throw Exception(R.string.illegal_data_type.toString())
                     }
-                    when (operation)
+                    when (operator)
                     {
                         "+" -> Value.DOUBLE(l + r)
                         "-" -> Value.DOUBLE(l - r)

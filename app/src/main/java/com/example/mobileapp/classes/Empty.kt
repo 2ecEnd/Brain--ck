@@ -2,10 +2,10 @@ package com.example.mobileapp.classes
 
 import androidx.compose.ui.geometry.Rect
 
-class Empty(override var scope: ComplexBlock): Block()
+class Empty(override var scope: NewScope): Block()
 {
     override var selfRect: Rect = Rect.Zero
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
 
     override fun execute()
     {

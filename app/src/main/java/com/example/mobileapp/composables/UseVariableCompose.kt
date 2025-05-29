@@ -30,11 +30,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
-import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.UseVariable
 
 @Composable
-fun DrawUseVariable(block: UseVariable, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
+fun DrawUseVariable(block: UseVariable, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
               isActive: Boolean){
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("") }

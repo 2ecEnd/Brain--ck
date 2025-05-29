@@ -6,15 +6,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class AddListElement(override var scope: ComplexBlock) : Block()
+class AddListElement(override var scope: NewScope) : Block()
 {
     var sourceRect: Rect = Rect.Zero
-    var source: BlockTemplate? = null
-    var value by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
+    var source: Block? = null
+    var value by mutableStateOf<Block>(Constant(scope, "int", 0))
     var valueRect: Rect = Rect.Zero
 
     override var selfRect: Rect = Rect.Zero
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
 
     override fun execute()
     {

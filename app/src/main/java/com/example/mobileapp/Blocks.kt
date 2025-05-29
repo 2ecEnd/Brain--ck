@@ -51,7 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.classes.AddListElement
-import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.DeclareVariable
 import com.example.mobileapp.classes.Empty
@@ -78,7 +78,7 @@ import com.example.mobileapp.composables.DrawSetVariable
 import com.example.mobileapp.composables.DrawUseVariable
 
 @Composable
-fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
+fun DrawBlock(block: Block, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
               isActive: Boolean){
 
     when(block) {
@@ -98,7 +98,7 @@ fun DrawBlock(block: BlockTemplate, onDragStart: (Offset, BlockTemplate) -> Unit
 }
 
 @Composable
-fun DrawShadow(block: BlockTemplate?){
+fun DrawShadow(block: Block?){
     Card(
         modifier = Modifier
             .width(200.dp)

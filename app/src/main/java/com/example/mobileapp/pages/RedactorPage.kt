@@ -56,9 +56,9 @@ import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.DrawShadow
 import com.example.mobileapp.R
 import com.example.mobileapp.classes.AddListElement
-import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BoolExpression
-import com.example.mobileapp.classes.ComplexBlock
+import com.example.mobileapp.classes.NewScope
 import com.example.mobileapp.classes.Console
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.Context
@@ -80,8 +80,8 @@ fun RedactorPage(navController: NavController){
     val tmp = LocalContext.current.resources
     var context = remember {Context(tmp, console = console)}
 
-    var currentInteractionScope by remember { mutableStateOf<ComplexBlock>(context) }
-    var draggingBlock by remember { mutableStateOf<BlockTemplate>(DeclareVariable(context, context.varList))}
+    var currentInteractionScope by remember { mutableStateOf<NewScope>(context) }
+    var draggingBlock by remember { mutableStateOf<Block>(DeclareVariable(context, context.varList))}
     var isDraggingBlockCanBeDeleted by remember { mutableStateOf<Boolean>(false) }
     var isDragging by remember { mutableStateOf(false) }
     var isDeleting by remember { mutableStateOf(false) }
@@ -89,8 +89,8 @@ fun RedactorPage(navController: NavController){
     var touchPoint by remember { mutableStateOf(Offset.Zero) }
 
     var blockList = remember { context.blockList }
-    var scopesList = remember { mutableStateListOf<ComplexBlock>(context)}
-    var blockChooserList = remember { mutableStateListOf<BlockTemplate>(For(context, context.varList, "i"), IfElse(context), DeclareVariable(context, context.varList),
+    var scopesList = remember { mutableStateListOf<NewScope>(context)}
+    var blockChooserList = remember { mutableStateListOf<Block>(For(context, context.varList, "i"), IfElse(context), DeclareVariable(context, context.varList),
         UseVariable(context, context.varList), SetVariable(context, context.varList), MathExpression(context), Print(context, console),
         AddListElement(context), DeleteListElement(context), Constant(context, "int", 0), Constant(context, "string", "str"),
         Constant(context, "double", 0.0), Constant(context, "bool", true),
@@ -98,11 +98,11 @@ fun RedactorPage(navController: NavController){
 
     var pagerState = rememberPagerState (pageCount = {2})
 
-    context.spacerPair = remember{mutableStateOf<Pair<Int, ComplexBlock>>(-1 to context)}
+    context.spacerPair = remember{mutableStateOf<Pair<Int, NewScope>>(-1 to context)}
 
     scopesList.forEach { scope -> scope.updateDropZones(draggingBlock) }
 
-    fun createNewBlock(oldBlock: BlockTemplate, scope: ComplexBlock): BlockTemplate{
+    fun createNewBlock(oldBlock: Block, scope: NewScope): Block{
         when(oldBlock){
             is DeclareVariable -> return DeclareVariable(scope, context.varList)
             is SetVariable -> return SetVariable(scope, context.varList)
@@ -126,7 +126,7 @@ fun RedactorPage(navController: NavController){
         return TODO("Provide the return value")
     }
 
-    fun deleteBlock(localScope: ComplexBlock){
+    fun deleteBlock(localScope: NewScope){
         if(draggingBlock.parent == null) draggingBlock.scope.blockList.remove(draggingBlock)
         else{
             var parent = draggingBlock.parent
@@ -171,10 +171,10 @@ fun RedactorPage(navController: NavController){
         }
     }
 
-    fun addBlockInsideAnother(block: BlockTemplate, isInsideBlock: Boolean,
-                              onReplace: (newBlock: BlockTemplate) -> Unit, isRelocating: Boolean,
-                              relocateFunction: (BlockTemplate, ComplexBlock) -> Unit,
-                              addBlockFunction: (BlockTemplate, ComplexBlock) -> Unit, localScope: ComplexBlock){
+    fun addBlockInsideAnother(block: Block, isInsideBlock: Boolean,
+                              onReplace: (newBlock: Block) -> Unit, isRelocating: Boolean,
+                              relocateFunction: (Block, NewScope) -> Unit,
+                              addBlockFunction: (Block, NewScope) -> Unit, localScope: NewScope){
         if (draggingBlock !is Constant && draggingBlock !is ListConstant && draggingBlock !is UseVariable && draggingBlock !is MathExpression
             && draggingBlock !is BoolExpression && block !is IfElse) return
         when(block){
@@ -269,7 +269,7 @@ fun RedactorPage(navController: NavController){
                     }
                     else if (block.sourceRect.contains(Offset(dragOffset.x, dragOffset.y))){
                         if (block.source != null) {
-                            addBlockInsideAnother(block.source as BlockTemplate, true, { newBlock ->
+                            addBlockInsideAnother(block.source as Block, true, { newBlock ->
                                 deleteBlock(localScope)
                                 block.source = newBlock
                             }, isRelocating, relocateFunction, addBlockFunction, localScope)
@@ -291,7 +291,7 @@ fun RedactorPage(navController: NavController){
                     }
                     else if (block.sourceRect.contains(Offset(dragOffset.x, dragOffset.y))){
                         if (block.source != null) {
-                            addBlockInsideAnother(block.source as BlockTemplate, true, { newBlock ->
+                            addBlockInsideAnother(block.source as Block, true, { newBlock ->
                                 deleteBlock(localScope)
                                 block.source = newBlock
                             }, isRelocating, relocateFunction, addBlockFunction, localScope)
@@ -308,7 +308,7 @@ fun RedactorPage(navController: NavController){
         }
     }
 
-    fun AddNewBlock(block: BlockTemplate, localScope: ComplexBlock){
+    fun AddNewBlock(block: Block, localScope: NewScope){
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
                 if (block !is Constant && block !is ListConstant && block !is UseVariable && block !is MathExpression){
@@ -318,13 +318,13 @@ fun RedactorPage(navController: NavController){
                     newBlock.scope = localScope
                     when(newBlock){
                         is IfElse -> {
-                            newBlock.if_.spacerPair = mutableStateOf<Pair<Int, ComplexBlock>>(context.spacerPair.value)
-                            newBlock.else_.spacerPair = mutableStateOf<Pair<Int, ComplexBlock>>(context.spacerPair.value)
+                            newBlock.if_.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                            newBlock.else_.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
                             scopesList.add(newBlock.if_)
                             scopesList.add(newBlock.else_)
                         }
                         is For -> {
-                            newBlock.spacerPair = mutableStateOf<Pair<Int, ComplexBlock>>(context.spacerPair.value)
+                            newBlock.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
                             scopesList.add(newBlock)
                         }
                     }
@@ -337,7 +337,7 @@ fun RedactorPage(navController: NavController){
         }
     }
 
-    fun relocateBlock(block: BlockTemplate, localScope: ComplexBlock){
+    fun relocateBlock(block: Block, localScope: NewScope){
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))){
                 if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
@@ -354,7 +354,7 @@ fun RedactorPage(navController: NavController){
     }
 
     @Composable
-    fun RedactorArea(blockList: SnapshotStateList<BlockTemplate>){
+    fun RedactorArea(blockList: SnapshotStateList<Block>){
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -468,7 +468,7 @@ fun RedactorPage(navController: NavController){
                 }
             }
 
-            var localScope: ComplexBlock = context
+            var localScope: NewScope = context
             scopesList.forEach { scope ->
                 if (scope.selfRect.contains(Offset(dragOffset.x, dragOffset.y))){
                     localScope = scope

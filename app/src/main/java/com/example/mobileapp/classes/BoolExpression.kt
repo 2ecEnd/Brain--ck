@@ -6,16 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.mobileapp.R
 
-class BoolExpression(override var scope: ComplexBlock): Block()
+class BoolExpression(override var scope: NewScope): BinaryExpression()
 {
-    var leftValue by mutableStateOf<BlockTemplate>(Constant(scope, "bool", true))
-    var rightValue by mutableStateOf<BlockTemplate>(Constant(scope, "bool", true))
-    var operation: String = "=="
-    override var parent: BlockTemplate? = null
+    override var leftValue by mutableStateOf<Block>(Constant(scope, "bool", true))
+    override var rightValue by mutableStateOf<Block>(Constant(scope, "bool", true))
+    override var operator: String = "=="
+    override var parent: Block? = null
 
     override var selfRect: Rect = Rect.Zero
-    var leftValueRect: Rect = Rect.Zero
-    var rightValueRect: Rect = Rect.Zero
+    override var leftValueRect: Rect = Rect.Zero
+    override var rightValueRect: Rect = Rect.Zero
 
     override fun execute(): Value
     {
@@ -26,7 +26,7 @@ class BoolExpression(override var scope: ComplexBlock): Block()
         {
             (left is Value.BOOLEAN && right is Value.BOOLEAN) ->
             {
-                val result = when (operation)
+                val result = when (operator)
                 {
                     "&&", "and" -> left.value && right.value
                     "||", "or" -> left.value || right.value
@@ -43,7 +43,7 @@ class BoolExpression(override var scope: ComplexBlock): Block()
             }
             (left is Value.STRING && right is Value.STRING) ->
             {
-                val result = when (operation)
+                val result = when (operator)
                 {
                     "==" -> left.value == right.value
                     "!=" -> left.value != right.value
@@ -71,7 +71,7 @@ class BoolExpression(override var scope: ComplexBlock): Block()
                     else -> throw Exception(R.string.illegal_data_type.toString())
                 }
 
-                val result = when (operation)
+                val result = when (operator)
                 {
                     "==" -> l == r
                     "!=" -> l != r

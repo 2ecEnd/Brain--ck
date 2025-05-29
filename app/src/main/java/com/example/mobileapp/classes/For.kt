@@ -6,27 +6,27 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Rect
 
 class For(
-    override var scope: ComplexBlock,
+    override var scope: NewScope,
     var varList: MutableMap<String, Value>
-): ComplexBlock()
+): NewScope()
 {
     var contentRect: Rect = Rect.Zero
 
-    private lateinit var iterableVar: DeclareVariable
-    private lateinit var startValue: SetVariable
-    private lateinit var stopCondition: BoolExpression
-    private lateinit var changeIterableVar: MathExpression
+    lateinit var iterableVar: DeclareVariable
+    lateinit var startValue: SetVariable
+    lateinit var stopCondition: BoolExpression
+    lateinit var changeIterableVar: MathExpression
 
     override var allowedVariables = mutableSetOf<String>()
-    override var blockList = SnapshotStateList<BlockTemplate>()
+    override var blockList = SnapshotStateList<Block>()
 
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
     override var selfRect = Rect.Zero
     override var dropZones = mutableStateListOf<Rect>()
-    override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
+    override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
 
     constructor(
-        scope: ComplexBlock,
+        scope: NewScope,
         varList: MutableMap<String, Value>,
         iterableVarName: String
     ) : this(scope, varList)
@@ -39,7 +39,7 @@ class For(
 
         stopCondition = BoolExpression(scope)
         stopCondition.rightValue = Constant(scope, "int", 10)
-        stopCondition.operation = "<"
+        stopCondition.operator = "<"
         stopCondition.leftValue = UseVariable(this, varList)
         (stopCondition.leftValue as UseVariable).name = "i"
 
@@ -49,32 +49,7 @@ class For(
         (changeIterableVar.leftValue as UseVariable).name = "i"
     }
 
-
-    //-=-=-=-=-=-Setters-=-=-=-=-=-
-    fun setIterableVar(newIterableVar: DeclareVariable)
-    {
-        iterableVar = newIterableVar
-    }
-    fun setStartValue(newStartValue: SetVariable)
-    {
-        startValue = newStartValue
-    }
-    fun setStopCondition(newStopCondition: BoolExpression)
-    {
-        stopCondition = newStopCondition
-    }
-    fun setChangeIterableVar(newChangeIterableVar: MathExpression)
-    {
-        changeIterableVar = newChangeIterableVar
-    }
-    //-=-=-=-=-=-Getters-=-=-=-=-=-
-    fun getIterableVar() = iterableVar
-    fun getStartValue() = startValue
-    fun getStopCondition() = stopCondition
-    fun getChangeIterableVar() = changeIterableVar
-
-
-    override fun updateDropZones(draggingBlock: BlockTemplate)
+    override fun updateDropZones(draggingBlock: Block)
     {
         dropZones.clear()
         if (blockList.isEmpty())

@@ -6,14 +6,14 @@ import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
 class SetVariable(
-    override var scope: ComplexBlock,
+    override var scope: NewScope,
     val varList: MutableMap<String, Value>
 ) : Block()
 {
     var name: String = ""
-    var value by mutableStateOf<BlockTemplate>(Constant(scope, "int", 0))
+    var value by mutableStateOf<Block>(Constant(scope, "int", 0))
     var valueRect: Rect = Rect.Zero
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
     override var selfRect: Rect = Rect.Zero
 
     override fun execute()

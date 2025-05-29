@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.classes.AddListElement
-import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.DeleteListElement
 import com.example.mobileapp.classes.MathExpression
@@ -58,7 +58,7 @@ import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseVariable
 
 @Composable
-fun DrawDeleteListElement(block: DeleteListElement, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
+fun DrawDeleteListElement(block: DeleteListElement, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
               isActive: Boolean){
     Card(
         modifier = Modifier
@@ -114,7 +114,7 @@ fun DrawDeleteListElement(block: DeleteListElement, onDragStart: (Offset, BlockT
             {
                 if (block.source != null) {
                     key(block.source) {
-                        DrawBlock(block.source as BlockTemplate, onDragStart, onDragEnd, isActive)
+                        DrawBlock(block.source as Block, onDragStart, onDragEnd, isActive)
                     }
                 }
                 else{

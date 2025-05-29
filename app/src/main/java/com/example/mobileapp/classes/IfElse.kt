@@ -1,15 +1,11 @@
 package com.example.mobileapp.classes
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class IfElse(override var scope: ComplexBlock): Block()
+class IfElse(override var scope: NewScope): Block()
 {
     var ifRect: Rect = Rect.Zero
     var elseRect: Rect = Rect.Zero
@@ -19,7 +15,7 @@ class IfElse(override var scope: ComplexBlock): Block()
     var else_ = Else(scope)
 
     override var selfRect: Rect = Rect.Zero
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
 
     override fun execute()
     {
@@ -35,14 +31,14 @@ class IfElse(override var scope: ComplexBlock): Block()
             throw Exception(R.string.illegal_data_type.toString())
     }
 
-    class If(override var scope: ComplexBlock): ComplexBlock()
+    class If(override var scope: NewScope): NewScope()
     {
-        override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
-        override var blockList = mutableStateListOf<BlockTemplate>()
+        override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
+        override var blockList = mutableStateListOf<Block>()
         override var dropZones = mutableStateListOf<Rect>()
         override var allowedVariables = mutableSetOf<String>()
         override var selfRect: Rect = Rect.Zero
-        override var parent: BlockTemplate? = null
+        override var parent: Block? = null
 
         override fun execute()
         {
@@ -53,14 +49,14 @@ class IfElse(override var scope: ComplexBlock): Block()
         }
     }
 
-    class Else(override var scope: ComplexBlock): ComplexBlock()
+    class Else(override var scope: NewScope): NewScope()
     {
-        override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
-        override var blockList = mutableStateListOf<BlockTemplate>()
+        override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
+        override var blockList = mutableStateListOf<Block>()
         override var dropZones = mutableStateListOf<Rect>()
         override var allowedVariables = mutableSetOf<String>()
         override var selfRect: Rect = Rect.Zero
-        override var parent: BlockTemplate? = null
+        override var parent: Block? = null
 
         override fun execute() 
         {

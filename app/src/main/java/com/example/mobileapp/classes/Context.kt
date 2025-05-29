@@ -7,15 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class Context(val resources: Resources, val console: Console) : ComplexBlock()
+class Context(val resources: Resources, val console: Console) : NewScope()
 {
-    override var scope: ComplexBlock = this
-    override lateinit var spacerPair: MutableState<Pair<Int, ComplexBlock>>
+    override var scope: NewScope = this
+    override lateinit var spacerPair: MutableState<Pair<Int, NewScope>>
     override var dropZones = mutableStateListOf<Rect>()
     override var allowedVariables = mutableSetOf<String>()
     var varList = mutableMapOf<String, Value>()
-    override var blockList = mutableStateListOf<BlockTemplate>(DeclareVariable(this, varList))
-    override var parent: BlockTemplate? = null
+    override var blockList = mutableStateListOf<Block>(DeclareVariable(this, varList))
+    override var parent: Block? = null
 
     override var selfRect: Rect = Rect.Zero
 
@@ -26,7 +26,7 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
 
         for (block in blockList)
         {
-            if (block is ComplexBlock)
+            if (block is NewScope)
                 block.deleteVariable(name)
             else if (block is IfElse){
                 block.if_.deleteVariable(name)
@@ -42,7 +42,7 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
 
         for (block in blockList)
         {
-            if (block is ComplexBlock)
+            if (block is NewScope)
                 block.addVariable(name)
             else if (block is IfElse){
                 block.if_.addVariable(name)
@@ -51,7 +51,7 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
         }
     }
 
-    override fun updateDropZones(draggingBlock: BlockTemplate)
+    override fun updateDropZones(draggingBlock: Block)
     {
         dropZones.clear()
         for(i in blockList.indices)
@@ -73,8 +73,6 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
 
     override fun execute()
     {
-        varList.clear()
-
         for (i in 0..<blockList.size )
         {
             try
@@ -106,7 +104,7 @@ class Context(val resources: Resources, val console: Console) : ComplexBlock()
                     }
                 }
             }
-
         }
+        //varList.clear()
     }
 }

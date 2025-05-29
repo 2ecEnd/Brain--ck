@@ -49,14 +49,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
-import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.ListConstant
 import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.SetVariable
 
 @Composable
-fun DrawListConstant(block: ListConstant, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
+fun DrawListConstant(block: ListConstant, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
               isActive: Boolean){
     block.blockList.forEach { item ->
         item.parent = block

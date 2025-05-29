@@ -6,18 +6,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 
 class DeclareVariable(
-    override var scope: ComplexBlock,
+    override var scope: NewScope,
     val varList: MutableMap<String, Value>
 ) : Block()
 {
     var name by mutableStateOf<String>("my variable")
     var value = Value.INT(0)
     override var selfRect: Rect = Rect.Zero
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
 
     override fun execute()
     {
         // Нуждается в доработке
-        varList.plus(name to value)
+        varList[name] = value
     }
 }

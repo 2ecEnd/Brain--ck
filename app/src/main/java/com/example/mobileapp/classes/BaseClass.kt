@@ -4,24 +4,30 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Rect
 
-abstract class BlockTemplate
+abstract class Block
 {
-    abstract fun execute(): Any
+    abstract var scope: NewScope
+    abstract var parent: Block?
     abstract var selfRect: Rect
-    abstract var parent: BlockTemplate?
-    abstract var scope: ComplexBlock
+
+    abstract fun execute(): Any
 }
 
-abstract class Block: BlockTemplate()
-
-abstract class ComplexBlock: BlockTemplate()
+abstract class BinaryExpression : Block()
 {
-    // Список блоков, которые будет содержать данный блок
-    abstract var blockList: SnapshotStateList<BlockTemplate>
-    // Список переменных, доступных в области видимости данного блока
+    abstract var leftValue: Block
+    abstract var leftValueRect: Rect
+    abstract var rightValue: Block
+    abstract var rightValueRect: Rect
+    abstract var operator: String
+}
+
+abstract class NewScope : Block()
+{
+    abstract var blockList: SnapshotStateList<Block>
     abstract var allowedVariables: MutableSet<String>
     abstract var dropZones: SnapshotStateList<Rect>
-    abstract var spacerPair: MutableState<Pair<Int, ComplexBlock>>
+    abstract var spacerPair: MutableState<Pair<Int, NewScope>>
 
     open fun deleteVariable(name: String)
     {
@@ -29,9 +35,10 @@ abstract class ComplexBlock: BlockTemplate()
 
         for (block in blockList)
         {
-            if (block is ComplexBlock)
+            if (block is NewScope)
                 block.deleteVariable(name)
-            else if (block is IfElse){
+            else if (block is IfElse)
+            {
                 block.if_.deleteVariable(name)
                 block.else_.deleteVariable(name)
             }
@@ -44,7 +51,7 @@ abstract class ComplexBlock: BlockTemplate()
 
         for (block in blockList)
         {
-            if (block is ComplexBlock)
+            if (block is NewScope)
                 block.addVariable(name)
             else if (block is IfElse){
                 block.if_.addVariable(name)
@@ -53,7 +60,7 @@ abstract class ComplexBlock: BlockTemplate()
         }
     }
 
-    open fun updateDropZones(draggingBlock: BlockTemplate)
+    open fun updateDropZones(draggingBlock: Block)
     {
         dropZones.clear()
         if (blockList.isEmpty())
@@ -71,6 +78,4 @@ abstract class ComplexBlock: BlockTemplate()
             }
         }
     }
-
-    abstract override fun execute(): Any
 }

@@ -48,7 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
-import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.MathExpression
@@ -57,7 +57,7 @@ import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseVariable
 
 @Composable
-fun DrawBoolExpression(block: BoolExpression, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
+fun DrawBoolExpression(block: BoolExpression, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
               isActive: Boolean){
     var expanded by remember { mutableStateOf(false) }
     var selectedOperation by remember { mutableStateOf("==") }
@@ -122,18 +122,18 @@ fun DrawBoolExpression(block: BoolExpression, onDragStart: (Offset, BlockTemplat
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    listOf("==", "!=", ">", "<", ">=", "<=", "&&", "||").forEach { operation ->
+                    listOf("==", "!=", ">", "<", ">=", "<=", "&&", "||").forEach { operator ->
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    operation,
+                                    operator,
                                     fontSize = 20.sp,
                                     modifier = Modifier.padding(horizontal = 8.dp)
                                 )
                             },
                             onClick = {
-                                selectedOperation = operation
-                                block.operation = operation
+                                selectedOperation = operator
+                                block.operator = operator
                                 expanded = false
                             }
                         )

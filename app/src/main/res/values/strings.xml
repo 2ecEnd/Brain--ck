@@ -3,7 +3,7 @@
 
     <!--Error Messages-->
     <string name="unknown_error">Unknown Error</string>
-    <string name="illegal_operation">Illegal Operation</string>
+    <string name="illegal_operation">Illegal operator</string>
     <string name="illegal_data_type">Illegal Data Type</string>
     <string name="null_pointer">Null Pointer Exception</string>
     <string name="out_of_range">Index Was Out Of Range</string>

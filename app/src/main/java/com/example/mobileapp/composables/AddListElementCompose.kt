@@ -37,10 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.classes.AddListElement
-import com.example.mobileapp.classes.BlockTemplate
+import com.example.mobileapp.classes.Block
 
 @Composable
-fun DrawAddListElement(block: AddListElement, onDragStart: (Offset, BlockTemplate) -> Unit, onDragEnd: (BlockTemplate) -> Unit,
+fun DrawAddListElement(block: AddListElement, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
               isActive: Boolean){
     block.value.parent = block
     Card(
@@ -95,7 +95,7 @@ fun DrawAddListElement(block: AddListElement, onDragStart: (Offset, BlockTemplat
             {
                 if (block.source != null) {
                     key(block.source) {
-                        DrawBlock(block.source as BlockTemplate, onDragStart, onDragEnd, isActive)
+                        DrawBlock(block.source as Block, onDragStart, onDragEnd, isActive)
                     }
                 }
                 else{

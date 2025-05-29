@@ -3,15 +3,15 @@ package com.example.mobileapp.classes
 import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
-class DeleteListElement(override var scope: ComplexBlock) : Block()
+class DeleteListElement(override var scope: NewScope) : Block()
 {
     var sourceRect: Rect = Rect.Zero
-    var source: BlockTemplate? = null
-    var index: BlockTemplate = Constant(scope, "int", 0)
+    var source: Block? = null
+    var index: Block = Constant(scope, "int", 0)
     var indexRect: Rect = Rect.Zero
 
     override var selfRect: Rect = Rect.Zero
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
 
     override fun execute()
     {

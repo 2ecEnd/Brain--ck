@@ -5,13 +5,13 @@ import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
 class ListConstant(
-    override var scope: ComplexBlock,
+    override var scope: NewScope,
     var value: Value.LIST = Value.LIST(mutableStateListOf())
 ) : Block()
 {
-    var blockList: MutableList<BlockTemplate> = mutableStateListOf()
+    var blockList: MutableList<Block> = mutableStateListOf()
     var addBlockRect: Rect = Rect.Zero
-    override var parent: BlockTemplate? = null
+    override var parent: Block? = null
     override var selfRect: Rect = Rect.Zero
 
     override fun execute() : Value
