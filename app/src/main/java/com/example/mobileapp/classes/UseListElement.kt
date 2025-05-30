@@ -21,32 +21,42 @@ class UseListElement(override var scope: NewScope) : Block()
 
     override fun execute(): Value
     {
-        if (source == null)
+        isTroublesome = false
+
+        try
+        {
+            if (source == null)
+            {
+                isTroublesome = true
+                throw Exception(R.string.null_pointer.toString())
+            }
+
+            val list = source!!.execute()
+            val index = index.execute()
+
+            if (list !is Value.LIST)
+            {
+                isTroublesome = true
+                throw Exception(R.string.illegal_data_type.toString())
+            }
+            if (index !is Value.INT)
+            {
+                isTroublesome = true
+                throw Exception(R.string.index_is_not_int.toString())
+            }
+
+            if (index.value >= list.value.size)
+            {
+                isTroublesome = true
+                throw Exception(R.string.index_was_out_of_range.toString())
+            }
+
+            return list.value[index.value]
+        }
+        catch (e: Exception)
         {
             isTroublesome = true
-            throw Exception(R.string.null_pointer.toString())
+            throw e
         }
-
-        val list = source!!.execute()
-        val index = index.execute()
-
-        if (list !is Value.LIST)
-        {
-            isTroublesome = true
-            throw Exception(R.string.illegal_data_type.toString())
-        }
-        if (index !is Value.INT)
-        {
-            isTroublesome = true
-            throw Exception(R.string.index_is_not_int.toString())
-        }
-
-        if (index.value >= list.value.size)
-        {
-            isTroublesome = true
-            throw Exception(R.string.index_was_out_of_range.toString())
-        }
-
-        return list.value[index.value]
     }
 }

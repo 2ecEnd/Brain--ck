@@ -66,6 +66,8 @@ class For(
 
     override fun execute()
     {
+        isTroublesome = false
+
         iterableVar.execute()
         startValue.execute()
 

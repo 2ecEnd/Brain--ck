@@ -19,21 +19,31 @@ class SetListElement(
 
     override fun execute()
     {
-        val indexExecuted = (index.execute() as? Value.INT)
-        val valueExecuted = (value.execute() as? Value)
-        if (valueExecuted == null || indexExecuted == null)
+        isTroublesome = false
+
+        try
+        {
+            val indexExecuted = (index.execute() as? Value.INT)
+            val valueExecuted = (value.execute() as? Value)
+            if (valueExecuted == null || indexExecuted == null)
+            {
+                isTroublesome = true
+                throw Exception(R.string.illegal_data_type.toString())
+            }
+
+            val sourceExecuted = source!!.execute() as? Value.LIST
+            if (sourceExecuted == null)
+            {
+                isTroublesome = true
+                throw Exception(R.string.is_not_list.toString())
+            }
+
+            sourceExecuted.value[indexExecuted.value] = valueExecuted
+        }
+        catch (e: Exception)
         {
             isTroublesome = true
-            throw Exception(R.string.illegal_data_type.toString())
+            throw e
         }
-
-        val sourceExecuted = source!!.execute() as? Value.LIST
-        if (sourceExecuted == null)
-        {
-            isTroublesome = true
-            throw Exception(R.string.is_not_list.toString())
-        }
-
-        sourceExecuted.value[indexExecuted.value] = valueExecuted
     }
 }

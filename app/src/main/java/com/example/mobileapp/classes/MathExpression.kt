@@ -14,6 +14,8 @@ class MathExpression(override var scope: NewScope): BinaryExpression()
 
     override fun execute(): Value
     {
+        isTroublesome = false
+
         val executedLeftValue = (leftValue.execute()) as? Value
         val executedRightValue = (rightValue.execute()) as? Value
 

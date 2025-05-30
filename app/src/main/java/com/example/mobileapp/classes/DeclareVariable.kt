@@ -14,6 +14,8 @@ class DeclareVariable(
 
     override fun execute()
     {
+        isTroublesome = false
+
         varList[name] = value
     }
 }

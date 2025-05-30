@@ -17,16 +17,26 @@ class SetVariable(
 
     override fun execute()
     {
-        val tmp = value.execute()
-        varList[name] = when (tmp)
+        isTroublesome = false
 
+        try
         {
-            is Value -> tmp
-            else ->
+            val tmp = value.execute()
+            varList[name] = when (tmp)
+
             {
-                isTroublesome = true
-                throw Exception(R.string.illegal_data_type.toString())
+                is Value -> tmp
+                else ->
+                {
+                    isTroublesome = true
+                    throw Exception(R.string.illegal_data_type.toString())
+                }
             }
+        }
+        catch (e: Exception)
+        {
+            isTroublesome = true
+            throw e
         }
     }
 }

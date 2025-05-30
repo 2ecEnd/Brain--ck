@@ -20,14 +20,24 @@ class UseVariable(
 
     override fun execute(): Value
     {
-        val result: Value? = varList[name]
+        isTroublesome = false
 
-        if (result == null)
+        try
+        {
+            val result: Value? = varList[name]
+
+            if (result == null)
+            {
+                isTroublesome = true
+                throw Exception(R.string.null_pointer.toString())
+            }
+
+            return result
+        }
+        catch (e: Exception)
         {
             isTroublesome = true
-            throw Exception(R.string.null_pointer.toString())
+            throw e
         }
-
-        return result
     }
 }
