@@ -12,6 +12,17 @@ class Print(override var scope: NewScope, private val console: Console): Block()
 
     override fun execute()
     {
-        console.addString(content.execute().toString())
+        val result: String
+
+        val executedContent = content.execute()
+        if (executedContent is Value.LIST)
+        {
+            val pattern = "(SnapshotStateList\\(value=)|(\\)@\\d*)".toRegex()
+            result = pattern.replace(executedContent.toString(), "")
+        }
+        else
+            result = executedContent.toString()
+
+        console.addString(result)
     }
 }
