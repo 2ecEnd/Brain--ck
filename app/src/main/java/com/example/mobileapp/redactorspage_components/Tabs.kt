@@ -19,8 +19,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -52,7 +60,16 @@ fun ScrollableTabSample(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        ScrollableTabRow(selectedTabIndex = state) {
+        ScrollableTabRow(
+            selectedTabIndex = state,
+            containerColor = Color.White,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    color = Color.Black,
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[state])
+                )
+            }
+        ) {
             titles.forEachIndexed { index, title ->
                 Tab(
                     selected = state == index,
@@ -60,7 +77,8 @@ fun ScrollableTabSample(
                     text = {
                         Text(
                             text = title, maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color.Black
                         )
                     },
                 )

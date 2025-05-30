@@ -45,7 +45,7 @@ class For(
         (changeIterableVar.leftValue as UseVariable).name = "i"
     }
 
-    override fun updateDropZones(draggingBlock: Block)
+    override fun updateDropZones(draggingBlock: Block, pixels: Float)
     {
         dropZones.clear()
         if (blockList.isEmpty())
@@ -57,9 +57,8 @@ class For(
             for(i in blockList.indices)
             {
                 if(blockList[i] == draggingBlock) continue
-                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
-                        ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
-                    bottom = blockList[i].selfRect.bottom + ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.25.toFloat())))
+                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.bottom - pixels,
+                    bottom = blockList[i].selfRect.bottom + pixels))
             }
         }
     }
