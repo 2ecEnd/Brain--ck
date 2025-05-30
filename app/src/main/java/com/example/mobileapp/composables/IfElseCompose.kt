@@ -98,7 +98,7 @@ fun DrawIfElse(
                 {
                     Text(
                         "if",
-                        fontSize = 24.sp,
+                        fontSize = 16.sp, //24
                         color = White,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
@@ -154,7 +154,7 @@ fun DrawIfElse(
             {
                 Text(
                     "else",
-                    fontSize = 24.sp,
+                    fontSize = 16.sp, //24
                     color = White,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )

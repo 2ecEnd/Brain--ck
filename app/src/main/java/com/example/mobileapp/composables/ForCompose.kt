@@ -129,7 +129,7 @@ fun DrawFor(
                         ) {
                             Text(
                                 stringResource(R.string.declare_for),
-                                fontSize = 24.sp,
+                                fontSize = 16.sp, //24
                                 color = White,
                                 modifier = Modifier.padding(end = 8.dp)
                             )
@@ -154,7 +154,7 @@ fun DrawFor(
                                     value = newValue
                                 },
                                 textStyle = LocalTextStyle.current.copy(
-                                    fontSize = 15.sp,
+                                    fontSize = 16.sp, //15
                                     textAlign = TextAlign.Center
                                 ),
                                 singleLine = true,
@@ -172,7 +172,7 @@ fun DrawFor(
 
                             Text(
                                 stringResource(R.string.assign),
-                                fontSize = 24.sp,
+                                fontSize = 16.sp, //24
                                 color = White,
                                 modifier = Modifier.padding(horizontal = 8.dp)
                             )
@@ -202,7 +202,7 @@ fun DrawFor(
                         ) {
                             Text(
                                 block.iterableVar.name,
-                                fontSize = 24.sp,
+                                fontSize = 16.sp, //24
                                 color = White,
                             )
 
@@ -220,7 +220,7 @@ fun DrawFor(
                                 ) {
                                     Text(
                                         selectedOperation,
-                                        fontSize = 24.sp,
+                                        fontSize = 16.sp, //24
                                     )
                                 }
 
@@ -233,7 +233,7 @@ fun DrawFor(
                                             text = {
                                                 Text(
                                                     operator,
-                                                    fontSize = 20.sp,
+                                                    fontSize = 16.sp, //20
                                                     modifier = Modifier.padding(horizontal = 8.dp)
                                                 )
                                             },
@@ -276,7 +276,7 @@ fun DrawFor(
                         ) {
                             Text(
                                 block.iterableVar.name,
-                                fontSize = 24.sp,
+                                fontSize = 16.sp, //24
                                 color = White,
                             )
 
@@ -294,7 +294,7 @@ fun DrawFor(
                                 ) {
                                     Text(
                                         selectedOperation,
-                                        fontSize = 24.sp,
+                                        fontSize = 16.sp, //24
                                     )
                                 }
 
@@ -307,7 +307,7 @@ fun DrawFor(
                                             text = {
                                                 Text(
                                                     operator,
-                                                    fontSize = 20.sp,
+                                                    fontSize = 16.sp, //20
                                                     modifier = Modifier.padding(horizontal = 8.dp)
                                                 )
                                             },
@@ -340,7 +340,7 @@ fun DrawFor(
 
                             Text(
                                 stringResource(R.string.right_bracket),
-                                fontSize = 24.sp,
+                                fontSize = 16.sp, //24
                                 color = White,
                                 modifier = Modifier.padding(start = 8.dp)
                             )
