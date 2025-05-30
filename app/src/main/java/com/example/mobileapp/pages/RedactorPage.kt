@@ -350,7 +350,7 @@ fun RedactorPage(navController: NavController){
                                         Text(
                                             text = text,
                                             fontSize = 24.sp,
-                                            color = Color.White
+                                            color = White
                                         )
                                     }
                                 }

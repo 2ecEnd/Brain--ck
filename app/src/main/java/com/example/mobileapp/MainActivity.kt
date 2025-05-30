@@ -59,7 +59,7 @@ fun App(modifier: Modifier = Modifier){
     )
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = pagesName[3]) {
+    NavHost(navController = navController, startDestination = pagesName[0]) {
         composable(pagesName[0]) {
             HomePage(navController)
         }

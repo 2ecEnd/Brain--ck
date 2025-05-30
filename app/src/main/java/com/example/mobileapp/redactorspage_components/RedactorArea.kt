@@ -59,7 +59,11 @@ fun RedactorArea(
                 Row(
                     modifier = Modifier
                         .width(512.dp)
-                        .background(if(block.isTroublesome) Color.Red.copy(alpha = 0.8f) else Color.Transparent)
+                        .background(
+                            if(block.isTroublesome)
+                                Red.copy(alpha = 0.8f)
+                            else
+                                Color.Transparent)
                 )
                 {
                     Box(
