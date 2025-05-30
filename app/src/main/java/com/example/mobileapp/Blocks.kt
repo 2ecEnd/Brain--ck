@@ -72,7 +72,7 @@ fun DrawShadow(block: Block?){
         modifier = Modifier
             .width(200.dp)
             .height(48.dp),
-        shape = RoundedCornerShape(15.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(25, 25, 25).copy(alpha = 0.25f)),
     )
     {}
