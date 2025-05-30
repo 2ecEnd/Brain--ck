@@ -40,6 +40,7 @@ fun DrawAddListElement(
 )
 {
     block.value.parent = block
+    if (block.source != null) block.source!!.parent = block
     Card(
         modifier = Modifier
             .wrapContentSize()
