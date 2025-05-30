@@ -1,9 +1,6 @@
 package com.example.mobileapp.redactorspage_components
 
 
-import android.R
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -30,7 +26,6 @@ import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.NewScope
 import com.example.mobileapp.ui.theme.*
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun RedactorArea(
@@ -59,9 +54,9 @@ fun RedactorArea(
                 Spacer(modifier = Modifier.height(48.dp))
             }
 
-            var block = blockList[i]
+            val block = blockList[i]
             key(block) {
-                var alpha = if (block == draggingBlock) 0.5f else 1f
+                val alpha = if (block == draggingBlock) 0.5f else 1f
                 Row(
                     modifier = Modifier
                         .width(512.dp)

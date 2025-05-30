@@ -4,7 +4,7 @@ import com.example.mobileapp.R
 
 class UseVariable(
     override var scope: NewScope,
-    val varList: MutableMap<String, Value>
+    private val varList: MutableMap<String, Value>
 ) : Block()
 {
     var name: String = ""

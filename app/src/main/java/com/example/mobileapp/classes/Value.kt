@@ -19,7 +19,7 @@ sealed class Value
 
     data class STRING(val value: String = "str") : Value()
     {
-        override fun toString() = value.toString()
+        override fun toString() = value
     }
 
     data class LIST(val value: MutableList<Value> = mutableListOf()) : Value()

@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 
 class DeclareVariable(
     override var scope: NewScope,
-    val varList: MutableMap<String, Value>
+    private val varList: MutableMap<String, Value>
 ) : Block()
 {
-    var name by mutableStateOf<String>("my variable")
+    var name by mutableStateOf("my variable")
     var value = Value.INT()
 
     override fun execute()

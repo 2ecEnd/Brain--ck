@@ -178,7 +178,7 @@ fun RedactorPage(navController: NavController){
                 val screenWidth = LocalConfiguration.current.screenWidthDp.dp
                 val screenHeight = LocalConfiguration.current.screenHeightDp.dp
                 var trashRect by remember { mutableStateOf(Rect.Zero) }
-                var (alpha) = remember(dragOffset) {
+                val (alpha) = remember(dragOffset) {
                     isDeleting = trashRect.contains(Offset(dragOffset.x, dragOffset.y))
                     if (isDeleting) 0.3f to true else 0f to false
                 }
@@ -246,7 +246,7 @@ fun RedactorPage(navController: NavController){
                             .zIndex(0.95f)
                     )
                     {
-                        DrawShadow(null)
+                        DrawShadow()
                     }
                     if (i != currentInteractionScope.dropZones.count() - 1 ||
                         currentInteractionScope != context)

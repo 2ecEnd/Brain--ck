@@ -134,7 +134,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         }
     }
 
-    fun isNotSpecialBlock(block: Block): Boolean =
+    private fun isNotSpecialBlock(block: Block): Boolean =
         block !is Constant &&
         block !is ListConstant &&
         block !is UseVariable &&

@@ -7,7 +7,7 @@ import androidx.compose.ui.geometry.Rect
 
 class For(
     override var scope: NewScope,
-    var varList: MutableMap<String, Value>
+    private var varList: MutableMap<String, Value>
 ): NewScope()
 {
     var contentRect: Rect = Rect.Zero

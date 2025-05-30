@@ -8,7 +8,7 @@ import com.example.mobileapp.R
 
 class SetVariable(
     override var scope: NewScope,
-    val varList: MutableMap<String, Value>
+    private val varList: MutableMap<String, Value>
 ) : Block()
 {
     var name: String = ""

@@ -42,14 +42,14 @@ import com.example.mobileapp.classes.IfElse
 @Composable
 fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
                isActive: Boolean){
-    var ifHeight = remember { mutableStateOf(48.dp) }
-    var elseHeight = remember { mutableStateOf(48.dp) }
-    var cardWidth = remember { mutableStateOf(220.dp) }
-    var cardHeight = remember { mutableStateOf(48.dp) }
+    val ifHeight = remember { mutableStateOf(48.dp) }
+    val elseHeight = remember { mutableStateOf(48.dp) }
+    val cardWidth = remember { mutableStateOf(220.dp) }
+    val cardHeight = remember { mutableStateOf(48.dp) }
     val density = LocalDensity.current
     block.condition.parent = block
-    Box() {
-        Column() {
+    Box {
+        Column {
             Card(
                 modifier = Modifier
                     .wrapContentSize()
@@ -209,12 +209,12 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
             Column()
             {
                 for (i in block.ifBlock.blockList.indices) {
-                    var localBlock = block.ifBlock.blockList[i]
+                    val localBlock = block.ifBlock.blockList[i]
                     if ((block.ifBlock.spacerPair.value.first == i) && block.ifBlock.spacerPair.value.second == block.ifBlock) {
                         Spacer(modifier = Modifier.height(48.dp))
                     }
                     key(block.hashCode()) {
-                        Box() {
+                        Box{
                             DrawBlock(localBlock, onDragStart, onDragEnd, true)
                         }
                     }
@@ -247,12 +247,12 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
             Column()
             {
                 for (i in block.elseBlock.blockList.indices) {
-                    var localBlock = block.elseBlock.blockList[i]
+                    val localBlock = block.elseBlock.blockList[i]
                     if (block.elseBlock.spacerPair.value.first == i && block.elseBlock.spacerPair.value.second == block.elseBlock) {
                         Spacer(modifier = Modifier.height(48.dp))
                     }
                     key(block.hashCode()) {
-                        Box() {
+                        Box {
                             DrawBlock(localBlock, onDragStart, onDragEnd, true)
                         }
                     }
