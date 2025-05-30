@@ -58,14 +58,28 @@ class Context(
             if(blockList[i] == draggingBlock) continue
             if (i != blockList.count() - 1)
             {
-                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
-                        ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
-                    bottom = blockList[i].selfRect.bottom + ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.25.toFloat())))
+                dropZones.add(
+                    blockList[i].selfRect.copy(
+                        top = blockList[i].selfRect.top +
+                            ((blockList[i].selfRect.bottom - blockList[i].selfRect.top) *
+                                    0.75.toFloat()),
+                        bottom = blockList[i].selfRect.bottom +
+                                ((blockList[i].selfRect.bottom - blockList[i].selfRect.top) *
+                                        0.25.toFloat())
+                    )
+                )
             }
             else
             {
-                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.bottom,
-                    bottom = blockList[i].selfRect.bottom + (blockList[i].selfRect.bottom-blockList[i].selfRect.top)))
+                dropZones.add(
+                    blockList[i].selfRect.copy(
+                        top =
+                            blockList[i].selfRect.bottom,
+                        bottom =
+                            blockList[i].selfRect.bottom +
+                                    (blockList[i].selfRect.bottom - blockList[i].selfRect.top)
+                    )
+                )
             }
         }
     }
