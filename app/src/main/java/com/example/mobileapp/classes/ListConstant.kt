@@ -26,7 +26,11 @@ class ListConstant(
                 is UseVariable -> value.value.add(block.execute())
                 is UseListElement -> value.value.add(block.execute())
                 is ListConstant -> value.value.add(block.execute())
-                else -> throw Exception(R.string.unknown_error.toString())
+                else ->
+                {
+                    isTroublesome = true
+                    throw Exception(R.string.unknown_error.toString())
+                }
             }
         }
 

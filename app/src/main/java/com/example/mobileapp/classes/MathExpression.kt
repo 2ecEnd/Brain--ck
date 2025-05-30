@@ -1,4 +1,5 @@
 package com.example.mobileapp.classes
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -18,33 +19,50 @@ class MathExpression(override var scope: NewScope): BinaryExpression()
 
         return when
         {
-            (executedLeftValue is Value.BOOLEAN || executedRightValue is Value.BOOLEAN) ->
+            (executedLeftValue is Value.BOOLEAN ||
+            executedRightValue is Value.BOOLEAN) ->
             {
+                isTroublesome = true
                 throw Exception(R.string.illegal_data_type.toString())
             }
-            (executedLeftValue is Value.STRING || executedRightValue is Value.STRING) ->
+
+            (executedLeftValue is Value.STRING ||
+            executedRightValue is Value.STRING) ->
             {
                 val left = when(executedLeftValue)
                 {
                     is Value.STRING -> executedLeftValue.value
                     is Value.INT -> executedLeftValue.value.toString()
                     is Value.DOUBLE -> executedLeftValue.value.toString()
-                    else -> throw Exception(R.string.illegal_data_type.toString())
+                    else ->
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.illegal_data_type.toString())
+                    }
                 }
                 val right = when(executedRightValue)
                 {
                     is Value.STRING -> executedRightValue.value
                     is Value.INT -> executedRightValue.value.toString()
                     is Value.DOUBLE -> executedRightValue.value.toString()
-                    else -> throw Exception(R.string.illegal_data_type.toString())
+                    else ->
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.illegal_data_type.toString())
+                    }
                 }
 
                 when (operator)
                 {
                     "+" -> Value.STRING(left + right)
-                    else -> throw Exception(R.string.illegal_operation.toString())
+                    else ->
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.illegal_operation.toString())
+                    }
                 }
             }
+
             (executedLeftValue is Value.INT || executedLeftValue is Value.DOUBLE &&
             executedRightValue is Value.INT || executedRightValue is Value.DOUBLE) ->
             {
@@ -66,7 +84,11 @@ class MathExpression(override var scope: NewScope): BinaryExpression()
                             }
                         "%" -> Value.INT(left % right)
                         "^" -> Value.DOUBLE((left.toDouble().pow(right)))
-                        else -> throw Exception(R.string.illegal_operation.toString())
+                        else ->
+                        {
+                            isTroublesome = true
+                            throw Exception(R.string.illegal_operation.toString())
+                        }
                     }
                 }
                 else
@@ -75,13 +97,21 @@ class MathExpression(override var scope: NewScope): BinaryExpression()
                     {
                         is Value.INT -> executedLeftValue.value.toDouble()
                         is Value.DOUBLE -> executedLeftValue.value
-                        else -> throw Exception(R.string.illegal_data_type.toString())
+                        else ->
+                        {
+                            isTroublesome = true
+                            throw Exception(R.string.illegal_data_type.toString())
+                        }
                     }
                     val right = when (executedRightValue)
                     {
                         is Value.INT -> executedRightValue.value.toDouble()
                         is Value.DOUBLE -> executedRightValue.value
-                        else -> throw Exception(R.string.illegal_data_type.toString())
+                        else ->
+                        {
+                            isTroublesome = true
+                            throw Exception(R.string.illegal_data_type.toString())
+                        }
                     }
 
                     when (operator)
@@ -92,23 +122,38 @@ class MathExpression(override var scope: NewScope): BinaryExpression()
                         "/" ->
                         {
                             if (right == 0.0)
+                            {
+                                isTroublesome = true
                                 throw Exception(R.string.divide_by_zero.toString())
+                            }
                             else
                                 Value.DOUBLE(left / right)
                         }
                         "%" ->
                         {
                             if (right == 0.0)
+                            {
+                                isTroublesome = true
                                 throw Exception(R.string.divide_by_zero.toString())
+                            }
                             else
                                 Value.DOUBLE(left % right)
                         }
                         "^" -> Value.DOUBLE((left.pow(right)))
-                        else -> throw Exception(R.string.illegal_operation.toString())
+                        else ->
+                        {
+                            isTroublesome = true
+                            throw Exception(R.string.illegal_operation.toString())
+                        }
                     }
                 }
             }
-            else -> throw Exception(R.string.illegal_data_type.toString())
+
+            else ->
+            {
+                isTroublesome = true
+                throw Exception(R.string.illegal_data_type.toString())
+            }
         }
     }
 }

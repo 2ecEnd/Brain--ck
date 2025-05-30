@@ -25,8 +25,12 @@ class IfElse(override var scope: NewScope): Block()
                 elseBlock.execute()
         }
         else
+        {
+            isTroublesome = true
             throw Exception(R.string.illegal_data_type.toString())
+        }
     }
+
 
     class If(override var scope: NewScope): NewScope()
     {

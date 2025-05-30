@@ -10,20 +10,30 @@ class DeleteListElement(override var scope: NewScope) : Block()
 {
     var source by mutableStateOf<Block?>(null)
     var sourceRect: Rect = Rect.Zero
-    var index by mutableStateOf<Block>(Constant(scope, "int"))
+    var index by mutableStateOf<Block?>(Constant(scope, "int"))
     var indexRect: Rect = Rect.Zero
 
     override fun execute()
     {
-        if (source == null)
+        if (source == null || index == null)
+        {
+            isTroublesome = true
             throw Exception(R.string.null_pointer.toString())
+        }
 
-        val list = (source ?: throw Exception(R.string.null_pointer.toString())).execute()
+        val list = source!!.execute()
         if (list !is Value.LIST)
+        {
+            isTroublesome = true
             throw Exception(R.string.is_not_list.toString())
+        }
 
-        val executedIndex = (index.execute()) as? Value.INT
-            ?: throw Exception(R.string.illegal_data_type.toString())
+        val executedIndex = (index!!.execute()) as? Value.INT
+        if (executedIndex == null)
+        {
+            isTroublesome = true
+            throw Exception(R.string.illegal_data_type.toString())
+        }
 
         list.value.removeAt(executedIndex.value)
     }

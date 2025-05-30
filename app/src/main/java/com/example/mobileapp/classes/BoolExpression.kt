@@ -18,7 +18,8 @@ class BoolExpression(override var scope: NewScope): BinaryExpression()
 
         return when
         {
-            (executedLeftValue is Value.BOOLEAN && executedRightValue is Value.BOOLEAN) ->
+            (executedLeftValue is Value.BOOLEAN &&
+            executedRightValue is Value.BOOLEAN) ->
             {
                 val left = executedLeftValue.value
                 val right = executedRightValue.value
@@ -34,11 +35,17 @@ class BoolExpression(override var scope: NewScope): BinaryExpression()
                     ">=" -> left >= right
                     "<" -> left < right
                     "<=" -> left <= right
-                    else -> throw Exception(R.string.illegal_operation.toString())
+                    else ->
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.illegal_operation.toString())
+                    }
                 }
                 Value.BOOLEAN(result)
             }
-            (executedLeftValue is Value.STRING && executedRightValue is Value.STRING) ->
+
+            (executedLeftValue is Value.STRING &&
+            executedRightValue is Value.STRING) ->
             {
                 val left = executedLeftValue.value
                 val right = executedRightValue.value
@@ -51,10 +58,15 @@ class BoolExpression(override var scope: NewScope): BinaryExpression()
                     ">=" -> left >= right
                     "<" -> left < right
                     "<=" -> left <= right
-                    else -> throw Exception(R.string.illegal_operation.toString())
+                    else ->
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.illegal_operation.toString())
+                    }
                 }
                 Value.BOOLEAN(result)
             }
+
             (executedLeftValue is Value.INT || executedLeftValue is Value.DOUBLE &&
             executedRightValue is Value.INT || executedRightValue is Value.DOUBLE) ->
             {
@@ -62,13 +74,21 @@ class BoolExpression(override var scope: NewScope): BinaryExpression()
                 {
                     is Value.INT -> executedLeftValue.value.toDouble()
                     is Value.DOUBLE -> executedLeftValue.value
-                    else -> throw Exception(R.string.illegal_data_type.toString())
+                    else ->
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.illegal_data_type.toString())
+                    }
                 }
                 val right = when (executedRightValue)
                 {
                     is Value.INT -> executedRightValue.value.toDouble()
                     is Value.DOUBLE -> executedRightValue.value
-                    else -> throw Exception(R.string.illegal_data_type.toString())
+                    else ->
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.illegal_data_type.toString())
+                    }
                 }
 
                 val result = when (operator)
@@ -79,11 +99,20 @@ class BoolExpression(override var scope: NewScope): BinaryExpression()
                     ">=" -> left >= right
                     "<" -> left < right
                     "<=" -> left <= right
-                    else -> throw Exception(R.string.illegal_operation.toString())
+                    else ->
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.illegal_operation.toString())
+                    }
                 }
                 Value.BOOLEAN(result)
             }
-            else -> throw Exception(R.string.illegal_data_type.toString())
+
+            else ->
+            {
+                isTroublesome = true
+                throw Exception(R.string.illegal_data_type.toString())
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 package com.example.mobileapp.classes
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -18,9 +19,14 @@ class SetVariable(
     {
         val tmp = value.execute()
         varList[name] = when (tmp)
+
         {
             is Value -> tmp
-            else -> throw Exception(R.string.illegal_data_type.toString())
+            else ->
+            {
+                isTroublesome = true
+                throw Exception(R.string.illegal_data_type.toString())
+            }
         }
     }
 }

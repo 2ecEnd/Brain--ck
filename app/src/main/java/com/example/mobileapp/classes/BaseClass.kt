@@ -9,6 +9,7 @@ abstract class Block
     abstract var scope: NewScope
     open var parent: Block? = null
     open var selfRect: Rect = Rect.Zero
+    var isTroublesome = false
 
     abstract fun execute(): Any
 }

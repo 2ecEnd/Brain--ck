@@ -16,12 +16,24 @@ class AddListElement(override var scope: NewScope) : Block()
     override fun execute()
     {
         val executedValue = (value.execute()) as? Value
-            ?: throw Exception(R.string.null_pointer.toString())
-        val list = (source
-            ?: throw Exception(R.string.null_pointer.toString())).execute()
+        if (executedValue == null)
+        {
+            isTroublesome = true
+            throw Exception(R.string.null_pointer.toString())
+        }
+
+        if (source == null)
+        {
+            isTroublesome = true
+            throw Exception(R.string.null_pointer.toString())
+        }
+        val list = source!!.execute()
 
         if (list !is Value.LIST)
+        {
+            isTroublesome = true
             throw Exception(R.string.is_not_list.toString())
+        }
 
         list.value.add(executedValue)
     }

@@ -72,38 +72,25 @@ class Context(
 
     override fun execute()
     {
-        for (i in 0..<blockList.size )
+        try
         {
-            try
+            for (i in 0..<blockList.size )
             {
                 blockList[i].execute()
             }
-            catch (e: Exception)
+        }
+        catch (e: Exception)
+        {
+            if (e.message == null)
             {
-                if (e.message == null)
-                {
-                    try
-                    {
-                        console.addString(resources.getString(R.string.unknown_error))
-                    }
-                    catch (e: Exception)
-                    {
-                        println(e.message)
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        console.addString(resources.getString(e.message!!.toInt()))
-                    }
-                    catch (e: Exception)
-                    {
-                        println(e.message)
-                    }
-                }
+                console.addString(resources.getString(R.string.unknown_error))
+                println(e.message)
+            }
+            else
+            {
+                console.addString(resources.getString(e.message!!.toInt()))
+                println(e.message)
             }
         }
-        //varList.clear()
     }
 }

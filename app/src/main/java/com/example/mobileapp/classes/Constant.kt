@@ -3,7 +3,6 @@ package com.example.mobileapp.classes
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
 class Constant(override var scope: NewScope): Block()
@@ -32,7 +31,11 @@ class Constant(override var scope: NewScope): Block()
             "int" -> Value.INT(0)
             "double" -> Value.DOUBLE(0.0)
             "bool" -> Value.BOOLEAN(true)
-            else -> throw Exception(R.string.illegal_value.toString())
+            else ->
+            {
+                isTroublesome = true
+                throw Exception(R.string.illegal_value.toString())
+            }
         }
     }
 
@@ -45,30 +48,46 @@ class Constant(override var scope: NewScope): Block()
                 if (value is String)
                     this.value = Value.STRING(value)
                 else
+                {
+                    isTroublesome = true
                     throw Exception(R.string.type_mismatch.toString())
+                }
             }
             "int" ->
             {
                 if (value is Int)
                     this.value = Value.INT(value)
                 else
+                {
+                    isTroublesome = true
                     throw Exception(R.string.type_mismatch.toString())
+                }
             }
             "double" ->
             {
                 if (value is Double)
                     this.value = Value.DOUBLE(value)
                 else
+                {
+                    isTroublesome = true
                     throw Exception(R.string.type_mismatch.toString())
+                }
             }
             "bool" ->
             {
                 if (value is Boolean)
                     this.value = Value.BOOLEAN(value)
                 else
+                {
+                    isTroublesome = true
                     throw Exception(R.string.type_mismatch.toString())
+                }
             }
-            else -> throw Exception(R.string.illegal_value.toString())
+            else ->
+            {
+                isTroublesome = true
+                throw Exception(R.string.illegal_value.toString())
+            }
         }
     }
 
