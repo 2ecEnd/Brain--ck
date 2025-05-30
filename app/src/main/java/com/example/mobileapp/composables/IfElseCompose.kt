@@ -41,13 +41,12 @@ import com.example.mobileapp.classes.IfElse
 
 @Composable
 fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-              isActive: Boolean){
+               isActive: Boolean){
     var ifHeight = remember { mutableStateOf(48.dp) }
     var elseHeight = remember { mutableStateOf(48.dp) }
     var cardWidth = remember { mutableStateOf(220.dp) }
     var cardHeight = remember { mutableStateOf(48.dp) }
     val density = LocalDensity.current
-    block.condition.parent = block
     Box() {
         Column() {
             Card(
@@ -65,9 +64,8 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     )
                     .onGloballyPositioned { coordinates ->
                         block.selfRect = coordinates.boundsInWindow()
-                        block.selfRect = block.selfRect.copy(
-                            bottom = block.selfRect.bottom +
-                                    with(density) { (ifHeight.value + elseHeight.value + 44.dp).toPx() })
+                        block.selfRect = block.selfRect.copy(bottom = block.selfRect.bottom +
+                                with(density) {(ifHeight.value + elseHeight.value + 44.dp).toPx()})
                     }
                     .onSizeChanged { size ->
                         cardWidth.value = with(density) { size.width.toDp() }
@@ -109,162 +107,161 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                         }
                     }
                 }
+            }
 
-                Card(
-                    modifier = Modifier
-                        .height(ifHeight.value)
-                        .width(32.dp)
-                        .pointerInput(Unit) {
-                            detectDragGestures(
-                                onDragStart = { offset -> onDragStart(offset, block) },
-                                onDrag = { _, _ -> },
-                                onDragEnd = { onDragEnd(block) }
-                            )
-                        },
-                    shape = RoundedCornerShape(0.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
-                ) {}
+            Card(
+                modifier = Modifier
+                    .height(ifHeight.value)
+                    .width(32.dp)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
+                    },
+                shape = RoundedCornerShape(0.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+            ){}
 
-                Card(
-                    modifier = Modifier
-                        .height(32.dp)
-                        .width(cardWidth.value)
-                        .pointerInput(Unit) {
-                            detectDragGestures(
-                                onDragStart = { offset -> onDragStart(offset, block) },
-                                onDrag = { _, _ -> },
-                                onDragEnd = { onDragEnd(block) }
-                            )
-                        },
-                    shape = RoundedCornerShape(
-                        topEnd = 10.dp,
-                        topStart = 0.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 10.dp
-                    ),
-                    colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+            Card(
+                modifier = Modifier
+                    .height(32.dp)
+                    .width(cardWidth.value)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
+                    },
+                shape = RoundedCornerShape(
+                    topEnd = 10.dp,
+                    topStart = 0.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 10.dp
+                ),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+            )
+            {
+                Text(
+                    "else",
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
-                {
-                    Text(
-                        "else",
-                        fontSize = 24.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
-                }
-
-                Card(
-                    modifier = Modifier
-                        .height(elseHeight.value)
-                        .width(32.dp)
-                        .pointerInput(Unit) {
-                            detectDragGestures(
-                                onDragStart = { offset -> onDragStart(offset, block) },
-                                onDrag = { _, _ -> },
-                                onDragEnd = { onDragEnd(block) }
-                            )
-                        },
-                    shape = RoundedCornerShape(0.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
-                ) {}
-
-                Card(
-                    modifier = Modifier
-                        .height(12.dp)
-                        .width(cardWidth.value)
-                        .pointerInput(Unit) {
-                            detectDragGestures(
-                                onDragStart = { offset -> onDragStart(offset, block) },
-                                onDrag = { _, _ -> },
-                                onDragEnd = { onDragEnd(block) }
-                            )
-                        },
-                    shape = RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 10.dp,
-                        bottomStart = 10.dp,
-                        bottomEnd = 10.dp
-                    ),
-                    colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
-                ) {}
             }
 
             Card(
                 modifier = Modifier
-                    .padding(start = 24.dp)
-                    .widthIn(min = 200.dp)
-                    .heightIn(min = 48.dp)
-                    .offset(y = cardHeight.value)
-                    .onPlaced { coordinates ->
-                        block.ifRect = coordinates.boundsInWindow()
-                        block.ifBlock.selfRect = coordinates.boundsInWindow()
-                    }
-                    .onSizeChanged { size ->
-                        ifHeight.value = with(density) { size.height.toDp() }
+                    .height(elseHeight.value)
+                    .width(32.dp)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
                     },
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
-            )
-            {
-                Column()
-                {
-                    for (i in block.ifBlock.blockList.indices) {
-                        var localBlock = block.ifBlock.blockList[i]
-                        if ((block.ifBlock.spacerPair.value.first == i) && block.ifBlock.spacerPair.value.second == block.ifBlock) {
-                            Spacer(modifier = Modifier.height(48.dp))
-                        }
-                        key(block.hashCode()) {
-                            Box() {
-                                DrawBlock(localBlock, onDragStart, onDragEnd, true)
-                            }
-                        }
-                        if (i == block.ifBlock.blockList.count() - 1 && block.ifBlock.spacerPair.value.first
-                            == block.ifBlock.blockList.count() && block.ifBlock.spacerPair.value.second == block.ifBlock
-                        ) {
-                            Spacer(modifier = Modifier.height(48.dp))
-                        }
-                    }
-                }
-            }
+                shape = RoundedCornerShape(0.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+            ){}
 
             Card(
                 modifier = Modifier
-                    .padding(start = 24.dp)
-                    .widthIn(min = 200.dp)
-                    .heightIn(min = 48.dp)
-                    .offset(y = cardHeight.value + ifHeight.value + 32.dp)
-                    .onPlaced { coordinates ->
-                        block.elseRect = coordinates.boundsInWindow()
-                        block.elseBlock.selfRect = coordinates.boundsInWindow()
-                    }
-                    .onSizeChanged { size ->
-                        elseHeight.value = with(density) { size.height.toDp() }
+                    .height(12.dp)
+                    .width(cardWidth.value)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> onDragStart(offset, block) },
+                            onDrag = { _, _ -> },
+                            onDragEnd = { onDragEnd(block) }
+                        )
                     },
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
-            )
+                shape = RoundedCornerShape(
+                    topStart = 0.dp,
+                    topEnd = 10.dp,
+                    bottomStart = 10.dp,
+                    bottomEnd = 10.dp
+                ),
+                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+            ){}
+        }
+
+        Card(
+            modifier = Modifier
+                .padding(start = 24.dp)
+                .widthIn(min = 200.dp)
+                .heightIn(min = 48.dp)
+                .offset(y = cardHeight.value)
+                .onPlaced { coordinates ->
+                    block.ifRect = coordinates.boundsInWindow()
+                    block.ifBlock.selfRect = coordinates.boundsInWindow()
+                }
+                .onSizeChanged { size ->
+                    ifHeight.value = with(density) { size.height.toDp() }
+                },
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
+        )
+        {
+            Column()
             {
-                Column()
-                {
-                    for (i in block.elseBlock.blockList.indices) {
-                        var localBlock = block.elseBlock.blockList[i]
-                        if (block.elseBlock.spacerPair.value.first == i && block.elseBlock.spacerPair.value.second == block.elseBlock) {
-                            Spacer(modifier = Modifier.height(48.dp))
+                for (i in block.ifBlock.blockList.indices) {
+                    var localBlock = block.ifBlock.blockList[i]
+                    if ((block.ifBlock.spacerPair.value.first == i) && block.ifBlock.spacerPair.value.second == block.ifBlock) {
+                        Spacer(modifier = Modifier.height(48.dp))
+                    }
+                    key(block.hashCode()) {
+                        Box() {
+                            DrawBlock(localBlock, onDragStart, onDragEnd, true)
                         }
-                        key(block.hashCode()) {
-                            Box() {
-                                DrawBlock(localBlock, onDragStart, onDragEnd, true)
-                            }
-                        }
-                        if (i == block.elseBlock.blockList.count() - 1 && block.elseBlock.spacerPair.value.first
-                            == block.elseBlock.blockList.count() && block.elseBlock.spacerPair.value.second == block.elseBlock
-                        ) {
-                            Spacer(modifier = Modifier.height(48.dp))
-                        }
+                    }
+                    if (i == block.ifBlock.blockList.count() - 1 && block.ifBlock.spacerPair.value.first
+                        == block.ifBlock.blockList.count() && block.ifBlock.spacerPair.value.second == block.ifBlock
+                    ) {
+                        Spacer(modifier = Modifier.height(48.dp))
                     }
                 }
             }
+        }
 
+        Card(
+            modifier = Modifier
+                .padding(start = 24.dp)
+                .widthIn(min = 200.dp)
+                .heightIn(min = 48.dp)
+                .offset(y = cardHeight.value + ifHeight.value + 32.dp)
+                .onPlaced { coordinates ->
+                    block.elseRect = coordinates.boundsInWindow()
+                    block.elseBlock.selfRect = coordinates.boundsInWindow()
+                }
+                .onSizeChanged { size ->
+                    elseHeight.value = with(density) { size.height.toDp() }
+                },
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
+        )
+        {
+            Column()
+            {
+                for (i in block.elseBlock.blockList.indices) {
+                    var localBlock = block.elseBlock.blockList[i]
+                    if (block.elseBlock.spacerPair.value.first == i && block.elseBlock.spacerPair.value.second == block.elseBlock) {
+                        Spacer(modifier = Modifier.height(48.dp))
+                    }
+                    key(block.hashCode()) {
+                        Box() {
+                            DrawBlock(localBlock, onDragStart, onDragEnd, true)
+                        }
+                    }
+                    if (i == block.elseBlock.blockList.count() - 1 && block.elseBlock.spacerPair.value.first
+                        == block.elseBlock.blockList.count() && block.elseBlock.spacerPair.value.second == block.elseBlock
+                    ) {
+                        Spacer(modifier = Modifier.height(48.dp))
+                    }
+                }
+            }
         }
     }
 }
