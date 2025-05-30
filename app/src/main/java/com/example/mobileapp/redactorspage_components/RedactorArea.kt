@@ -38,7 +38,7 @@ fun RedactorArea(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.75f)
-            .background(NewScopeColor)
+            .background(NewScopeBodyColor)
             .verticalScroll(rememberScrollState())
             .horizontalScroll(rememberScrollState())
             .padding(end = 256.dp, bottom = 512.dp)
