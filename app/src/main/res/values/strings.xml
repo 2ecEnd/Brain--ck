@@ -1,6 +1,87 @@
 <resources>
     <string name="app_name">MobileApp</string>
 
+    <!--Pages Name-->
+    <string name="home">home</string>
+    <string name="projects">projects</string>
+    <string name="createProject">createProject</string>
+    <string name="redactor">redactor</string>
+
+
+    <!--Tabs-->
+    <string name="variables">Variables</string>
+    <string name="lists">Lists</string>
+    <string name="expressions">Expressions</string>
+    <string name="constants">Constants</string>
+    <string name="other">Other</string>
+    <string name="icon">icon</string>
+    <string name="background">background</string>
+    <string name="trash">trash</string>
+
+
+    <!--Buttons-->
+    <string name="exit">Выйти</string>
+    <string name="create">Создать</string>
+    <string name="projects_button_text">Проекты</string>
+
+
+    <!--Text in Blocks-->
+    <!--Operators-->
+    <string name="assign">=</string>
+    <string name="equals">==</string>
+    <string name="not_equals">!=</string>
+    <string name="less">&lt;</string>
+    <string name="less_or_equals">&lt;=</string>
+    <string name="great">&gt;</string>
+    <string name="great_or_equals">&gt;=</string>
+    <string name="and">&amp;&amp;</string>
+    <string name="or">||</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="times">*</string>
+    <string name="divide">/</string>
+    <string name="mod">%</string>
+    <string name="pow">^</string>
+
+    <!--Data Types-->
+    <string name="integer">int</string>
+    <string name="fractional">double</string>
+    <string name="string">string</string>
+    <string name="default_string_value">str</string>
+    <string name="bool">bool</string>
+
+    <!--Other-->
+    <string name="left_bracket">(</string>
+    <string name="right_bracket">)</string>
+    <string name="left_square_bracket">[</string>
+    <string name="right_square_bracket">]</string>
+
+    <!--DeclareVariable-->
+    <string name="declare">declare</string>
+
+    <!--SetVariable-->
+    <string name="set">set</string>
+    <string name="to">to</string>
+
+    <!--AddListElement-->
+    <string name="add">add</string>
+    <string name="to_list">to list</string>
+
+    <!--DeleteListElement-->
+    <string name="remove">remove</string>
+
+    <!--For-->
+    <string name="declare_for">for (var</string>
+    <string name="i">i</string>
+
+    <!--If-Else-->
+    <string name="_if_">if</string>
+    <string name="_else_">else</string>
+
+    <!--Print-->
+    <string name="print">print</string>
+
+
     <!--Error Messages-->
     <string name="unknown_error">Unknown Error</string>
     <string name="illegal_operation">Illegal operator</string>

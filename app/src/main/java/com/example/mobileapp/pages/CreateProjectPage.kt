@@ -1,5 +1,6 @@
 package com.example.mobileapp.pages
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -39,7 +41,7 @@ fun CreateProjectPage(navController: NavController){
         .background(Color.Green)){
         Image(
             painter = painterResource(id = R.drawable.background),
-            contentDescription = "background",
+            contentDescription = stringResource(R.string.background),
         )
 
         HomeButton(navController)
@@ -60,7 +62,9 @@ fun CreateProjectPage(navController: NavController){
 
 @Composable
 fun ProjectNameForm(navController: NavController){
-    var text by remember{ mutableStateOf("") }
+    val redactorText = stringResource(R.string.redactor)
+
+    var text by remember{ mutableStateOf(String()) }
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -84,7 +88,7 @@ fun ProjectNameForm(navController: NavController){
             )
 
             Button(
-                onClick = {navController.navigate("redactor")},
+                onClick = {navController.navigate(redactorText)},
                 modifier = Modifier
                     .width(275.dp)
                     .height(50.dp),
@@ -93,7 +97,7 @@ fun ProjectNameForm(navController: NavController){
                 )
             )
             {
-                Text("Создать", fontSize = 24.sp, color = Color.White)
+                Text(stringResource(R.string.create), fontSize = 24.sp, color = Color.White)
             }
         }
     }

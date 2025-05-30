@@ -12,15 +12,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,42 +25,57 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onPlaced
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
-import com.example.mobileapp.classes.Constant
 import com.example.mobileapp.classes.For
-import com.example.mobileapp.classes.MathExpression
-import com.example.mobileapp.classes.Print
-import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseVariable
 
 @Composable
-fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-              isActive: Boolean){
+fun DrawFor(
+    block: For,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+)
+{
+    val boolOperators = listOf(
+        stringResource(R.string.equals),
+        stringResource(R.string.not_equals),
+        stringResource(R.string.great),
+        stringResource(R.string.less),
+        stringResource(R.string.great_or_equals),
+        stringResource(R.string.less_or_equals),
+        stringResource(R.string.and),
+        stringResource(R.string.or)
+    )
+    val mathOperators = listOf(
+        stringResource(R.string.plus),
+        stringResource(R.string.minus),
+        stringResource(R.string.times),
+        stringResource(R.string.divide),
+        stringResource(R.string.mod),
+        stringResource(R.string.pow),
+    )
+
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -95,7 +106,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
             )
             {
                 Text(
-                    "for (var",
+                    stringResource(R.string.declare_for),
                     fontSize = 24.sp,
                     color = Color.White,
                     modifier = Modifier.padding(end = 8.dp)
@@ -136,7 +147,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                 )
 
                 Text(
-                    "=",
+                    stringResource(R.string.assign),
                     fontSize = 24.sp,
                     color = Color.White,
                     modifier = Modifier.padding(horizontal = 8.dp)
@@ -168,7 +179,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                 )
 
                 var expanded by remember { mutableStateOf(false) }
-                var selectedOperation by remember { mutableStateOf("<") }
+                var selectedOperation by remember { mutableStateOf(boolOperators[3]) }
                 Box(
                     modifier = Modifier
                         .height(38.dp)
@@ -190,7 +201,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        listOf("==", "!=", ">", "<", ">=", "<=", "&&", "||").forEach { operator ->
+                        boolOperators.forEach { operator ->
                             DropdownMenuItem(
                                 text = {
                                     Text(
@@ -234,7 +245,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                 )
 
                 var expanded by remember { mutableStateOf(false) }
-                var selectedOperation by remember { mutableStateOf("+") }
+                var selectedOperation by remember { mutableStateOf(mathOperators[0]) }
                 Box(
                     modifier = Modifier
                         .height(38.dp)
@@ -256,7 +267,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        listOf("+", "-", "*", "/", "%", "^").forEach { operator ->
+                        mathOperators.forEach { operator ->
                             DropdownMenuItem(
                                 text = {
                                     Text(
@@ -288,7 +299,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                 }
 
                 Text(
-                    ")",
+                    stringResource(R.string.right_bracket),
                     fontSize = 24.sp,
                     color = Color.White,
                     modifier = Modifier.padding(start = 8.dp)

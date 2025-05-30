@@ -1,7 +1,6 @@
 package com.example.mobileapp.composables
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -10,23 +9,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -34,33 +25,40 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BoolExpression
-import com.example.mobileapp.classes.Constant
-import com.example.mobileapp.classes.MathExpression
-import com.example.mobileapp.classes.Print
-import com.example.mobileapp.classes.SetVariable
-import com.example.mobileapp.classes.UseVariable
 
 @Composable
-fun DrawBoolExpression(block: BoolExpression, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-              isActive: Boolean){
+fun DrawBoolExpression(
+    block: BoolExpression,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+)
+{
+    val operators = listOf(
+        stringResource(R.string.equals),
+        stringResource(R.string.not_equals),
+        stringResource(R.string.great),
+        stringResource(R.string.less),
+        stringResource(R.string.great_or_equals),
+        stringResource(R.string.less_or_equals),
+        stringResource(R.string.and),
+        stringResource(R.string.or)
+    )
     var expanded by remember { mutableStateOf(false) }
-    var selectedOperation by remember { mutableStateOf("==") }
+    var selectedOperation by remember { mutableStateOf(operators[0]) }
     block.leftValue.parent = block
     block.rightValue.parent = block
     Card(
@@ -122,7 +120,7 @@ fun DrawBoolExpression(block: BoolExpression, onDragStart: (Offset, Block) -> Un
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    listOf("==", "!=", ">", "<", ">=", "<=", "&&", "||").forEach { operator ->
+                    operators.forEach { operator ->
                         DropdownMenuItem(
                             text = {
                                 Text(

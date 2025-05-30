@@ -18,7 +18,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -26,25 +25,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.MathExpression
-import com.example.mobileapp.classes.SetVariable
 
 @Composable
-fun DrawMathExpression(block: MathExpression, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-              isActive: Boolean){
+fun DrawMathExpression(
+    block: MathExpression,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+)
+{
+    val mathOperators = listOf(
+        stringResource(R.string.plus),
+        stringResource(R.string.minus),
+        stringResource(R.string.times),
+        stringResource(R.string.divide),
+        stringResource(R.string.mod),
+        stringResource(R.string.pow),
+    )
+
     var expanded by remember { mutableStateOf(false) }
-    var selectedOperation by remember { mutableStateOf("+") }
+    var selectedOperation by remember { mutableStateOf(mathOperators[0]) }
     block.leftValue.parent = block
     block.rightValue.parent = block
     Card(
@@ -109,7 +122,7 @@ fun DrawMathExpression(block: MathExpression, onDragStart: (Offset, Block) -> Un
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    listOf("+", "-", "*", "/", "%", "^").forEach { operator ->
+                    mathOperators.forEach { operator ->
                         DropdownMenuItem(
                             text = {
                                 Text(

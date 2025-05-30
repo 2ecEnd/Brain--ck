@@ -44,7 +44,7 @@ class UseListElement(override var scope: NewScope) : Block()
         if (index.value >= list.value.size)
         {
             isTroublesome = true
-            throw Exception(R.string.index_is_not_int.toString())
+            throw Exception(R.string.index_was_out_of_range.toString())
         }
 
         return list.value[index.value]

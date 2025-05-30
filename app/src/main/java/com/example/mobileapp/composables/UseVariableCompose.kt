@@ -16,7 +16,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,10 +33,15 @@ import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.UseVariable
 
 @Composable
-fun DrawUseVariable(block: UseVariable, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-              isActive: Boolean){
+fun DrawUseVariable(
+    block: UseVariable,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+)
+{
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("") }
+    var selectedItem by remember { mutableStateOf(String()) }
 
     Card(
         modifier = Modifier

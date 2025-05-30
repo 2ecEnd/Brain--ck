@@ -1,14 +1,10 @@
 package com.example.mobileapp
 
+
 import android.content.res.Resources
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.mobileapp.classes.AddListElement
@@ -30,6 +26,11 @@ import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseListElement
 import com.example.mobileapp.classes.UseVariable
 
+
+val dataTypes: MutableList<String> = mutableStateListOf()
+var defaultStringValue = String()
+var iterable = String()
+
 class RedactorViewModel(resources: Resources) : ViewModel() {
     var console = Console()
     var context = Context(resources, console = console)
@@ -45,30 +46,64 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
     var blockList = context.blockList
     var scopesList = mutableStateListOf<NewScope>(context)
 
-    var variablesTabList = mutableStateListOf<Block>(DeclareVariable(context, context.varList),
-        UseVariable(context, context.varList), SetVariable(context, context.varList))
+    var variablesTabList = mutableStateListOf<Block>(
+        DeclareVariable(context, context.varList),
+        UseVariable(context, context.varList),
+        SetVariable(context, context.varList)
+    )
 
-    var listsTabList = mutableStateListOf<Block>(ListConstant(context), AddListElement(context),
-        DeleteListElement(context), SetListElement(context), UseListElement(context))
+    var listsTabList = mutableStateListOf<Block>(
+        ListConstant(context),
+        AddListElement(context),
+        DeleteListElement(context),
+        SetListElement(context),
+        UseListElement(context)
+    )
 
-    var expressionsTabList = mutableStateListOf<Block>(MathExpression(context), BoolExpression(context))
+    var expressionsTabList = mutableStateListOf<Block>(
+        MathExpression(context),
+        BoolExpression(context)
+    )
 
-    var constantsTabList = mutableStateListOf<Block>(Constant(context, "int", 0), Constant(context, "string", "str"),
-        Constant(context, "double", 0.0), Constant(context, "bool", true))
+    var constantsTabList = mutableStateListOf<Block>(
+        Constant(context, resources.getString(R.string.integer)),
+        Constant(context, resources.getString(R.string.string)),
+        Constant(context, resources.getString(R.string.fractional)),
+        Constant(context, resources.getString(R.string.bool))
+    )
 
-    var otherTabList = mutableStateListOf<Block>(For(context, context.varList, "i"), IfElse(context), Print(context, console))
+    var otherTabList = mutableStateListOf<Block>(
+        For(context, context.varList, resources.getString(R.string.i)),
+        IfElse(context),
+        Print(context, console)
+    )
 
-    fun createNewBlock(oldBlock: Block, scope: NewScope): Block{
+    init {
+        dataTypes.add(resources.getString(R.string.integer))
+        dataTypes.add(resources.getString(R.string.fractional))
+        dataTypes.add(resources.getString(R.string.string))
+        dataTypes.add(resources.getString(R.string.bool))
+
+        defaultStringValue = resources.getString(R.string.default_string_value)
+
+        iterable = resources.getString(R.string.i)
+    }
+
+    fun createNewBlock(
+        oldBlock: Block,
+        scope: NewScope
+    ): Block
+    {
         when(oldBlock){
             is DeclareVariable -> return DeclareVariable(scope, context.varList)
             is SetVariable -> return SetVariable(scope, context.varList)
             is MathExpression -> return MathExpression(scope)
             is BoolExpression -> return BoolExpression(scope)
             is Constant -> return Constant(scope, oldBlock.type, when(oldBlock.type){
-                "int" -> 0
-                "string" -> "str"
-                "bool" -> true
-                "double" -> 0.0
+                dataTypes[0] -> 0
+                dataTypes[1] -> 0.0
+                dataTypes[2] -> defaultStringValue
+                dataTypes[3] -> true
                 else -> 0
             })
             is ListConstant -> return ListConstant(scope)
@@ -79,7 +114,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
             is DeleteListElement -> return DeleteListElement(scope)
             is SetListElement -> return SetListElement(scope)
             is UseListElement -> return UseListElement(scope)
-            is For -> return For(scope, context.varList, "i")
+            is For -> return For(scope, context.varList, iterable)
         }
         return TODO("Provide the return value")
     }
@@ -92,19 +127,27 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         block !is BoolExpression &&
         block !is UseListElement
 
-    fun deleteBlock(localScope: NewScope){
-        if(draggingBlock.value.parent == null) draggingBlock.value.scope.blockList.remove(draggingBlock.value)
+    fun deleteBlock(
+        localScope: NewScope
+    )
+    {
+        if(draggingBlock.value.parent == null)
+            draggingBlock.value.scope.blockList.remove(draggingBlock.value)
         else{
             var parent = draggingBlock.value.parent
             var child = draggingBlock.value
             when(parent) {
                 is MathExpression -> {
-                    if (parent.leftValue == child) parent.leftValue = Constant(localScope, "int", 0)
-                    else if (parent.rightValue == child) parent.rightValue = Constant(localScope, "int", 0)
+                    if (parent.leftValue == child)
+                        parent.leftValue = Constant(localScope, dataTypes[0])
+                    else if (parent.rightValue == child)
+                        parent.rightValue = Constant(localScope, dataTypes[0])
                 }
                 is BoolExpression -> {
-                    if (parent.leftValue == child) parent.leftValue = Constant(localScope, "bool", true)
-                    else if (parent.rightValue == child) parent.rightValue = Constant(localScope, "bool", true)
+                    if (parent.leftValue == child)
+                        parent.leftValue = Constant(localScope, dataTypes[0])
+                    else if (parent.rightValue == child)
+                        parent.rightValue = Constant(localScope, dataTypes[3])
                 }
                 is ListConstant -> {
                     parent.blockList.remove(child)
@@ -122,10 +165,10 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     if (parent.source == child) parent.source = null
                 }
                 is Print -> {
-                    parent.content = Constant(localScope, "string", "str")
+                    parent.content = Constant(localScope, dataTypes[2])
                 }
                 is SetVariable -> {
-                    parent.value = Constant(localScope, "int", 0)
+                    parent.value = Constant(localScope, dataTypes[0])
                 }
             }
         }
@@ -143,11 +186,19 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         }
     }
 
-    fun addBlockInsideAnother(block: Block, isInsideBlock: Boolean,
-                              onReplace: (newBlock: Block) -> Unit, isRelocating: Boolean,
-                              relocateFunction: (Block, NewScope) -> Unit,
-                              addBlockFunction: (Block, NewScope) -> Unit, localScope: NewScope){
-        if ((isNotSpecialBlock(draggingBlock.value) && block !is IfElse) || draggingBlock.value == block) return
+    fun addBlockInsideAnother(
+        block: Block,
+        isInsideBlock: Boolean,
+        onReplace: (newBlock: Block) -> Unit,
+        isRelocating: Boolean,
+        relocateFunction: (Block, NewScope) -> Unit,
+        addBlockFunction: (Block, NewScope) -> Unit,
+        localScope: NewScope
+    )
+    {
+        if ((isNotSpecialBlock(draggingBlock.value) && block !is IfElse)
+            || draggingBlock.value == block)
+            return
         when(block){
             is MathExpression -> {
                 if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
@@ -335,7 +386,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         }
     }
 
-    fun AddNewBlock(block: Block, localScope: NewScope){
+    fun AddNewBlock(
+        block: Block,
+        localScope: NewScope
+    )
+    {
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(Offset(dragOffset.value.x, dragOffset.value.y))){
                 if (isNotSpecialBlock(block)){
@@ -364,7 +419,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         }
     }
 
-    fun relocateBlock(block: Block, localScope: NewScope){
+    fun relocateBlock(
+        block: Block,
+        localScope: NewScope
+    )
+    {
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(Offset(dragOffset.value.x, dragOffset.value.y))){
                 if (block !is Constant && block !is UseVariable && block !is MathExpression){

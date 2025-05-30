@@ -27,15 +27,22 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.IfElse
 
 @Composable
-fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-              isActive: Boolean){
+fun DrawIfElse(
+    block: IfElse,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+)
+{
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -68,7 +75,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
             )
             {
                 Text(
-                    "if",
+                    stringResource(R.string._if_),
                     fontSize = 24.sp,
                     color = Color.White,
                     modifier = Modifier.padding(horizontal = 8.dp)
@@ -126,7 +133,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
             }
 
             Text(
-                "else",
+                stringResource(R.string._else_),
                 fontSize = 24.sp,
                 color = Color.White,
                 modifier = Modifier.padding(horizontal = 8.dp)

@@ -1,37 +1,20 @@
 package com.example.mobileapp
 
-import android.content.Intent
+
 import android.os.Bundle
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.foundation.shape.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.mobileapp.ui.theme.MobileAppTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -69,19 +52,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(modifier: Modifier = Modifier){
+    val pagesName = listOf(
+        stringResource(R.string.home),
+        stringResource(R.string.projects),
+        stringResource(R.string.createProject),
+        stringResource(R.string.redactor)
+    )
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "redactor") {
-        composable("home") {
+    NavHost(navController = navController, startDestination = pagesName[3]) {
+        composable(pagesName[0]) {
             HomePage(navController)
         }
-        composable("projects") {
+        composable(pagesName[1]) {
             ProjectsPage(navController)
         }
-        composable("createProject") {
+        composable(pagesName[2]) {
             CreateProjectPage(navController)
         }
-        composable("redactor") {
+        composable(pagesName[3]) {
             RedactorPage(navController)
         }
     }

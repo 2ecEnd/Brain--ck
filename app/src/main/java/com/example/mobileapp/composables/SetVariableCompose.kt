@@ -16,7 +16,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -30,17 +29,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.SetVariable
 
 @Composable
-fun DrawSetVariable(block: SetVariable, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-              isActive: Boolean){
+fun DrawSetVariable(
+    block: SetVariable,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+)
+{
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("") }
+    var selectedItem by remember { mutableStateOf(String()) }
     block.value.parent = block
     Card(
         modifier = Modifier
@@ -71,7 +77,7 @@ fun DrawSetVariable(block: SetVariable, onDragStart: (Offset, Block) -> Unit, on
             horizontalArrangement = Arrangement.SpaceAround
         )
         {
-            Text("set", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+            Text(stringResource(R.string.set), fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
 
             Box(
                 modifier = Modifier
@@ -100,7 +106,7 @@ fun DrawSetVariable(block: SetVariable, onDragStart: (Offset, Block) -> Unit, on
                 }
             }
 
-            Text("to", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+            Text(stringResource(R.string.to), fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
 
             Box(
                 modifier = Modifier

@@ -1,5 +1,6 @@
 package com.example.mobileapp.redactorspage_components
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mobileapp.R
@@ -51,7 +53,7 @@ fun Toolbar(navController: NavController){
         {
             Image(
                 painter = painterResource(id = R.drawable.gear_128px),
-                contentDescription = "icon",
+                contentDescription = stringResource(R.string.icon),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit,
             )
@@ -71,7 +73,7 @@ fun Toolbar(navController: NavController){
         {
             Image(
                 painter = painterResource(id = R.drawable.cloud_arrow_down_128px),
-                contentDescription = "icon",
+                contentDescription = stringResource(R.string.icon),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit,
             )
@@ -91,7 +93,7 @@ fun Toolbar(navController: NavController){
         {
             Image(
                 painter = painterResource(id = R.drawable.person_gear_128px),
-                contentDescription = "icon",
+                contentDescription = stringResource(R.string.icon),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit,
             )

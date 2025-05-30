@@ -1,8 +1,8 @@
 package com.example.mobileapp.redactorspage_components
 
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,13 +16,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.R
 
 @Composable
 fun ScrollableTabSample(
@@ -35,7 +36,13 @@ fun ScrollableTabSample(
     otherTabList: MutableList<Block>
 ) {
     var state by remember { mutableStateOf(0) }
-    val titles = listOf("Variables", "Lists", "Expressions", "Constants", "Other")
+    val titles = listOf(
+        stringResource(R.string.variables),
+        stringResource(R.string.lists),
+        stringResource(R.string.expressions),
+        stringResource(R.string.constants),
+        stringResource(R.string.other),
+    )
 
     Column {
         ScrollableTabRow(selectedTabIndex = state) {

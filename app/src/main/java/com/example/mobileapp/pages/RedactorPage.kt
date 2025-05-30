@@ -1,5 +1,6 @@
 package com.example.mobileapp.pages
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,26 +17,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
@@ -48,6 +41,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,27 +53,12 @@ import com.example.mobileapp.DrawShadow
 import com.example.mobileapp.R
 import com.example.mobileapp.RedactorViewModel
 import com.example.mobileapp.RedactorViewModelFactory
-import com.example.mobileapp.classes.AddListElement
 import com.example.mobileapp.classes.Block
-import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.NewScope
-import com.example.mobileapp.classes.Console
 import com.example.mobileapp.classes.Constant
-import com.example.mobileapp.classes.DeclareVariable
-import com.example.mobileapp.classes.DeleteListElement
-import com.example.mobileapp.classes.For
-import com.example.mobileapp.classes.IfElse
-import com.example.mobileapp.classes.ListConstant
-import com.example.mobileapp.classes.MathExpression
-import com.example.mobileapp.classes.Print
-import com.example.mobileapp.classes.SetListElement
-import com.example.mobileapp.classes.SetVariable
-import com.example.mobileapp.classes.UseListElement
-import com.example.mobileapp.classes.UseVariable
 import com.example.mobileapp.redactorspage_components.RedactorArea
 import com.example.mobileapp.redactorspage_components.ScrollableTabSample
 import com.example.mobileapp.redactorspage_components.Toolbar
-import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
 @Composable
@@ -212,7 +191,7 @@ fun RedactorPage(navController: NavController){
                     ){
                         Image(
                             painter = painterResource(id = R.drawable.trash_fill),
-                            contentDescription = "trash",
+                            contentDescription = stringResource(R.string.trash),
                             modifier = Modifier.fillMaxSize(0.8f),
                         )
                     }
@@ -346,7 +325,6 @@ fun RedactorPage(navController: NavController){
                                     context.blockList = blockList
                                     console.text.clear()
                                     context.execute()
-                                    //console.text.add("Программа завершилась штатно")
                                 },
                                 modifier = Modifier
                                     .width(68.dp)
@@ -360,7 +338,7 @@ fun RedactorPage(navController: NavController){
                             ){
                                 Image(
                                     painter = painterResource(id = R.drawable.play_128px),
-                                    contentDescription = "icon",
+                                    contentDescription = stringResource(R.string.icon),
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Fit,
                                 )

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -26,14 +25,12 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
@@ -42,19 +39,31 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.Constant
-import com.example.mobileapp.classes.MathExpression
-import com.example.mobileapp.classes.SetVariable
 
 @Composable
-fun DrawConstant(block: Constant, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-              isActive: Boolean){
+fun DrawConstant(
+    block: Constant,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+)
+{
+    val dataTypes = listOf(
+        stringResource(R.string.integer),
+        stringResource(R.string.fractional),
+        stringResource(R.string.string),
+        stringResource(R.string.bool),
+    )
+    val defaultStringValue = stringResource(R.string.default_string_value)
+
     var selectedType = block.type
 
     Card(
@@ -93,35 +102,35 @@ fun DrawConstant(block: Constant, onDragStart: (Offset, Block) -> Unit, onDragEn
 
             fun setValue(){
                 when (selectedType){
-                    "int" -> {
+                    dataTypes[0] -> {
                         if (value.isNotEmpty()) {
-                            block.setValue("int", value.toInt())
+                            block.setValue(dataTypes[0], value.toInt())
                         } else {
-                            block.setValue("int", 0)
+                            block.setValue(dataTypes[0], 0)
                         }
                     }
-                    "string" -> {
+                    dataTypes[1] -> {
                         if (value.isNotEmpty()) {
-                            block.setValue("string", value)
+                            block.setValue(dataTypes[1], value.toDouble())
                         } else {
-                            block.setValue("string", "str")
+                            block.setValue(dataTypes[1], 0.0)
                         }
                     }
-                    "double" -> {
+                    dataTypes[2] -> {
                         if (value.isNotEmpty()) {
-                            block.setValue("double", value.toDouble())
+                            block.setValue(dataTypes[2], value)
                         } else {
-                            block.setValue("double", 0.0)
+                            block.setValue(dataTypes[2], defaultStringValue)
                         }
                     }
-                    "bool" -> {
-                        block.setValue("bool", booleanValue)
+                    dataTypes[3] -> {
+                        block.setValue(dataTypes[3], booleanValue)
                     }
                 }
                 value = block.value.toString()
             }
 
-            if(selectedType != "bool"){
+            if(selectedType != dataTypes[3]){
                 BasicTextField(
                     modifier = Modifier
                         .widthIn(min = 50.dp)
@@ -150,7 +159,7 @@ fun DrawConstant(block: Constant, onDragStart: (Offset, Block) -> Unit, onDragEn
                         }
                     ),
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = if (selectedType == "int" || selectedType == "double") KeyboardType.Number
+                        keyboardType = if (selectedType == dataTypes[0] || selectedType == dataTypes[1]) KeyboardType.Number
                         else KeyboardType.Text
                     ),
                     decorationBox = { innerTextField ->
