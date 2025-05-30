@@ -1,6 +1,9 @@
 package com.example.mobileapp.classes
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Rect
 
@@ -9,7 +12,7 @@ abstract class Block
     abstract var scope: NewScope
     open var parent: Block? = null
     open var selfRect: Rect = Rect.Zero
-    var isTroublesome = false
+    var isTroublesome by mutableStateOf(false)
 
     abstract fun execute(): Any
 }

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.mobileapp.classes.Block
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -33,6 +34,7 @@ fun ScrollableTabSample(
     listsTabList: MutableList<Block>,
     expressionsTabList: MutableList<Block>,
     constantsTabList: MutableList<Block>,
+    convertersTabList: MutableList<Block>,
     otherTabList: MutableList<Block>
 ) {
     var state by remember { mutableStateOf(0) }
@@ -41,10 +43,14 @@ fun ScrollableTabSample(
         stringResource(R.string.lists),
         stringResource(R.string.expressions),
         stringResource(R.string.constants),
+        stringResource(R.string.converters),
         stringResource(R.string.other),
     )
 
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         ScrollableTabRow(selectedTabIndex = state) {
             titles.forEachIndexed { index, title ->
                 Tab(
@@ -65,7 +71,8 @@ fun ScrollableTabSample(
             1 -> Lists(onDragStart, onDragEnd, listsTabList)
             2 -> Expressions(onDragStart, onDragEnd, expressionsTabList)
             3 -> Constants(onDragStart, onDragEnd, constantsTabList)
-            4 -> Other(onDragStart, onDragEnd, otherTabList)
+            4 -> Converters(onDragStart, onDragEnd, convertersTabList)
+            5 -> Other(onDragStart, onDragEnd, otherTabList)
         }
     }
 }
@@ -149,6 +156,28 @@ fun Constants(
         horizontalAlignment = Alignment.Start
     ) {
         constantsTabList.forEach { item ->
+            Box(modifier = Modifier.padding(12.dp)){
+                DrawBlock(
+                    item, onDragStart, onDragEnd, false
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun Converters(
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    otherTabList: MutableList<Block>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.Start
+    ) {
+        otherTabList.forEach { item ->
             Box(modifier = Modifier.padding(12.dp)){
                 DrawBlock(
                     item, onDragStart, onDragEnd, false

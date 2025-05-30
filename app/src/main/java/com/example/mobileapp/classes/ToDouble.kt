@@ -1,10 +1,15 @@
 package com.example.mobileapp.classes
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Rect
 import com.example.mobileapp.R
 
 class ToDouble(override var scope: NewScope) : Block()
 {
-    var source: Block = Constant(scope)
+    var source by mutableStateOf<Block>(Constant(scope, "int"))
+    var sourceRect: Rect = Rect.Zero
 
     override fun execute(): Value
     {

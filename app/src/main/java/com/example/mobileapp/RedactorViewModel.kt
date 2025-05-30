@@ -23,6 +23,10 @@ import com.example.mobileapp.classes.NewScope
 import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetListElement
 import com.example.mobileapp.classes.SetVariable
+import com.example.mobileapp.classes.ToBoolean
+import com.example.mobileapp.classes.ToDouble
+import com.example.mobileapp.classes.ToInt
+import com.example.mobileapp.classes.ToString
 import com.example.mobileapp.classes.UseListElement
 import com.example.mobileapp.classes.UseVariable
 
@@ -72,6 +76,13 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         Constant(context, resources.getString(R.string.bool))
     )
 
+    var convertersTabList = mutableStateListOf<Block>(
+        ToBoolean(context),
+        ToDouble(context),
+        ToInt(context),
+        ToString(context)
+    )
+
     var otherTabList = mutableStateListOf<Block>(
         For(context, context.varList, resources.getString(R.string.i)),
         IfElse(context),
@@ -115,6 +126,10 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
             is SetListElement -> return SetListElement(scope)
             is UseListElement -> return UseListElement(scope)
             is For -> return For(scope, context.varList, iterable)
+            is ToBoolean -> return ToBoolean(scope)
+            is ToDouble -> return ToDouble(scope)
+            is ToInt -> return ToInt(scope)
+            is ToString -> return ToString(scope)
         }
         return TODO("Provide the return value")
     }
@@ -125,7 +140,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         block !is UseVariable &&
         block !is MathExpression &&
         block !is BoolExpression &&
-        block !is UseListElement
+        block !is UseListElement &&
+        block !is ToBoolean &&
+        block !is ToDouble &&
+        block !is ToInt &&
+        block !is ToString
 
     fun deleteBlock(
         localScope: NewScope
@@ -153,22 +172,48 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     parent.blockList.remove(child)
                 }
                 is AddListElement -> {
-                    if (parent.source == child) parent.source = null
+                    when(child){
+                        parent.source -> parent.source = null
+                        parent.value -> Constant(localScope, dataTypes[0])
+                    }
+
                 }
                 is DeleteListElement -> {
-                    if (parent.source == child) parent.source = null
+                    when(child){
+                        parent.source -> parent.source = null
+                        parent.index -> Constant(localScope, dataTypes[0])
+                    }
                 }
                 is SetListElement -> {
-                    if (parent.source == child) parent.source = null
+                    when(child){
+                        parent.source -> parent.source = null
+                        parent.value -> Constant(localScope, dataTypes[0])
+                        parent.index -> Constant(localScope, dataTypes[0])
+                    }
                 }
                 is UseListElement -> {
-                    if (parent.source == child) parent.source = null
+                    when(child){
+                        parent.source -> parent.source = null
+                        parent.index -> Constant(localScope, dataTypes[0])
+                    }
                 }
                 is Print -> {
                     parent.content = Constant(localScope, dataTypes[2])
                 }
                 is SetVariable -> {
                     parent.value = Constant(localScope, dataTypes[0])
+                }
+                is ToBoolean -> {
+                    parent.source = Constant(localScope, dataTypes[0])
+                }
+                is ToDouble -> {
+                    parent.source = Constant(localScope, dataTypes[0])
+                }
+                is ToInt -> {
+                    parent.source = Constant(localScope, dataTypes[0])
+                }
+                is ToString -> {
+                    parent.source = Constant(localScope, dataTypes[0])
                 }
             }
         }
@@ -830,6 +875,166 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                                 else
                                     draggingBlock.value
                         }
+                    }
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
+                    }
+                }
+            }
+            is ToBoolean -> {
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                    ))
+                {
+                    if (block.sourceRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                        ))
+                    {
+                        addBlockInsideAnother(
+                            block.source,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.source = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
+                    }
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
+                    }
+                }
+            }
+            is ToDouble -> {
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                    ))
+                {
+                    if (block.sourceRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                        ))
+                    {
+                        addBlockInsideAnother(
+                            block.source,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.source = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
+                    }
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
+                    }
+                }
+            }
+            is ToInt -> {
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                    ))
+                {
+                    if (block.sourceRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                        ))
+                    {
+                        addBlockInsideAnother(
+                            block.source,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.source = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
+                    }
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
+                    }
+                }
+            }
+            is ToString -> {
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                    ))
+                {
+                    if (block.sourceRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                        ))
+                    {
+                        addBlockInsideAnother(
+                            block.source,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.source = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
                     else if (isInsideBlock)
                     {

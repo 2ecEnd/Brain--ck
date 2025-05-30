@@ -28,19 +28,20 @@ import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
-import com.example.mobileapp.classes.DeleteListElement
+import com.example.mobileapp.classes.ToBoolean
+import com.example.mobileapp.classes.ToDouble
+import com.example.mobileapp.classes.UseListElement
 import com.example.mobileapp.ui.theme.*
 
 @Composable
-fun DrawDeleteListElement(
-    block: DeleteListElement,
+fun DrawToDouble(
+    block: ToDouble,
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
 )
 {
-    block.index.parent = block
-    if (block.source != null) block.source!!.parent = block
+    block.source.parent = block
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -70,13 +71,6 @@ fun DrawDeleteListElement(
             horizontalArrangement = Arrangement.SpaceAround
         )
         {
-            Text(
-                stringResource(R.string.remove),
-                fontSize = 16.sp,
-                color = White,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-
             Box(
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
@@ -84,48 +78,18 @@ fun DrawDeleteListElement(
                     }
             )
             {
-                if (block.source != null) {
-                    key(block.source) {
-                        DrawBlock(block.source as Block, onDragStart, onDragEnd, isActive)
-                    }
-                }
-                else{
-                    Card(
-                        modifier = Modifier
-                            .height(38.dp)
-                            .width(56.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        colors = CardDefaults.cardColors(containerColor = AddValueOpportunityColor)
-                    )
-                    {
-
-                    }
+                key(block.source) {
+                    DrawBlock(block.source, onDragStart, onDragEnd, isActive)
                 }
             }
 
             Text(
-                stringResource(R.string.left_square_bracket),
-                fontSize = 36.sp,
+                stringResource(R.string.to_double),
+                fontSize = 16.sp,
                 color = White,
                 modifier = Modifier.padding(start = 8.dp)
             )
-            Box(
-                modifier = Modifier
-                    .onGloballyPositioned { coordinates ->
-                        block.indexRect = coordinates.boundsInWindow()
-                    }
-            )
-            {
-                key(block.source) {
-                    DrawBlock(block.index, onDragStart, onDragEnd, isActive)
-                }
-            }
-            Text(
-                stringResource(R.string.right_square_bracket),
-                fontSize = 36.sp,
-                color = White,
-                modifier = Modifier.padding(horizontal = 0.dp)
-            )
+
         }
     }
 }

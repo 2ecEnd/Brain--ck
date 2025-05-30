@@ -13,6 +13,7 @@
     <string name="lists">Lists</string>
     <string name="expressions">Expressions</string>
     <string name="constants">Constants</string>
+    <string name="converters">Converters</string>
     <string name="other">Other</string>
     <string name="icon">icon</string>
     <string name="background">background</string>
@@ -81,6 +82,17 @@
     <!--Print-->
     <string name="print">print</string>
 
+    <!--To-Boolean-->
+    <string name="to_boolean">to boolean</string>
+
+    <!--To-Double-->
+    <string name="to_double">to double</string>
+
+    <!--To-Int-->
+    <string name="to_int">to int</string>
+
+    <!--To-String-->
+    <string name="to_string">to string</string>
 
     <!--Error Messages-->
     <string name="unknown_error">Unknown Error</string>

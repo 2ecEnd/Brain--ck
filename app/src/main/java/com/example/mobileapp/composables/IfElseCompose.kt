@@ -47,6 +47,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
     var cardWidth = remember { mutableStateOf(220.dp) }
     var cardHeight = remember { mutableStateOf(48.dp) }
     val density = LocalDensity.current
+    block.condition.parent = block
     Box() {
         Column() {
             Card(

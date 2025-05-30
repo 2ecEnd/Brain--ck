@@ -86,6 +86,7 @@ fun RedactorPage(navController: NavController){
     val listsTabList = viewModel.listsTabList
     val expressionsTabList = viewModel.expressionsTabList
     val constantsTabList = viewModel.constantsTabList
+    val convertersTabList =  viewModel.convertersTabList
     val otherTabList =  viewModel.otherTabList
 
     val pagerState = rememberPagerState (pageCount = {2})
@@ -304,6 +305,7 @@ fun RedactorPage(navController: NavController){
                             listsTabList,
                             expressionsTabList,
                             constantsTabList,
+                            convertersTabList,
                             otherTabList
                         )
                     }

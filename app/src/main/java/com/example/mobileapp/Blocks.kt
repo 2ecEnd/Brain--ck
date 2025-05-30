@@ -23,6 +23,10 @@ import com.example.mobileapp.classes.ListConstant
 import com.example.mobileapp.classes.Print
 import com.example.mobileapp.classes.SetListElement
 import com.example.mobileapp.classes.SetVariable
+import com.example.mobileapp.classes.ToBoolean
+import com.example.mobileapp.classes.ToDouble
+import com.example.mobileapp.classes.ToInt
+import com.example.mobileapp.classes.ToString
 import com.example.mobileapp.classes.UseListElement
 import com.example.mobileapp.classes.UseVariable
 import com.example.mobileapp.composables.DrawAddListElement
@@ -37,6 +41,10 @@ import com.example.mobileapp.composables.DrawMathExpression
 import com.example.mobileapp.composables.DrawPrint
 import com.example.mobileapp.composables.DrawSetListElement
 import com.example.mobileapp.composables.DrawSetVariable
+import com.example.mobileapp.composables.DrawToBoolean
+import com.example.mobileapp.composables.DrawToDouble
+import com.example.mobileapp.composables.DrawToInt
+import com.example.mobileapp.composables.DrawToString
 import com.example.mobileapp.composables.DrawUseListElement
 import com.example.mobileapp.composables.DrawUseVariable
 import com.example.mobileapp.ui.theme.*
@@ -63,6 +71,10 @@ fun DrawBlock(block: Block,
         is SetListElement -> DrawSetListElement(block, onDragStart, onDragEnd, isActive)
         is UseListElement -> DrawUseListElement(block, onDragStart, onDragEnd, isActive)
         is For -> DrawFor(block, onDragStart, onDragEnd, isActive)
+        is ToBoolean -> DrawToBoolean(block, onDragStart, onDragEnd, isActive)
+        is ToDouble -> DrawToDouble(block, onDragStart, onDragEnd, isActive)
+        is ToInt -> DrawToInt(block, onDragStart, onDragEnd, isActive)
+        is ToString -> DrawToString(block, onDragStart, onDragEnd, isActive)
     }
 }
 
