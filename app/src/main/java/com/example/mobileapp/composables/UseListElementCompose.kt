@@ -39,6 +39,8 @@ fun DrawUseListElement(
     isActive: Boolean
 )
 {
+    block.index.parent = block
+    if (block.source != null) block.source!!.parent = block
     Card(
         modifier = Modifier
             .wrapContentSize()

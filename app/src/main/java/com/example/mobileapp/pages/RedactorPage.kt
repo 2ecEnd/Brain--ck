@@ -63,14 +63,14 @@ import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun RedactorPage(navController: NavController){
-    var resources = LocalContext.current.resources
-    var viewModel: RedactorViewModel = viewModel(
+    val resources = LocalContext.current.resources
+    val viewModel: RedactorViewModel = viewModel(
         factory = RedactorViewModelFactory(resources)
     )
 
-    var blockList = viewModel.blockList
-    var context = viewModel.context
-    var console = viewModel.console
+    val blockList = viewModel.blockList
+    val context = viewModel.context
+    val console = viewModel.console
 
     var currentInteractionScope by viewModel.currentInteractionScope
     var draggingBlock by viewModel.draggingBlock
@@ -80,15 +80,15 @@ fun RedactorPage(navController: NavController){
     var dragOffset by viewModel.dragOffset
     var touchPoint by viewModel.touchPoint
 
-    var scopesList = viewModel.scopesList
+    val scopesList = viewModel.scopesList
 
-    var variablesTabList = viewModel.variablesTabList
-    var listsTabList = viewModel.listsTabList
-    var expressionsTabList = viewModel.expressionsTabList
-    var constantsTabList = viewModel.constantsTabList
-    var otherTabList =  viewModel.otherTabList
+    val variablesTabList = viewModel.variablesTabList
+    val listsTabList = viewModel.listsTabList
+    val expressionsTabList = viewModel.expressionsTabList
+    val constantsTabList = viewModel.constantsTabList
+    val otherTabList =  viewModel.otherTabList
 
-    var pagerState = rememberPagerState (pageCount = {2})
+    val pagerState = rememberPagerState (pageCount = {2})
 
     context.spacerPair = remember{mutableStateOf<Pair<Int, NewScope>>(-1 to context)}
 
