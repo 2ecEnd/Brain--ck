@@ -107,5 +107,6 @@
     <string name="is_not_list">Variable Is Not A List</string>
     <string name="type_mismatch">Type Mismatch</string>
     <string name="divide_by_zero">Divide By Zero</string>
+    <string name="word_to_number">Cannot Transform Word To Number</string>
     <string name="temp">Error</string>
 </resources>

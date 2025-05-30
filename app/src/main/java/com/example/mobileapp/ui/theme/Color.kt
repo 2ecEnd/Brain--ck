@@ -21,3 +21,7 @@ val TabsBackground  = Color(230, 224, 233)
 val NavButtonColor  = Color(103, 80, 164)
 val ConsoleColor  = Color(100, 100, 100)
 val ExecuteButtonColor  = Color(87, 150, 92)
+
+val IntConstantColor = Color(172, 235, 254)
+val DoubleConstantColor = Color(255, 250, 219)
+val StringConstantColor = Color(174, 255, 163)

@@ -21,7 +21,16 @@ class ToDouble(override var scope: NewScope) : Block()
             {
                 is Value.INT -> Value.DOUBLE(executedValue.value.toDouble())
                 is Value.DOUBLE -> executedValue
-                is Value.STRING -> Value.DOUBLE(executedValue.value.toDouble())
+                is Value.STRING ->
+                try
+                {
+                    Value.DOUBLE(executedValue.value.toDouble())
+                }
+                catch (e:Exception)
+                {
+                    isTroublesome = true
+                    throw Exception(R.string.word_to_number.toString())
+                }
                 is Value.BOOLEAN ->
                 {
                     if (executedValue.value) Value.DOUBLE(1.0)

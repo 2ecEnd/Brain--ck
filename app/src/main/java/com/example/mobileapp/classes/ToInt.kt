@@ -21,7 +21,18 @@ class ToInt(override var scope: NewScope) : Block()
             {
                 is Value.INT -> executedValue
                 is Value.DOUBLE -> Value.INT(executedValue.value.toInt())
-                is Value.STRING -> Value.INT(Integer.parseInt(executedValue.value))
+                is Value.STRING ->
+                {
+                    try
+                    {
+                        Value.INT(executedValue.value.toInt())
+                    }
+                    catch (e:Exception)
+                    {
+                        isTroublesome = true
+                        throw Exception(R.string.word_to_number.toString())
+                    }
+                }
                 is Value.BOOLEAN ->
                 {
                     if (executedValue.value) Value.INT(1)

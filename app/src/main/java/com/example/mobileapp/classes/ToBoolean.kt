@@ -35,7 +35,7 @@ class ToBoolean(override var scope: NewScope) : Block()
                 }
                 is Value.STRING ->
                 {
-                    if (executedValue.value.length != 0)
+                    if (executedValue.value.isNotEmpty())
                         Value.BOOLEAN(true)
                     else
                         Value.BOOLEAN(false)

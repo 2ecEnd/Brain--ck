@@ -56,6 +56,12 @@ fun DrawConstant(
     isActive: Boolean
 )
 {
+    val dataColors = listOf(
+        IntConstantColor,
+        DoubleConstantColor,
+        StringConstantColor,
+        BlockColor
+    )
     val dataTypes = listOf(
         stringResource(R.string.integer),
         stringResource(R.string.fractional),
@@ -64,7 +70,9 @@ fun DrawConstant(
     )
     val defaultStringValue = stringResource(R.string.default_string_value)
 
-    var selectedType = block.type
+    val selectedType = block.type
+    val selectedColor = dataColors[dataTypes.indexOf(selectedType)]
+    println(dataTypes.indexOf(selectedType))
 
     Card(
         modifier = Modifier
@@ -85,7 +93,7 @@ fun DrawConstant(
                 block.selfRect = coordinates.boundsInWindow()
             },
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = BlockColor),
+        colors = CardDefaults.cardColors(containerColor = selectedColor),
     )
     {
         Row(
@@ -95,7 +103,7 @@ fun DrawConstant(
             horizontalArrangement = Arrangement.SpaceAround
         )
         {
-            var focusManager = LocalFocusManager.current
+            val focusManager = LocalFocusManager.current
             var value by remember(block.value) { mutableStateOf(block.value.toString()) }
             var booleanValue by remember { mutableStateOf(true) }
             var isFocused by remember { mutableStateOf(false) }
@@ -169,7 +177,7 @@ fun DrawConstant(
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier
-                                .background(White, RoundedCornerShape(20.dp)),
+                                .background(selectedColor, RoundedCornerShape(20.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             innerTextField()

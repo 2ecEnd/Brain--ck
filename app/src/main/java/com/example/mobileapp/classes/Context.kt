@@ -102,8 +102,18 @@ class Context(
             }
             else
             {
-                console.addString(resources.getString(e.message!!.toInt()))
-                println(e.message)
+                try
+                {
+                    console.addString(resources.getString(e.message!!.toInt()))
+                }
+                catch (e: Exception)
+                {
+                    console.addString(resources.getString(R.string.unknown_error))
+                }
+                finally
+                {
+                    println(e.message)
+                }
             }
         }
     }
