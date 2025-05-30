@@ -7,8 +7,8 @@ import com.example.mobileapp.R
 
 class BoolExpression(override var scope: NewScope): BinaryExpression()
 {
-    override var leftValue by mutableStateOf<Block>(Constant(scope, "bool", true))
-    override var rightValue by mutableStateOf<Block>(Constant(scope, "bool", true))
+    override var leftValue by mutableStateOf<Block>(Constant(scope, "bool"))
+    override var rightValue by mutableStateOf<Block>(Constant(scope, "bool"))
     override var operator: String = "=="
 
     override fun execute(): Value

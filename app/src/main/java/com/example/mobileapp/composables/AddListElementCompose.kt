@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,10 +36,10 @@ fun DrawAddListElement(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     block.value.parent = block
     if (block.source != null) block.source!!.parent = block
+
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -68,8 +67,7 @@ fun DrawAddListElement(
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             Text(
                 stringResource(R.string.add),
                 fontSize = 16.sp,
@@ -81,8 +79,7 @@ fun DrawAddListElement(
                     .onGloballyPositioned { coordinates ->
                         block.valueRect = coordinates.boundsInWindow()
                     }
-            )
-            {
+            ) {
                 key(block.value) {
                     DrawBlock(block.value, onDragStart, onDragEnd, isActive)
                 }
@@ -92,30 +89,34 @@ fun DrawAddListElement(
                 stringResource(R.string.to_list),
                 fontSize = 16.sp,
                 color = White,
-                modifier = Modifier.padding(horizontal = 8.dp))
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
 
             Box(
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
                         block.sourceRect = coordinates.boundsInWindow()
                     }
-            )
-            {
+            ) {
                 key(block.source) {
                     if (block.source != null) {
-                            DrawBlock(block.source as Block, onDragStart, onDragEnd, isActive)
+                            DrawBlock(
+                                block.source as Block,
+                                onDragStart,
+                                onDragEnd,
+                                isActive
+                            )
                     }
-                    else{
+                    else {
                         Card(
                             modifier = Modifier
                                 .height(38.dp)
                                 .width(56.dp),
                             shape = RoundedCornerShape(10.dp),
-                            colors = CardDefaults.cardColors(containerColor = AddValueOpportunityColor)
-                        )
-                        {
-
-                        }
+                            colors = CardDefaults.cardColors(
+                                containerColor = AddValueOpportunityColor
+                            )
+                        ){}
                     }
                 }
             }

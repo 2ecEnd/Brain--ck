@@ -1,6 +1,5 @@
 package com.example.mobileapp.redactorspage_components
 
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text

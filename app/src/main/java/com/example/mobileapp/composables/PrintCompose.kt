@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,8 +34,7 @@ fun DrawPrint(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     block.content.parent = block
     Card(
         modifier = Modifier
@@ -57,16 +55,14 @@ fun DrawPrint(
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = BlockColor),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             Text(stringResource(R.string.print), fontSize = 16.sp, color = White)
 
             Box(
@@ -75,8 +71,7 @@ fun DrawPrint(
                         block.contentRect = coordinates.boundsInWindow()
                     }
                     .padding(horizontal = 8.dp)
-            )
-            {
+            ) {
                 key(block.content) {
                     DrawBlock(block.content, onDragStart, onDragEnd, isActive)
                 }

@@ -57,8 +57,10 @@ class For(
             for(i in blockList.indices)
             {
                 if(blockList[i] == draggingBlock) continue
-                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.bottom - pixels,
-                    bottom = blockList[i].selfRect.bottom + pixels))
+                dropZones.add(blockList[i].selfRect.copy(
+                    top = blockList[i].selfRect.bottom - pixels,
+                    bottom = blockList[i].selfRect.bottom + pixels)
+                )
             }
         }
     }
@@ -75,7 +77,6 @@ class For(
             for (block in blockList)
                 block.execute()
 
-            println(iterableVar.name + ": " + varList[iterableVar.name])
             varList[iterableVar.name] = changeIterableVar.execute()
         }
     }

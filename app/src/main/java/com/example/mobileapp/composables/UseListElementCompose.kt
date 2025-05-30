@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,8 +36,7 @@ fun DrawUseListElement(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     block.index.parent = block
     if (block.source != null) block.source!!.parent = block
     Card(
@@ -60,23 +58,20 @@ fun DrawUseListElement(
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = BlockColor),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             Box(
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
                         block.sourceRect = coordinates.boundsInWindow()
                     }
-            )
-            {
+            ) {
                 key(block.source) {
                     if (block.source != null) {
                         DrawBlock(block.source as Block, onDragStart, onDragEnd, isActive)
@@ -87,11 +82,10 @@ fun DrawUseListElement(
                                 .height(38.dp)
                                 .width(56.dp),
                             shape = RoundedCornerShape(10.dp),
-                            colors = CardDefaults.cardColors(containerColor = AddValueOpportunityColor)
-                        )
-                        {
-
-                        }
+                            colors = CardDefaults.cardColors(
+                                containerColor = AddValueOpportunityColor
+                            )
+                        ){}
                     }
                 }
             }
@@ -107,8 +101,7 @@ fun DrawUseListElement(
                     .onGloballyPositioned { coordinates ->
                         block.indexRect = coordinates.boundsInWindow()
                     }
-            )
-            {
+            ) {
                 key(block.source) {
                     DrawBlock(block.index, onDragStart, onDragEnd, isActive)
                 }

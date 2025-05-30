@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
@@ -35,27 +34,53 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
+import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.For
 import com.example.mobileapp.classes.UseVariable
+import com.example.mobileapp.ui.theme.*
 
 @Composable
-fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-            isActive: Boolean){
+fun DrawFor(
+    block: For,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+) {
     val contentHeight = remember { mutableStateOf(48.dp) }
     val cardWidth = remember { mutableStateOf(220.dp) }
     val density = LocalDensity.current
+
+    val mathOperators = listOf(
+        stringResource(R.string.plus),
+        stringResource(R.string.minus),
+        stringResource(R.string.times),
+        stringResource(R.string.divide),
+        stringResource(R.string.mod),
+        stringResource(R.string.pow),
+    )
+    val boolOperators = listOf(
+        stringResource(R.string.and),
+        stringResource(R.string.or),
+        stringResource(R.string.equals),
+        stringResource(R.string.not_equals),
+        stringResource(R.string.less),
+        stringResource(R.string.less_or_equals),
+        stringResource(R.string.great),
+        stringResource(R.string.great_or_equals),
+    )
+
     Box{
         Column{
             Card(
@@ -73,7 +98,12 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                     )
                     .onGloballyPositioned { coordinates ->
                         block.selfRect = coordinates.boundsInWindow()
-                        block.selfRect = block.selfRect.copy(bottom = block.selfRect.bottom + with(density) { (contentHeight.value + 12.dp).toPx() })
+                        block.selfRect = block.selfRect.copy(
+                            bottom = block.selfRect.bottom + with(density)
+                            {
+                                (contentHeight.value + 12.dp).toPx()
+                            }
+                        )
                     }
                     .onSizeChanged { size ->
                         cardWidth.value = with(density) { size.width.toDp() }
@@ -84,26 +114,23 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                     bottomStart = 0.dp,
                     bottomEnd = 10.dp
                 ),
-                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
-            )
-            {
+                colors = CardDefaults.cardColors(containerColor = NewScopeColor),
+            ) {
                 Box(
                     modifier = Modifier
                         .wrapContentSize()
-                )
-                {
+                ) {
                     Column()
                     {
                         Row(
                             modifier = Modifier.padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround
-                        )
-                        {
+                        ) {
                             Text(
-                                "for (var",
+                                stringResource(R.string.declare_for),
                                 fontSize = 24.sp,
-                                color = Color.White,
+                                color = White,
                                 modifier = Modifier.padding(end = 8.dp)
                             )
 
@@ -135,7 +162,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                                 decorationBox = { innerTextField ->
                                     Box(
                                         modifier = Modifier
-                                            .background(Color.White, RoundedCornerShape(24.dp)),
+                                            .background(White, RoundedCornerShape(24.dp)),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         innerTextField()
@@ -144,9 +171,9 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                             )
 
                             Text(
-                                "=",
+                                stringResource(R.string.assign),
                                 fontSize = 24.sp,
-                                color = Color.White,
+                                color = White,
                                 modifier = Modifier.padding(horizontal = 8.dp)
                             )
 
@@ -156,8 +183,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                                         block.startValue.valueRect =
                                             coordinates.boundsInWindow()
                                     }
-                            )
-                            {
+                            ) {
                                 key(block.startValue.value) {
                                     DrawBlock(
                                         block.startValue.value,
@@ -173,16 +199,15 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                             modifier = Modifier.padding(start = 24.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround
-                        )
-                        {
+                        ) {
                             Text(
                                 block.iterableVar.name,
                                 fontSize = 24.sp,
-                                color = Color.White,
+                                color = White,
                             )
 
                             var expanded by remember { mutableStateOf(false) }
-                            var selectedOperation by remember { mutableStateOf("<") }
+                            var selectedOperation by remember { mutableStateOf(boolOperators[4]) }
                             Box(
                                 modifier = Modifier
                                     .height(38.dp)
@@ -192,8 +217,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                                 Button(
                                     onClick = { if (isActive) expanded = true },
                                     contentPadding = PaddingValues(0.dp)
-                                )
-                                {
+                                ) {
                                     Text(
                                         selectedOperation,
                                         fontSize = 24.sp,
@@ -204,16 +228,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                                     expanded = expanded,
                                     onDismissRequest = { expanded = false }
                                 ) {
-                                    listOf(
-                                        "==",
-                                        "!=",
-                                        ">",
-                                        "<",
-                                        ">=",
-                                        "<=",
-                                        "&&",
-                                        "||"
-                                    ).forEach { operator ->
+                                    boolOperators.forEach { operator ->
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
@@ -258,16 +273,15 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                             ),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround
-                        )
-                        {
+                        ) {
                             Text(
                                 block.iterableVar.name,
                                 fontSize = 24.sp,
-                                color = Color.White,
+                                color = White,
                             )
 
                             var expanded by remember { mutableStateOf(false) }
-                            var selectedOperation by remember { mutableStateOf("+") }
+                            var selectedOperation by remember { mutableStateOf(mathOperators[0]) }
                             Box(
                                 modifier = Modifier
                                     .height(38.dp)
@@ -277,8 +291,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                                 Button(
                                     onClick = { if (isActive) expanded = true },
                                     contentPadding = PaddingValues(0.dp)
-                                )
-                                {
+                                ) {
                                     Text(
                                         selectedOperation,
                                         fontSize = 24.sp,
@@ -289,7 +302,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                                     expanded = expanded,
                                     onDismissRequest = { expanded = false }
                                 ) {
-                                    listOf("+", "-", "*", "/", "%", "^").forEach { operator ->
+                                    mathOperators.forEach { operator ->
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
@@ -314,8 +327,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                                         block.changeIterableVar.rightValueRect =
                                             coordinates.boundsInWindow()
                                     }
-                            )
-                            {
+                            ) {
                                 key(block.changeIterableVar.rightValue) {
                                     DrawBlock(
                                         block.changeIterableVar.rightValue,
@@ -327,9 +339,9 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                             }
 
                             Text(
-                                ")",
+                                stringResource(R.string.right_bracket),
                                 fontSize = 24.sp,
-                                color = Color.White,
+                                color = White,
                                 modifier = Modifier.padding(start = 8.dp)
                             )
                         }
@@ -349,7 +361,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                         )
                     },
                 shape = RoundedCornerShape(0.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+                colors = CardDefaults.cardColors(containerColor = NewScopeColor),
             ){}
 
             Card(
@@ -369,7 +381,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                     bottomStart = 10.dp,
                     bottomEnd = 10.dp
                 ),
-                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+                colors = CardDefaults.cardColors(containerColor = NewScopeColor),
             ){}
         }
 
@@ -386,9 +398,8 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                     contentHeight.value = with(density) { size.height.toDp() }
                 },
             shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
-        )
-        {
+            colors = CardDefaults.cardColors(containerColor = NewScopeBodyColor)
+        ) {
             Column()
             {
                 for (i in block.blockList.indices) {

@@ -1,6 +1,5 @@
 package com.example.mobileapp.pages
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,16 +45,14 @@ fun ProjectsPage(navController: NavController){
                 .height(200.dp),
             shape = RoundedCornerShape(15.dp),
             colors = CardDefaults.cardColors(containerColor = TabsBackground)
-        )
-        {
+        ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(24.dp),
-                )
-                {
+                ) {
                     Button(
                         onClick = {navController.navigate(createProjectsText)},
                         modifier = Modifier
@@ -64,8 +61,7 @@ fun ProjectsPage(navController: NavController){
                         colors = ButtonDefaults.buttonColors(
                             containerColor = NavButtonColor,
                         )
-                    )
-                    {
+                    ) {
                         Text(stringResource(R.string.plus), fontSize = 24.sp, color = White)
                     }
                 }

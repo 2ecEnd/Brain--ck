@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -40,8 +39,7 @@ fun DrawListConstant(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     block.blockList.forEach { item ->
         item.parent = block
     }
@@ -64,16 +62,14 @@ fun DrawListConstant(
             },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = White),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentWidth()
                 .widthIn(min = 56.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             block.blockList.forEach{ block ->
                 Box(modifier = Modifier.padding(horizontal = 4.dp)){
                     key(block.hashCode()) {
@@ -91,8 +87,7 @@ fun DrawListConstant(
                     },
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = BlockShadow),
-            )
-            {
+            ) {
                 Box(modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 )

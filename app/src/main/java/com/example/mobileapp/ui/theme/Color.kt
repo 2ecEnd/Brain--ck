@@ -22,6 +22,7 @@ val TabsButtonColor  = Color(73, 93, 146)
 val NavButtonColor  = Color(103, 80, 164)
 val ConsoleColor  = Color(100, 100, 100)
 val ExecuteButtonColor  = Color(87, 150, 92)
+val ExitAndHomeButtonColor  = Color(103, 80, 164)
 
 val IntConstantColor = Color(172, 235, 254)
 val DoubleConstantColor = Color(255, 250, 219)

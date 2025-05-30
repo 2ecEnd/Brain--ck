@@ -1,6 +1,5 @@
 package com.example.mobileapp
 
-
 import android.content.res.Resources
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +40,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
     var currentInteractionScope = mutableStateOf<NewScope>(context)
     var draggingBlock = mutableStateOf<Block>(DeclareVariable(context, context.varList))
-    var isDraggingBlockCanBeDeleted = mutableStateOf<Boolean>(false)
+    var isDraggingBlockCanBeDeleted = mutableStateOf(false)
     var isDragging = mutableStateOf(false)
     var isDeleting = mutableStateOf(false)
     var dragOffset = mutableStateOf(Offset.Zero)
@@ -50,13 +49,13 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
     var blockList = context.blockList
     var scopesList = mutableStateListOf<NewScope>(context)
 
-    var variablesTabList = mutableStateListOf<Block>(
+    var variablesTabList = mutableStateListOf(
         DeclareVariable(context, context.varList),
         UseVariable(context, context.varList),
         SetVariable(context, context.varList)
     )
 
-    var listsTabList = mutableStateListOf<Block>(
+    var listsTabList = mutableStateListOf(
         ListConstant(context),
         AddListElement(context),
         DeleteListElement(context),
@@ -76,14 +75,14 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         Constant(context, resources.getString(R.string.bool))
     )
 
-    var convertersTabList = mutableStateListOf<Block>(
+    var convertersTabList = mutableStateListOf(
         ToBoolean(context),
         ToDouble(context),
         ToInt(context),
         ToString(context)
     )
 
-    var otherTabList = mutableStateListOf<Block>(
+    var otherTabList = mutableStateListOf(
         For(context, context.varList, resources.getString(R.string.i)),
         IfElse(context),
         Print(context, console)
@@ -241,25 +240,18 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         relocateFunction: (Block, NewScope) -> Unit,
         addBlockFunction: (Block, NewScope) -> Unit,
         localScope: NewScope
-    )
-    {
+    ) {
         if ((isNotSpecialBlock(draggingBlock.value) && block !is IfElse)
             || draggingBlock.value == block)
             return
         when(block){
             is MathExpression -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
                 ))
                 {
                     if (block.leftValueRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -275,10 +267,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                         )
                     }
                     else if (block.rightValueRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -308,9 +297,13 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
             }
 
             is SetVariable -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)))
+                if (block.selfRect.contains(
+                        Offset(dragOffset.value.x, dragOffset.value.y)
+                ))
                 {
-                    if (block.valueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)))
+                    if (block.valueRect.contains(
+                            Offset(dragOffset.value.x, dragOffset.value.y)
+                    ))
                     {
                         addBlockInsideAnother(
                             block.value,
@@ -339,29 +332,25 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
             }
 
             is Constant -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)) &&
-                    isInsideBlock)
+                if (block.selfRect.contains(
+                        Offset(dragOffset.value.x, dragOffset.value.y)
+                ) && isInsideBlock)
                 {
                     onReplace(
                         if(!isRelocating)
-                            createNewBlock(
-                                draggingBlock.value,
-                                localScope
-                            )
+                            createNewBlock(draggingBlock.value, localScope)
                         else
                             draggingBlock.value)
                 }
             }
 
             is ListConstant -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)) &&
-                    isInsideBlock)
+                if (block.selfRect.contains(
+                        Offset(dragOffset.value.x, dragOffset.value.y)
+                ) && isInsideBlock)
                 {
                     if (block.addBlockRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         block.blockList.add(
@@ -379,10 +368,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                         for(i in block.blockList.indices)
                         {
                             if (block.blockList[i].selfRect.contains(
-                                    Offset(
-                                        dragOffset.value.x,
-                                        dragOffset.value.y
-                                    )
+                                    Offset(dragOffset.value.x, dragOffset.value.y)
                             ))
                             {
                                 addBlockInsideAnother(
@@ -414,17 +400,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
             is Print -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
                 ))
                 {
                     if (block.contentRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -455,12 +435,8 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
             is UseVariable -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        ))
-                    && isInsideBlock
-                    )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
+                ) && isInsideBlock)
                 {
                     onReplace(
                         if(!isRelocating)
@@ -475,17 +451,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
             is IfElse -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
                 ))
                 {
                     if (block.conditionRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -518,17 +488,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
             is BoolExpression -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
                 ))
                 {
                     if (block.leftValueRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -544,10 +508,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                         )
                     }
                     else if (block.rightValueRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -578,17 +539,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
             is AddListElement -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
                 ))
                 {
                     if (block.valueRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -604,10 +559,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                         )
                     }
                     else if (block.sourceRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         if (block.source != null)
@@ -650,17 +602,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
             is DeleteListElement -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
                 ))
                 {
                     if (block.indexRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -676,10 +622,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                         )
                     }
                     else if (block.sourceRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         if (block.source != null)
@@ -724,17 +667,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
             is SetListElement -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
                 ))
                 {
                     if (block.indexRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -750,10 +687,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                         )
                     }
                     else if (block.sourceRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         if (block.source != null)
@@ -784,10 +718,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                         }
                     }
                     else if (block.valueRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -818,17 +749,11 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
             is UseListElement -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
+                        Offset(dragOffset.value.x, dragOffset.value.y)
                 ))
                 {
                     if (block.indexRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         addBlockInsideAnother(
@@ -844,10 +769,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                         )
                     }
                     else if (block.sourceRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
+                            Offset(dragOffset.value.x, dragOffset.value.y)
                     ))
                     {
                         if (block.source != null)
@@ -889,20 +811,15 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     }
                 }
             }
+
             is ToBoolean -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
-                    ))
+                        Offset(dragOffset.value.x, dragOffset.value.y)
+                ))
                 {
                     if (block.sourceRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
-                        ))
+                            Offset(dragOffset.value.x, dragOffset.value.y)
+                    ))
                     {
                         addBlockInsideAnother(
                             block.source,
@@ -929,20 +846,15 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     }
                 }
             }
+
             is ToDouble -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
-                    ))
+                        Offset(dragOffset.value.x, dragOffset.value.y)
+                ))
                 {
                     if (block.sourceRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
-                        ))
+                            Offset(dragOffset.value.x, dragOffset.value.y)
+                    ))
                     {
                         addBlockInsideAnother(
                             block.source,
@@ -969,20 +881,15 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     }
                 }
             }
+
             is ToInt -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
-                    ))
+                        Offset(dragOffset.value.x, dragOffset.value.y)
+                ))
                 {
                     if (block.sourceRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
-                        ))
+                            Offset(dragOffset.value.x, dragOffset.value.y)
+                    ))
                     {
                         addBlockInsideAnother(
                             block.source,
@@ -1009,20 +916,15 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     }
                 }
             }
+
             is ToString -> {
                 if (block.selfRect.contains(
-                        Offset(
-                            dragOffset.value.x,
-                            dragOffset.value.y
-                        )
-                    ))
+                        Offset(dragOffset.value.x, dragOffset.value.y)
+                ))
                 {
                     if (block.sourceRect.contains(
-                            Offset(
-                                dragOffset.value.x,
-                                dragOffset.value.y
-                            )
-                        ))
+                            Offset(dragOffset.value.x, dragOffset.value.y)
+                    ))
                     {
                         addBlockInsideAnother(
                             block.source,
@@ -1059,10 +961,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
     {
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(
-                    Offset(
-                        dragOffset.value.x,
-                        dragOffset.value.y
-                    )
+                    Offset(dragOffset.value.x, dragOffset.value.y)
             ))
             {
                 if (isNotSpecialBlock(block))
@@ -1074,15 +973,15 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     when(newBlock){
                         is IfElse -> {
                             newBlock.ifBlock.spacerPair =
-                                mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                                mutableStateOf(context.spacerPair.value)
                             newBlock.elseBlock.spacerPair =
-                                mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                                mutableStateOf(context.spacerPair.value)
                             scopesList.add(newBlock.ifBlock)
                             scopesList.add(newBlock.elseBlock)
                         }
                         is For -> {
                             newBlock.spacerPair =
-                                mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                                mutableStateOf(context.spacerPair.value)
                             scopesList.add(newBlock)
                         }
                     }
@@ -1108,10 +1007,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
     {
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(
-                    Offset(
-                        dragOffset.value.x,
-                        dragOffset.value.y
-                    )
+                    Offset(dragOffset.value.x, dragOffset.value.y)
             ))
             {
                 if (block !is Constant &&

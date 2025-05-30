@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
@@ -54,8 +53,7 @@ fun DrawConstant(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     val dataColors = listOf(
         IntConstantColor,
         DoubleConstantColor,
@@ -94,15 +92,13 @@ fun DrawConstant(
             },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = selectedColor),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             val focusManager = LocalFocusManager.current
             var value by remember(block.value) { mutableStateOf(block.value.toString()) }
             var booleanValue by remember { mutableStateOf(true) }
@@ -197,8 +193,7 @@ fun DrawConstant(
                     Button(
                         onClick = { if (isActive) expanded = true },
                         contentPadding = PaddingValues(0.dp)
-                    )
-                    {
+                    ) {
                         Text(
                             booleanValue.toString(),
                             fontSize = 16.sp,

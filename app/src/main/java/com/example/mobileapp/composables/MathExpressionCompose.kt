@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,8 +44,7 @@ fun DrawMathExpression(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     val mathOperators = listOf(
         stringResource(R.string.plus),
         stringResource(R.string.minus),
@@ -79,16 +77,14 @@ fun DrawMathExpression(
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = BlockColor),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             Text(
                 text = stringResource(R.string.left_bracket),
                 fontSize = 36.sp,
@@ -100,8 +96,7 @@ fun DrawMathExpression(
                     .onGloballyPositioned { coordinates ->
                         block.leftValueRect = coordinates.boundsInWindow()
                     }
-            )
-            {
+            ) {
                 key(block.leftValue) {
                     DrawBlock(block.leftValue, onDragStart, onDragEnd, isActive)
                 }
@@ -116,8 +111,7 @@ fun DrawMathExpression(
                 Button(
                     onClick = { if (isActive) expanded = true },
                     contentPadding = PaddingValues(0.dp)
-                )
-                {
+                ) {
                     Text(
                         selectedOperation,
                         fontSize = 24.sp,
@@ -152,8 +146,7 @@ fun DrawMathExpression(
                     .onGloballyPositioned { coordinates ->
                         block.rightValueRect = coordinates.boundsInWindow()
                     }
-            )
-            {
+            ) {
                 key(block.rightValue) {
                     DrawBlock(block.rightValue, onDragStart, onDragEnd, isActive)
                 }

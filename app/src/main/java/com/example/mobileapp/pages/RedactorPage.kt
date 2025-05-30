@@ -1,6 +1,5 @@
 package com.example.mobileapp.pages
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -99,7 +98,7 @@ fun RedactorPage(navController: NavController){
     val pagerState = rememberPagerState (pageCount = {2})
     val density = LocalDensity.current
 
-    context.spacerPair = remember{mutableStateOf<Pair<Int, NewScope>>(-1 to context)}
+    context.spacerPair = remember{mutableStateOf(-1 to context)}
 
     scopesList.forEach { scope ->
         scope.updateDropZones(draggingBlock,
@@ -157,8 +156,7 @@ fun RedactorPage(navController: NavController){
                     }
                 }
             }
-    )
-    {
+    ) {
         if (isDragging){
             Box(
                 modifier = Modifier
@@ -169,8 +167,7 @@ fun RedactorPage(navController: NavController){
                         )
                     }
                     .zIndex(1f)
-            )
-            {
+            ) {
                 DrawBlock(draggingBlock, {_, _ ->}, {}, false)
             }
 
@@ -196,14 +193,17 @@ fun RedactorPage(navController: NavController){
                             trashRect = coordinates.boundsInWindow()
                         }
                         .zIndex(0.95f),
-                    colors = CardDefaults.cardColors(containerColor = Black.copy(alpha = alpha)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Black.copy(
+                            alpha = alpha
+                        )
+                    ),
                     shape = RoundedCornerShape(10.dp)
-                )
-                {
+                ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
-                    ){
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.trash_fill),
                             contentDescription = stringResource(R.string.trash),
@@ -222,7 +222,12 @@ fun RedactorPage(navController: NavController){
 
             var completed = true
             for(i in currentInteractionScope.dropZones.indices){
-                if(currentInteractionScope.dropZones[i].contains(Offset(dragOffset.x, dragOffset.y)))
+                if(currentInteractionScope.dropZones[i].contains(
+                        Offset(
+                            dragOffset.x,
+                            dragOffset.y
+                        )
+                ))
                 {
                     Box(
                         modifier = Modifier
@@ -244,8 +249,7 @@ fun RedactorPage(navController: NavController){
                                 )
                             }
                             .zIndex(0.95f)
-                    )
-                    {
+                    ) {
                         DrawShadow()
                     }
                     if (i != currentInteractionScope.dropZones.count() - 1 ||
@@ -279,15 +283,17 @@ fun RedactorPage(navController: NavController){
         }
         else{
             scopesList.forEach { scope ->
-                scope.spacerPair.value = scope.spacerPair.value.copy(first = -1, second = context)
+                scope.spacerPair.value = scope.spacerPair.value.copy(
+                    first = -1,
+                    second = context
+                )
             }
         }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-        )
-        {
+        ) {
             Toolbar(navController)
 
             RedactorArea(
@@ -302,87 +308,81 @@ fun RedactorPage(navController: NavController){
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
-            )
-            {
-                    page -> when(page) {
-                0 -> {
-                    Card(
-                        modifier = Modifier
-                            .background(TabsBackground),
-                        colors = CardDefaults.cardColors(containerColor = TabsBackground),
-                        shape = RoundedCornerShape(0.dp),
-                    )
-                    {
-                        ScrollableTabSample(
-                            tabOnDragStart,
-                            tabOnDragEnd,
-                            variablesTabList,
-                            listsTabList,
-                            expressionsTabList,
-                            constantsTabList,
-                            convertersTabList,
-                            otherTabList
-                        )
-                    }
-                }
-                1 -> {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        colors = CardDefaults.cardColors(containerColor = ConsoleColor),
-                        shape = RoundedCornerShape(0.dp),
-                    )
-                    {
-                        Row {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .fillMaxWidth(0.8f)
-                                    .padding(8.dp),
-                                verticalArrangement = Arrangement.Top,
-                                horizontalAlignment = Alignment.Start,
-                                state = rememberLazyListState(),
-
+            ) {
+                page -> when(page) {
+                    0 -> {
+                        Card(
+                            modifier = Modifier
+                                .background(TabsBackground),
+                            colors = CardDefaults.cardColors(containerColor = TabsBackground),
+                            shape = RoundedCornerShape(0.dp),
+                        ) {
+                            ScrollableTabSample(
+                                tabOnDragStart,
+                                tabOnDragEnd,
+                                variablesTabList,
+                                listsTabList,
+                                expressionsTabList,
+                                constantsTabList,
+                                convertersTabList,
+                                otherTabList
                             )
-                            {
-                                items(console.text) { text ->
-                                    Text(
-                                        text = text,
-                                        fontSize = 24.sp,
-                                        color = Color.White
+                        }
+                    }
+                    1 -> {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            colors = CardDefaults.cardColors(containerColor = ConsoleColor),
+                            shape = RoundedCornerShape(0.dp),
+                        ) {
+                            Row {
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .fillMaxWidth(0.8f)
+                                        .padding(8.dp),
+                                    verticalArrangement = Arrangement.Top,
+                                    horizontalAlignment = Alignment.Start,
+                                    state = rememberLazyListState(),
+                                ) {
+                                    items(console.text) { text ->
+                                        Text(
+                                            text = text,
+                                            fontSize = 24.sp,
+                                            color = Color.White
+                                        )
+                                    }
+                                }
+
+                                Button(
+                                    onClick = {
+                                        context.blockList = blockList
+                                        console.text.clear()
+                                        context.execute()
+                                    },
+                                    modifier = Modifier
+                                        .width(68.dp)
+                                        .height(68.dp)
+                                        .padding(8.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    contentPadding = PaddingValues(0.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = ExecuteButtonColor,
+                                    )
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.play_128px),
+                                        contentDescription = stringResource(R.string.icon),
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Fit,
                                     )
                                 }
-                            }
-
-                            Button(
-                                onClick = {
-                                    context.blockList = blockList
-                                    console.text.clear()
-                                    context.execute()
-                                },
-                                modifier = Modifier
-                                    .width(68.dp)
-                                    .height(68.dp)
-                                    .padding(8.dp),
-                                shape = RoundedCornerShape(12.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = ExecuteButtonColor,
-                                )
-                            ){
-                                Image(
-                                    painter = painterResource(id = R.drawable.play_128px),
-                                    contentDescription = stringResource(R.string.icon),
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Fit,
-                                )
                             }
                         }
                     }
                 }
             }
-            }
-
         }
     }
 }

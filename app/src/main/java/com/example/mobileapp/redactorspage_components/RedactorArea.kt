@@ -1,6 +1,5 @@
 package com.example.mobileapp.redactorspage_components
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box

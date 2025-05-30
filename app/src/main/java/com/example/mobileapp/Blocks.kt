@@ -1,6 +1,5 @@
 package com.example.mobileapp
 
-
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,8 +53,7 @@ fun DrawBlock(block: Block,
               onDragStart: (Offset, Block) -> Unit,
               onDragEnd: (Block) -> Unit,
               isActive: Boolean
-)
-{
+) {
     when(block) {
         is DeclareVariable -> DrawDeclareVariable(block, onDragStart, onDragEnd, isActive)
         is SetVariable -> DrawSetVariable(block, onDragStart, onDragEnd, isActive)
@@ -86,6 +84,5 @@ fun DrawShadow(){
             .height(48.dp),
         shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(containerColor = BlockShadow),
-    )
-    {}
+    ){}
 }

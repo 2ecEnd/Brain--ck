@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -38,16 +36,22 @@ import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.IfElse
+import com.example.mobileapp.ui.theme.*
 
 @Composable
-fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
-               isActive: Boolean){
+fun DrawIfElse(
+    block: IfElse,
+    onDragStart: (Offset, Block) -> Unit,
+    onDragEnd: (Block) -> Unit,
+    isActive: Boolean
+) {
     val ifHeight = remember { mutableStateOf(48.dp) }
     val elseHeight = remember { mutableStateOf(48.dp) }
     val cardWidth = remember { mutableStateOf(220.dp) }
     val cardHeight = remember { mutableStateOf(48.dp) }
     val density = LocalDensity.current
     block.condition.parent = block
+
     Box {
         Column {
             Card(
@@ -65,8 +69,12 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     )
                     .onGloballyPositioned { coordinates ->
                         block.selfRect = coordinates.boundsInWindow()
-                        block.selfRect = block.selfRect.copy(bottom = block.selfRect.bottom +
-                                with(density) {(ifHeight.value + elseHeight.value + 44.dp).toPx()})
+                        block.selfRect = block.selfRect.copy(
+                            bottom = block.selfRect.bottom + with(density)
+                            {
+                                (ifHeight.value + elseHeight.value + 44.dp).toPx()
+                            }
+                        )
                     }
                     .onSizeChanged { size ->
                         cardWidth.value = with(density) { size.width.toDp() }
@@ -78,9 +86,8 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     bottomStart = 0.dp,
                     bottomEnd = 10.dp
                 ),
-                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
-            )
-            {
+                colors = CardDefaults.cardColors(containerColor = NewScopeColor),
+            ) {
                 Row(
                     modifier = Modifier
                         .wrapContentSize()
@@ -92,7 +99,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     Text(
                         "if",
                         fontSize = 24.sp,
-                        color = Color.White,
+                        color = White,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
 
@@ -122,7 +129,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                         )
                     },
                 shape = RoundedCornerShape(0.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+                colors = CardDefaults.cardColors(containerColor = NewScopeColor),
             ){}
 
             Card(
@@ -142,13 +149,13 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     bottomStart = 0.dp,
                     bottomEnd = 10.dp
                 ),
-                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+                colors = CardDefaults.cardColors(containerColor = NewScopeColor),
             )
             {
                 Text(
                     "else",
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = White,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }
@@ -165,7 +172,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                         )
                     },
                 shape = RoundedCornerShape(0.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+                colors = CardDefaults.cardColors(containerColor = NewScopeColor),
             ){}
 
             Card(
@@ -185,7 +192,7 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     bottomStart = 10.dp,
                     bottomEnd = 10.dp
                 ),
-                colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+                colors = CardDefaults.cardColors(containerColor = NewScopeColor),
             ){}
         }
 
@@ -203,14 +210,16 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     ifHeight.value = with(density) { size.height.toDp() }
                 },
             shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
+            colors = CardDefaults.cardColors(containerColor = NewScopeBodyColor)
         )
         {
             Column()
             {
                 for (i in block.ifBlock.blockList.indices) {
                     val localBlock = block.ifBlock.blockList[i]
-                    if ((block.ifBlock.spacerPair.value.first == i) && block.ifBlock.spacerPair.value.second == block.ifBlock) {
+                    if ((block.ifBlock.spacerPair.value.first == i) &&
+                        block.ifBlock.spacerPair.value.second == block.ifBlock)
+                    {
                         Spacer(modifier = Modifier.height(48.dp))
                     }
                     key(block.hashCode()) {
@@ -218,9 +227,10 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                             DrawBlock(localBlock, onDragStart, onDragEnd, true)
                         }
                     }
-                    if (i == block.ifBlock.blockList.count() - 1 && block.ifBlock.spacerPair.value.first
-                        == block.ifBlock.blockList.count() && block.ifBlock.spacerPair.value.second == block.ifBlock
-                    ) {
+                    if (i == block.ifBlock.blockList.count() - 1 &&
+                        block.ifBlock.spacerPair.value.first == block.ifBlock.blockList.count() &&
+                        block.ifBlock.spacerPair.value.second == block.ifBlock)
+                    {
                         Spacer(modifier = Modifier.height(48.dp))
                     }
                 }
@@ -241,14 +251,16 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                     elseHeight.value = with(density) { size.height.toDp() }
                 },
             shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
-        )
-        {
+            colors = CardDefaults.cardColors(containerColor = NewScopeBodyColor)
+        ) {
             Column()
             {
                 for (i in block.elseBlock.blockList.indices) {
                     val localBlock = block.elseBlock.blockList[i]
-                    if (block.elseBlock.spacerPair.value.first == i && block.elseBlock.spacerPair.value.second == block.elseBlock) {
+
+                    if (block.elseBlock.spacerPair.value.first == i &&
+                        block.elseBlock.spacerPair.value.second == block.elseBlock)
+                    {
                         Spacer(modifier = Modifier.height(48.dp))
                     }
                     key(block.hashCode()) {
@@ -256,9 +268,10 @@ fun DrawIfElse(block: IfElse, onDragStart: (Offset, Block) -> Unit, onDragEnd: (
                             DrawBlock(localBlock, onDragStart, onDragEnd, true)
                         }
                     }
-                    if (i == block.elseBlock.blockList.count() - 1 && block.elseBlock.spacerPair.value.first
-                        == block.elseBlock.blockList.count() && block.elseBlock.spacerPair.value.second == block.elseBlock
-                    ) {
+                    if (i == block.elseBlock.blockList.count() - 1 &&
+                        block.elseBlock.spacerPair.value.first == block.elseBlock.blockList.count() &&
+                        block.elseBlock.spacerPair.value.second == block.elseBlock)
+                    {
                         Spacer(modifier = Modifier.height(48.dp))
                     }
                 }

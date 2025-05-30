@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
@@ -39,8 +38,7 @@ fun DrawDeclareVariable(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     Card(
         modifier = Modifier
             .width(200.dp)
@@ -61,15 +59,13 @@ fun DrawDeclareVariable(
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = BlockColor),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             Text(
                 stringResource(R.string.declare),
                 fontSize = 16.sp,

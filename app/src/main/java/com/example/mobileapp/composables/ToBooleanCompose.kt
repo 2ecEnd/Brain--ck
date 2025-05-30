@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,8 +34,7 @@ fun DrawToBoolean(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     block.source.parent = block
     Card(
         modifier = Modifier
@@ -57,23 +55,20 @@ fun DrawToBoolean(
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = BlockColor),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             Box(
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
                         block.sourceRect = coordinates.boundsInWindow()
                     }
-            )
-            {
+            ) {
                 key(block.source) {
                     DrawBlock(block.source, onDragStart, onDragEnd, isActive)
                 }
@@ -85,7 +80,6 @@ fun DrawToBoolean(
                 color = White,
                 modifier = Modifier.padding(start = 8.dp)
             )
-
         }
     }
 }

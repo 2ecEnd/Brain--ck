@@ -38,8 +38,7 @@ fun DrawUseVariable(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(String()) }
 
@@ -62,21 +61,18 @@ fun DrawUseVariable(
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = BlockColor),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             Box(
                 modifier = Modifier
                     .height(38.dp),
-            )
-            {
+            ) {
                 Button(
                     onClick = { if (isActive) expanded = true },
                 )

@@ -1,6 +1,5 @@
 package com.example.mobileapp.composables
 
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,11 +42,11 @@ fun DrawSetVariable(
     onDragStart: (Offset, Block) -> Unit,
     onDragEnd: (Block) -> Unit,
     isActive: Boolean
-)
-{
+) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(String()) }
     block.value.parent = block
+
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -67,16 +66,14 @@ fun DrawSetVariable(
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = BlockColor),
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
-        )
-        {
+        ) {
             Text(
                 stringResource(R.string.set),
                 fontSize = 16.sp,
@@ -87,12 +84,12 @@ fun DrawSetVariable(
             Box(
                 modifier = Modifier
                     .height(38.dp),
-            )
-            {
+            ) {
                 Button(
                     onClick = { if (isActive) expanded = true },
-                )
-                { Text(text = selectedItem) }
+                ) {
+                    Text(text = selectedItem)
+                }
 
                 DropdownMenu(
                     expanded = expanded,
@@ -123,8 +120,7 @@ fun DrawSetVariable(
                     .onGloballyPositioned { coordinates ->
                         block.valueRect = coordinates.boundsInWindow()
                     }
-            )
-            {
+            ) {
                 key(block.value) {
                     DrawBlock(block.value, onDragStart, onDragEnd, isActive)
                 }

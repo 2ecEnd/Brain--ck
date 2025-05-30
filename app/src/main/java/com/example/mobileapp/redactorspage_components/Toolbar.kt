@@ -1,6 +1,5 @@
 package com.example.mobileapp.redactorspage_components
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,8 +34,7 @@ fun Toolbar(navController: NavController){
             .background(TabsBackground),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
-    )
-    {
+    ) {
         HomeButton(navController)
 
         Button(
@@ -49,8 +47,7 @@ fun Toolbar(navController: NavController){
             colors = ButtonDefaults.buttonColors(
                 containerColor = NavButtonColor,
             )
-        )
-        {
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.gear_128px),
                 contentDescription = stringResource(R.string.icon),
@@ -69,8 +66,7 @@ fun Toolbar(navController: NavController){
             colors = ButtonDefaults.buttonColors(
                 containerColor = NavButtonColor,
             )
-        )
-        {
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.cloud_arrow_down_128px),
                 contentDescription = stringResource(R.string.icon),
@@ -89,8 +85,7 @@ fun Toolbar(navController: NavController){
             colors = ButtonDefaults.buttonColors(
                 containerColor = NavButtonColor,
             )
-        )
-        {
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.person_gear_128px),
                 contentDescription = stringResource(R.string.icon),
