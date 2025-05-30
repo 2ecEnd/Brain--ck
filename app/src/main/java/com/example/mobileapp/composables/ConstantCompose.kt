@@ -112,14 +112,16 @@ fun DrawConstant(
                 when (selectedType){
                     dataTypes[0] -> {
                         if (value.isNotEmpty()) {
-                            block.setValue(dataTypes[0], value.toInt())
+                            val tmp = value.toIntOrNull() ?: 0
+                            block.setValue(dataTypes[0], tmp)
                         } else {
                             block.setValue(dataTypes[0], 0)
                         }
                     }
                     dataTypes[1] -> {
                         if (value.isNotEmpty()) {
-                            block.setValue(dataTypes[1], value.toDouble())
+                            val tmp = value.toDoubleOrNull() ?: 0.0
+                            block.setValue(dataTypes[1], tmp)
                         } else {
                             block.setValue(dataTypes[1], 0.0)
                         }
@@ -169,7 +171,7 @@ fun DrawConstant(
                     keyboardOptions = KeyboardOptions(
                         keyboardType =
                             if (selectedType == dataTypes[0] ||
-                            selectedType == dataTypes[1])
+                                selectedType == dataTypes[1])
                                 KeyboardType.Number
                             else
                                 KeyboardType.Text
