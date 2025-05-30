@@ -58,29 +58,25 @@ import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.DrawShadow
 import com.example.mobileapp.R
 import com.example.mobileapp.RedactorViewModel
+import com.example.mobileapp.RedactorViewModelFactory
 import com.example.mobileapp.classes.AddListElement
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.NewScope
 import com.example.mobileapp.classes.Console
 import com.example.mobileapp.classes.Constant
-import com.example.mobileapp.classes.Context
-import com.example.mobileapp.classes.DeclareVariable
-import com.example.mobileapp.classes.DeleteListElement
-import com.example.mobileapp.classes.For
-import com.example.mobileapp.classes.IfElse
-import com.example.mobileapp.classes.ListConstant
-import com.example.mobileapp.classes.MathExpression
-import com.example.mobileapp.classes.Print
-import com.example.mobileapp.classes.SetVariable
-import com.example.mobileapp.classes.UseVariable
 import com.example.mobileapp.redactorspage_components.RedactorArea
 import com.example.mobileapp.redactorspage_components.Toolbar
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
 @Composable
-fun RedactorPage(navController: NavController, viewModel: RedactorViewModel = viewModel()){
+fun RedactorPage(navController: NavController){
+    var resources = LocalContext.current.resources
+    var viewModel: RedactorViewModel = viewModel(
+        factory = RedactorViewModelFactory(resources)
+    )
+
     var blockList = viewModel.blockList
     var context = viewModel.context
     var console = viewModel.console

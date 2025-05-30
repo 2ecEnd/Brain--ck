@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mobileapp.ui.theme.MobileAppTheme
 import androidx.navigation.compose.NavHost
@@ -81,7 +82,7 @@ fun App(modifier: Modifier = Modifier){
             CreateProjectPage(navController)
         }
         composable("redactor") {
-            RedactorPage(navController, RedactorViewModel(LocalContext.current.resources))
+            RedactorPage(navController)
         }
     }
 }

@@ -10,9 +10,9 @@ class SetListElement(
     override var scope: NewScope,
 ) : Block()
 {
-    var source: Block = ListConstant(scope)
+    var source by mutableStateOf<Block?>(null)
     var sourceRect: Rect = Rect.Zero
-    var index: Block = Constant(scope)
+    var index by mutableStateOf<Block>(Constant(scope, "int"))
     var indexRect: Rect = Rect.Zero
     var value by mutableStateOf<Block>(Constant(scope, "int"))
     var valueRect: Rect = Rect.Zero
@@ -27,7 +27,7 @@ class SetListElement(
             throw Exception(R.string.illegal_data_type.toString())
         }
 
-        val sourceExecuted = source.execute() as? Value.LIST
+        val sourceExecuted = source!!.execute() as? Value.LIST
         if (sourceExecuted == null)
         {
             isTroublesome = true

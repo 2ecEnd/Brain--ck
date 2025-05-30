@@ -101,7 +101,7 @@ fun DrawSetListElement(block: SetListElement, onDragStart: (Offset, Block) -> Un
                 }
             }
 
-            Text("from list", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+            Text("in list", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
 
             Box(
                 modifier = Modifier

@@ -10,12 +10,12 @@ class DeleteListElement(override var scope: NewScope) : Block()
 {
     var source by mutableStateOf<Block?>(null)
     var sourceRect: Rect = Rect.Zero
-    var index by mutableStateOf<Block?>(Constant(scope, "int"))
+    var index by mutableStateOf<Block>(Constant(scope, "int"))
     var indexRect: Rect = Rect.Zero
 
     override fun execute()
     {
-        if (source == null || index == null)
+        if (source == null)
         {
             isTroublesome = true
             throw Exception(R.string.null_pointer.toString())
@@ -28,7 +28,7 @@ class DeleteListElement(override var scope: NewScope) : Block()
             throw Exception(R.string.is_not_list.toString())
         }
 
-        val executedIndex = (index!!.execute()) as? Value.INT
+        val executedIndex = (index.execute()) as? Value.INT
         if (executedIndex == null)
         {
             isTroublesome = true

@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.mobileapp.classes.AddListElement
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.BoolExpression
@@ -24,6 +25,7 @@ import com.example.mobileapp.classes.ListConstant
 import com.example.mobileapp.classes.MathExpression
 import com.example.mobileapp.classes.NewScope
 import com.example.mobileapp.classes.Print
+import com.example.mobileapp.classes.SetListElement
 import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseVariable
 
@@ -43,8 +45,8 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
     var scopesList = mutableStateListOf<NewScope>(context)
     var blockChooserList = mutableStateListOf<Block>(For(context, context.varList, "i"), IfElse(context), DeclareVariable(context, context.varList),
         UseVariable(context, context.varList), SetVariable(context, context.varList), MathExpression(context), Print(context, console),
-        AddListElement(context), DeleteListElement(context), Constant(context, "int", 0), Constant(context, "string", "str"),
-        Constant(context, "double", 0.0), Constant(context, "bool", true),
+        AddListElement(context), DeleteListElement(context), SetListElement(context), Constant(context, "int", 0),
+        Constant(context, "string", "str"), Constant(context, "double", 0.0), Constant(context, "bool", true),
         ListConstant(context))
 
     fun createNewBlock(oldBlock: Block, scope: NewScope): Block{
@@ -66,6 +68,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
             is IfElse -> return IfElse(scope)
             is AddListElement -> return AddListElement(scope)
             is DeleteListElement -> return DeleteListElement(scope)
+            is SetListElement -> return SetListElement(scope)
             is For -> return For(scope, context.varList, "i")
         }
         return TODO("Provide the return value")
@@ -92,6 +95,9 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     if (parent.source == child) parent.source = null
                 }
                 is DeleteListElement -> {
+                    if (parent.source == child) parent.source = null
+                }
+                is SetListElement -> {
                     if (parent.source == child) parent.source = null
                 }
                 is Print -> {
@@ -250,6 +256,28 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     }
                 }
             }
+            is SetListElement -> {
+                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
+                    if (block.indexRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
+                        addBlockInsideAnother(block.index, true, {newBlock -> deleteBlock(localScope)
+                            block.index = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                    }
+                    else if (block.sourceRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
+                        if (block.source != null) {
+                            addBlockInsideAnother(block.source as Block, true, { newBlock ->
+                                deleteBlock(localScope)
+                                block.source = newBlock
+                            }, isRelocating, relocateFunction, addBlockFunction, localScope)
+                        }
+                        else{
+                            block.source = if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value
+                        }
+                    }
+                    else if (isInsideBlock){
+                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    }
+                }
+            }
         }
     }
 
@@ -285,7 +313,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
     fun relocateBlock(block: Block, localScope: NewScope){
         for(i in localScope.dropZones.indices){
             if (localScope.dropZones[i].contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                if (!(block is Constant) && !(block is UseVariable) && !(block is MathExpression)){
+                if (block !is Constant && block !is UseVariable && block !is MathExpression){
                     deleteBlock(block.scope)
                     localScope.blockList.add(if (localScope.blockList.isEmpty()) i else i+1, block)
                     block.scope = localScope
@@ -296,5 +324,12 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         localScope.blockList.forEach { item ->
             addBlockInsideAnother(item, false, {}, true, {block, scope -> relocateBlock(block, scope)}, {_, _ ->}, localScope)
         }
+    }
+}
+
+
+class RedactorViewModelFactory(var resources: Resources) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return RedactorViewModel(resources) as T
     }
 }
