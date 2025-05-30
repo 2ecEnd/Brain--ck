@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -33,6 +32,7 @@ import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.ListConstant
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun DrawListConstant(
@@ -63,7 +63,7 @@ fun DrawListConstant(
                 block.selfRect = coordinates.boundsInWindow()
             },
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(255, 255, 255)),
+        colors = CardDefaults.cardColors(containerColor = White),
     )
     {
         Row(
@@ -90,7 +90,7 @@ fun DrawListConstant(
                         block.addBlockRect = coordinates.boundsInWindow()
                     },
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(25, 25, 25).copy(alpha = 0.25f)),
+                colors = CardDefaults.cardColors(containerColor = BlockShadow),
             )
             {
                 Box(modifier = Modifier.fillMaxSize(),

@@ -17,7 +17,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mobileapp.R
 import com.example.mobileapp.visual_components.HomeButton
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun Toolbar(navController: NavController){
@@ -32,7 +32,7 @@ fun Toolbar(navController: NavController){
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.08f)
-            .background(Color(red = 230, green = 224, blue = 233)),
+            .background(TabsBackground),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     )
@@ -47,7 +47,7 @@ fun Toolbar(navController: NavController){
             shape = RoundedCornerShape(12.dp),
             contentPadding = PaddingValues(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(red = 103, green = 80, blue = 164),
+                containerColor = NavButtonColor,
             )
         )
         {
@@ -67,7 +67,7 @@ fun Toolbar(navController: NavController){
             shape = RoundedCornerShape(12.dp),
             contentPadding = PaddingValues(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(red = 103, green = 80, blue = 164),
+                containerColor = NavButtonColor,
             )
         )
         {
@@ -87,7 +87,7 @@ fun Toolbar(navController: NavController){
             shape = RoundedCornerShape(12.dp),
             contentPadding = PaddingValues(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(red = 103, green = 80, blue = 164),
+                containerColor = NavButtonColor,
             )
         )
         {

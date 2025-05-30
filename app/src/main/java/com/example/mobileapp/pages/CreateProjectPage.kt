@@ -2,7 +2,6 @@ package com.example.mobileapp.pages
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,12 +31,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mobileapp.R
 import com.example.mobileapp.visual_components.HomeButton
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun CreateProjectPage(navController: NavController){
     Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Green)){
+        .fillMaxSize()){
         Image(
             painter = painterResource(id = R.drawable.background),
             contentDescription = stringResource(R.string.background),
@@ -52,7 +50,7 @@ fun CreateProjectPage(navController: NavController){
                 .width(325.dp)
                 .height(200.dp),
             shape = RoundedCornerShape(15.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(230, 224, 233))
+            colors = CardDefaults.cardColors(containerColor = TabsBackground)
         )
         {
             ProjectNameForm(navController)
@@ -79,9 +77,9 @@ fun ProjectNameForm(navController: NavController){
                     .height(80.dp),
                 value = text,
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(250, 250, 250),
-                    unfocusedContainerColor = Color(250, 250, 250),
-                    disabledContainerColor = Color(250, 250, 250)
+                    focusedContainerColor = NewScopeBodyColor,
+                    unfocusedContainerColor = NewScopeBodyColor,
+                    disabledContainerColor = NewScopeBodyColor
                 ),
                 onValueChange = { newText -> text = newText },
                 textStyle = LocalTextStyle.current.copy(fontSize = 24.sp)
@@ -93,11 +91,15 @@ fun ProjectNameForm(navController: NavController){
                     .width(275.dp)
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(red = 103, green = 80, blue = 164),
+                    containerColor = NavButtonColor,
                 )
             )
             {
-                Text(stringResource(R.string.create), fontSize = 24.sp, color = Color.White)
+                Text(
+                    stringResource(R.string.create),
+                    fontSize = 24.sp,
+                    color = White
+                )
             }
         }
     }

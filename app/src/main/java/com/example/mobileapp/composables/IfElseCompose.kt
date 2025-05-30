@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -34,6 +33,7 @@ import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.IfElse
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun DrawIfElse(
@@ -61,7 +61,7 @@ fun DrawIfElse(
                 block.selfRect = coordinates.boundsInWindow()
             },
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+        colors = CardDefaults.cardColors(containerColor = NewScopeColor),
     )
     {
         Column ()
@@ -77,7 +77,7 @@ fun DrawIfElse(
                 Text(
                     stringResource(R.string._if_),
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = White,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
@@ -109,14 +109,15 @@ fun DrawIfElse(
                     topEnd = 0.dp,
                     bottomEnd = 0.dp
                 ),
-                colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
+                colors = CardDefaults.cardColors(containerColor = NewScopeBodyColor)
             )
             {
                 Column ()
                 {
                     for(i in block.ifBlock.blockList.indices){
                         var localBlock = block.ifBlock.blockList[i]
-                        if ((block.ifBlock.spacerPair.value.first == i) && block.ifBlock.spacerPair.value.second == block.ifBlock){
+                        if ((block.ifBlock.spacerPair.value.first == i) &&
+                            block.ifBlock.spacerPair.value.second == block.ifBlock){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                         key(block.hashCode()) {
@@ -124,8 +125,9 @@ fun DrawIfElse(
                                 DrawBlock(localBlock, onDragStart, onDragEnd, true)
                             }
                         }
-                        if (i == block.ifBlock.blockList.count() - 1 && block.ifBlock.spacerPair.value.first
-                            == block.ifBlock.blockList.count() && block.ifBlock.spacerPair.value.second == block.ifBlock){
+                        if (i == block.ifBlock.blockList.count() - 1 &&
+                            block.ifBlock.spacerPair.value.first == block.ifBlock.blockList.count() &&
+                            block.ifBlock.spacerPair.value.second == block.ifBlock){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                     }
@@ -135,7 +137,7 @@ fun DrawIfElse(
             Text(
                 stringResource(R.string._else_),
                 fontSize = 24.sp,
-                color = Color.White,
+                color = White,
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
 
@@ -154,14 +156,15 @@ fun DrawIfElse(
                     topEnd = 0.dp,
                     bottomEnd = 0.dp
                 ),
-                colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
+                colors = CardDefaults.cardColors(containerColor = NewScopeBodyColor)
             )
             {
                 Column ()
                 {
                     for(i in block.elseBlock.blockList.indices){
                         var localBlock = block.elseBlock.blockList[i]
-                        if (block.elseBlock.spacerPair.value.first == i && block.elseBlock.spacerPair.value.second == block.elseBlock){
+                        if (block.elseBlock.spacerPair.value.first == i &&
+                            block.elseBlock.spacerPair.value.second == block.elseBlock){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                         key(block.hashCode()) {
@@ -169,8 +172,9 @@ fun DrawIfElse(
                                 DrawBlock(localBlock, onDragStart, onDragEnd, true)
                             }
                         }
-                        if (i == block.elseBlock.blockList.count() - 1 && block.elseBlock.spacerPair.value.first
-                            == block.elseBlock.blockList.count() && block.elseBlock.spacerPair.value.second == block.elseBlock){
+                        if (i == block.elseBlock.blockList.count() - 1 &&
+                            block.elseBlock.spacerPair.value.first == block.elseBlock.blockList.count() &&
+                            block.elseBlock.spacerPair.value.second == block.elseBlock){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                     }

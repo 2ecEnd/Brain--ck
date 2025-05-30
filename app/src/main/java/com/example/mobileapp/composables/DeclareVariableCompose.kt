@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.DeclareVariable
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun DrawDeclareVariable(
@@ -60,7 +60,7 @@ fun DrawDeclareVariable(
                 block.selfRect = coordinates.boundsInWindow()
             },
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+        colors = CardDefaults.cardColors(containerColor = BlockColor),
     )
     {
         Row(
@@ -70,7 +70,12 @@ fun DrawDeclareVariable(
             horizontalArrangement = Arrangement.SpaceAround
         )
         {
-            Text(stringResource(R.string.declare), fontSize = 16.sp, color = Color.White)
+            Text(
+                stringResource(R.string.declare),
+                fontSize = 16.sp,
+                color = White
+            )
+
             var value = block.name
             if (isActive) block.scope.addVariable(value)
             BasicTextField(
@@ -92,7 +97,7 @@ fun DrawDeclareVariable(
                 decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier
-                            .background(Color.White, RoundedCornerShape(20.dp)),
+                            .background(White, RoundedCornerShape(20.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         innerTextField()

@@ -32,7 +32,6 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MobileAppTheme {
-
                 val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
                 windowInsetsController.apply {
                     hide(WindowInsetsCompat.Type.navigationBars())

@@ -9,7 +9,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mobileapp.classes.AddListElement
 import com.example.mobileapp.classes.Block
@@ -40,6 +39,7 @@ import com.example.mobileapp.composables.DrawSetListElement
 import com.example.mobileapp.composables.DrawSetVariable
 import com.example.mobileapp.composables.DrawUseListElement
 import com.example.mobileapp.composables.DrawUseVariable
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun DrawBlock(block: Block,
@@ -73,7 +73,7 @@ fun DrawShadow(block: Block?){
             .width(200.dp)
             .height(48.dp),
         shape = RoundedCornerShape(15.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(25, 25, 25).copy(alpha = 0.25f)),
+        colors = CardDefaults.cardColors(containerColor = BlockShadow),
     )
     {}
 }

@@ -18,11 +18,11 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.NewScope
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun RedactorArea(
@@ -38,14 +38,16 @@ fun RedactorArea(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.75f)
-            .background(Color(red = 249, green = 249, blue = 249))
+            .background(NewScopeColor)
             .verticalScroll(rememberScrollState())
             .horizontalScroll(rememberScrollState())
             .padding(end = 256.dp, bottom = 512.dp)
     )
     {
         for(i in blockList.indices){
-            if (currentInteractionScope.spacerPair.value.first == i && currentInteractionScope.spacerPair.value.second == context){
+            if (currentInteractionScope.spacerPair.value.first == i &&
+                currentInteractionScope.spacerPair.value.second == context)
+            {
                 Spacer(modifier = Modifier.height(48.dp))
             }
             var block = blockList[i]

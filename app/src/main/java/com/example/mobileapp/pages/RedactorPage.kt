@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -60,6 +59,7 @@ import com.example.mobileapp.redactorspage_components.RedactorArea
 import com.example.mobileapp.redactorspage_components.ScrollableTabSample
 import com.example.mobileapp.redactorspage_components.Toolbar
 import kotlin.math.roundToInt
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun RedactorPage(navController: NavController){
@@ -130,7 +130,7 @@ fun RedactorPage(navController: NavController){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(red = 249, green = 249, blue = 249))
+            .background(NewScopeColor)
             .pointerInput(Unit) {
                 awaitPointerEventScope {
                     while (true) {
@@ -181,7 +181,7 @@ fun RedactorPage(navController: NavController){
                             trashRect = coordinates.boundsInWindow()
                         }
                         .zIndex(0.95f),
-                    colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = alpha)),
+                    colors = CardDefaults.cardColors(containerColor = Black.copy(alpha = alpha)),
                     shape = RoundedCornerShape(10.dp)
                 )
                 {
@@ -207,15 +207,21 @@ fun RedactorPage(navController: NavController){
 
             var completed = true
             for(i in currentInteractionScope.dropZones.indices){
-                if(currentInteractionScope.dropZones[i].contains(Offset(dragOffset.x, dragOffset.y))) {
+                if(currentInteractionScope.dropZones[i].contains(Offset(dragOffset.x, dragOffset.y)))
+                {
                     Box(
                         modifier = Modifier
                             .offset {
                                 IntOffset(
                                     currentInteractionScope.dropZones[i].left.roundToInt(),
                                     if(i != currentInteractionScope.dropZones.count()-1 ||
-                                        (currentInteractionScope != context && !currentInteractionScope.blockList.isEmpty())){
-                                        (currentInteractionScope.dropZones[i].top + (currentInteractionScope.dropZones[i].bottom - currentInteractionScope.dropZones[i].top)*0.5).roundToInt()
+                                        (currentInteractionScope != context &&
+                                        !currentInteractionScope.blockList.isEmpty()))
+                                    {
+                                        (currentInteractionScope.dropZones[i].top +
+                                        (currentInteractionScope.dropZones[i].bottom -
+                                            currentInteractionScope.dropZones[i].top) * 0.5)
+                                            .roundToInt()
                                     }
                                     else{
                                         currentInteractionScope.dropZones[i].top.roundToInt()
@@ -227,7 +233,9 @@ fun RedactorPage(navController: NavController){
                     {
                         DrawShadow(null)
                     }
-                    if (i != currentInteractionScope.dropZones.count() - 1 || currentInteractionScope != context) {
+                    if (i != currentInteractionScope.dropZones.count() - 1 ||
+                        currentInteractionScope != context)
+                    {
                         scopesList.forEach { scope ->
                             scope.spacerPair.value = scope.spacerPair.value.copy(
                                 first = if (currentInteractionScope.blockList.contains(
@@ -247,7 +255,10 @@ fun RedactorPage(navController: NavController){
             }
             if (completed){
                 scopesList.forEach { scope ->
-                    scope.spacerPair.value = scope.spacerPair.value.copy(first = -1, second = currentInteractionScope)
+                    scope.spacerPair.value = scope.spacerPair.value.copy(
+                        first = -1,
+                        second = currentInteractionScope
+                    )
                 }
             }
         }
@@ -282,8 +293,8 @@ fun RedactorPage(navController: NavController){
                 0 -> {
                     Card(
                         modifier = Modifier
-                            .background(Color(red = 230, green = 224, blue = 233)),
-                        colors = CardDefaults.cardColors(containerColor = Color(230, 224, 233))
+                            .background(TabsBackground),
+                        colors = CardDefaults.cardColors(containerColor = TabsBackground)
                     )
                     {
                         ScrollableTabSample(
@@ -301,7 +312,7 @@ fun RedactorPage(navController: NavController){
                     Card(
                         modifier = Modifier
                             .fillMaxSize(),
-                        colors = CardDefaults.cardColors(containerColor = Color(100, 100, 100)),
+                        colors = CardDefaults.cardColors(containerColor = ConsoleColor),
                         shape = RoundedCornerShape(0.dp),
                     )
                     {
@@ -316,7 +327,7 @@ fun RedactorPage(navController: NavController){
                             )
                             {
                                 console.text.forEach { text ->
-                                    Text(text, fontSize = 24.sp, color = Color.White)
+                                    Text(text, fontSize = 24.sp, color = White)
                                 }
                             }
 
@@ -333,7 +344,7 @@ fun RedactorPage(navController: NavController){
                                 shape = RoundedCornerShape(12.dp),
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(red = 87, green = 150, blue = 92),
+                                    containerColor = ExecuteButtonColor,
                                 )
                             ){
                                 Image(

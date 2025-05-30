@@ -24,13 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.UseVariable
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun DrawUseVariable(
@@ -61,7 +61,7 @@ fun DrawUseVariable(
                 block.selfRect = coordinates.boundsInWindow()
             },
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+        colors = CardDefaults.cardColors(containerColor = BlockColor),
     )
     {
         Row(

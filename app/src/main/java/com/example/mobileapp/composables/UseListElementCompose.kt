@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -30,6 +29,7 @@ import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.UseListElement
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun DrawUseListElement(
@@ -57,7 +57,7 @@ fun DrawUseListElement(
                 block.selfRect = coordinates.boundsInWindow()
             },
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+        colors = CardDefaults.cardColors(containerColor = BlockColor),
     )
     {
         Row(
@@ -85,7 +85,7 @@ fun DrawUseListElement(
                                 .height(38.dp)
                                 .width(56.dp),
                             shape = RoundedCornerShape(10.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(150, 150, 150))
+                            colors = CardDefaults.cardColors(containerColor = AddValueOpportunityColor)
                         )
                         {
 
@@ -94,7 +94,12 @@ fun DrawUseListElement(
                 }
             }
 
-            Text(stringResource(R.string.left_square_bracket), fontSize = 36.sp, color = Color.White, modifier = Modifier.padding(start = 8.dp))
+            Text(
+                stringResource(R.string.left_square_bracket),
+                fontSize = 36.sp,
+                color = White,
+                modifier = Modifier.padding(start = 8.dp)
+            )
             Box(
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
@@ -106,7 +111,12 @@ fun DrawUseListElement(
                     DrawBlock(block.index, onDragStart, onDragEnd, isActive)
                 }
             }
-            Text(stringResource(R.string.right_square_bracket), fontSize = 36.sp, color = Color.White, modifier = Modifier.padding(start = 0.dp))
+            Text(
+                stringResource(R.string.right_square_bracket),
+                fontSize = 36.sp,
+                color = White,
+                modifier = Modifier.padding(start = 0.dp)
+            )
         }
     }
 }

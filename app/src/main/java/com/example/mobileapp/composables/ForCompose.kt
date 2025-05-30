@@ -34,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -48,6 +47,7 @@ import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.For
 import com.example.mobileapp.classes.UseVariable
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun DrawFor(
@@ -94,7 +94,7 @@ fun DrawFor(
                 block.selfRect = coordinates.boundsInWindow()
             },
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(255, 96, 0)),
+        colors = CardDefaults.cardColors(containerColor = NewScopeColor),
     )
     {
         Column ()
@@ -108,7 +108,7 @@ fun DrawFor(
                 Text(
                     stringResource(R.string.declare_for),
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = White,
                     modifier = Modifier.padding(end = 8.dp)
                 )
 
@@ -138,7 +138,7 @@ fun DrawFor(
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier
-                                .background(Color.White, RoundedCornerShape(24.dp)),
+                                .background(White, RoundedCornerShape(24.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             innerTextField()
@@ -149,7 +149,7 @@ fun DrawFor(
                 Text(
                     stringResource(R.string.assign),
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = White,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
@@ -175,7 +175,7 @@ fun DrawFor(
                 Text(
                     block.iterableVar.name,
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = White,
                 )
 
                 var expanded by remember { mutableStateOf(false) }
@@ -241,7 +241,7 @@ fun DrawFor(
                 Text(
                     block.iterableVar.name,
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = White,
                 )
 
                 var expanded by remember { mutableStateOf(false) }
@@ -301,7 +301,7 @@ fun DrawFor(
                 Text(
                     stringResource(R.string.right_bracket),
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = White,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -320,14 +320,15 @@ fun DrawFor(
                     topEnd = 0.dp,
                     bottomEnd = 0.dp
                 ),
-                colors = CardDefaults.cardColors(containerColor = Color(250, 250, 250))
+                colors = CardDefaults.cardColors(containerColor = NewScopeBodyColor)
             )
             {
                 Column ()
                 {
                     for(i in block.blockList.indices){
                         var localBlock = block.blockList[i]
-                        if ((block.spacerPair.value.first == i) && block.spacerPair.value.second == block){
+                        if ((block.spacerPair.value.first == i) &&
+                            block.spacerPair.value.second == block){
                             Spacer(modifier = Modifier.height(48.dp))
                         }
                         key(block.hashCode()) {

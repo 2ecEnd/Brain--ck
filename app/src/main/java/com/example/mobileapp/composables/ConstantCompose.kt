@@ -34,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -47,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mobileapp.R
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.Constant
+import com.example.mobileapp.ui.theme.*
 
 @Composable
 fun DrawConstant(
@@ -85,7 +85,7 @@ fun DrawConstant(
                 block.selfRect = coordinates.boundsInWindow()
             },
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(255, 128, 0)),
+        colors = CardDefaults.cardColors(containerColor = BlockColor),
     )
     {
         Row(
@@ -159,13 +159,17 @@ fun DrawConstant(
                         }
                     ),
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = if (selectedType == dataTypes[0] || selectedType == dataTypes[1]) KeyboardType.Number
-                        else KeyboardType.Text
+                        keyboardType =
+                            if (selectedType == dataTypes[0] ||
+                            selectedType == dataTypes[1])
+                                KeyboardType.Number
+                            else
+                                KeyboardType.Text
                     ),
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier
-                                .background(Color.White, RoundedCornerShape(20.dp)),
+                                .background(White, RoundedCornerShape(20.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             innerTextField()

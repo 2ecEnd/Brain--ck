@@ -181,7 +181,9 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                 scopesList.remove(draggingBlock.value)
             }
             is DeclareVariable -> {
-                draggingBlock.value.scope.deleteVariable((draggingBlock.value as DeclareVariable).name)
+                draggingBlock.value.scope.deleteVariable(
+                    (draggingBlock.value as DeclareVariable).name
+                )
             }
         }
     }
@@ -201,185 +203,644 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
             return
         when(block){
             is MathExpression -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.leftValueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.leftValue, true, {newBlock -> deleteBlock(localScope)
-                            block.leftValue = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                ))
+                {
+                    if (block.leftValueRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.leftValue,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.leftValue = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (block.rightValueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.rightValue, true, {newBlock -> deleteBlock(localScope)
-                            block.rightValue = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                    else if (block.rightValueRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.rightValue,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.rightValue = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
+
             is SetVariable -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.valueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.value, true, {newBlock -> deleteBlock(localScope)
-                            block.value = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)))
+                {
+                    if (block.valueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)))
+                    {
+                        addBlockInsideAnother(
+                            block.value,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.value = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
+
             is Constant -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)) && isInsideBlock){
-                    onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)) &&
+                    isInsideBlock)
+                {
+                    onReplace(
+                        if(!isRelocating)
+                            createNewBlock(
+                                draggingBlock.value,
+                                localScope
+                            )
+                        else
+                            draggingBlock.value)
                 }
             }
+
             is ListConstant -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)) && isInsideBlock){
-                    if (block.addBlockRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        block.blockList.add(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)) &&
+                    isInsideBlock)
+                {
+                    if (block.addBlockRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        block.blockList.add(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
-                    else{
+                    else
+                    {
                         var flag = true
-                        for(i in block.blockList.indices) {
-                            if (block.blockList[i].selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                                addBlockInsideAnother(block.blockList[i], true, {newBlock -> deleteBlock(localScope)
-                                    block.blockList[i] = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                        for(i in block.blockList.indices)
+                        {
+                            if (block.blockList[i].selfRect.contains(
+                                    Offset(
+                                        dragOffset.value.x,
+                                        dragOffset.value.y
+                                    )
+                            ))
+                            {
+                                addBlockInsideAnother(
+                                    block.blockList[i],
+                                    true,
+                                    {newBlock -> deleteBlock(localScope)
+                                        block.blockList[i] = newBlock
+                                    },
+                                    isRelocating,
+                                    relocateFunction,
+                                    addBlockFunction,
+                                    localScope
+                                )
                                 flag = false
                             }
                         }
-                        if (flag) onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                        if (flag)
+                            onReplace(
+                                if(!isRelocating)
+                                    createNewBlock(
+                                        draggingBlock.value,
+                                        localScope
+                                    )
+                                else
+                                    draggingBlock.value)
                     }
                 }
             }
+
             is Print -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.contentRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.content, true, {newBlock -> deleteBlock(localScope)
-                            block.content = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                ))
+                {
+                    if (block.contentRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.content,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.content = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
+
             is UseVariable -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y)) && isInsideBlock){
-                    onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        ))
+                    && isInsideBlock
+                    )
+                {
+                    onReplace(
+                        if(!isRelocating)
+                            createNewBlock(
+                                draggingBlock.value,
+                                localScope
+                            )
+                        else
+                            draggingBlock.value)
                 }
             }
+
             is IfElse -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.conditionRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.condition, true, {newBlock -> if (newBlock is BoolExpression) block.condition = newBlock
-                            deleteBlock(localScope)}, isRelocating, relocateFunction, addBlockFunction, localScope)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                ))
+                {
+                    if (block.conditionRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.condition,
+                            true,
+                            {newBlock ->
+                                if (newBlock is BoolExpression)
+                                    block.condition = newBlock
+                                deleteBlock(localScope)
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
+
             is BoolExpression -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.leftValueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.leftValue, true, {newBlock -> deleteBlock(localScope)
-                            block.leftValue = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                ))
+                {
+                    if (block.leftValueRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.leftValue,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.leftValue = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (block.rightValueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.rightValue, true, {newBlock -> deleteBlock(localScope)
-                            block.rightValue = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                    else if (block.rightValueRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.rightValue,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.rightValue = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
+
             is AddListElement -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.valueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.value, true, {newBlock -> deleteBlock(localScope)
-                            block.value = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                ))
+                {
+                    if (block.valueRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.value,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.value = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (block.sourceRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        if (block.source != null) {
-                            addBlockInsideAnother(block.source as Block, true, { newBlock ->
-                                deleteBlock(localScope)
-                                block.source = newBlock
-                            }, isRelocating, relocateFunction, addBlockFunction, localScope)
+                    else if (block.sourceRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        if (block.source != null)
+                        {
+                            addBlockInsideAnother(
+                                block.source as Block,
+                                true,
+                                { newBlock ->
+                                    deleteBlock(localScope)
+                                    block.source = newBlock
+                                },
+                                isRelocating,
+                                relocateFunction,
+                                addBlockFunction,
+                                localScope
+                            )
                         }
-                        else{
-                            block.source = if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value
+                        else
+                        {
+                            block.source =
+                                if(!isRelocating)
+                                    createNewBlock(draggingBlock.value, localScope)
+                                else
+                                    draggingBlock.value
                         }
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
+
             is DeleteListElement -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.indexRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.index, true, {newBlock -> deleteBlock(localScope)
-                            block.index = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                ))
+                {
+                    if (block.indexRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.index,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.index = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (block.sourceRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        if (block.source != null) {
-                            addBlockInsideAnother(block.source as Block, true, { newBlock ->
-                                deleteBlock(localScope)
-                                block.source = newBlock
-                            }, isRelocating, relocateFunction, addBlockFunction, localScope)
+                    else if (block.sourceRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        if (block.source != null)
+                        {
+                            addBlockInsideAnother(
+                                block.source as Block,
+                                true,
+                                {newBlock ->
+                                    deleteBlock(localScope)
+                                    block.source = newBlock
+                                },
+                                isRelocating,
+                                relocateFunction,
+                                addBlockFunction,
+                                localScope
+                            )
                         }
-                        else{
-                            block.source = if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value
+                        else
+                        {
+                            block.source =
+                                if(!isRelocating)
+                                    createNewBlock(
+                                        draggingBlock.value,
+                                        localScope)
+                                else
+                                    draggingBlock.value
                         }
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
+
             is SetListElement -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.indexRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.index, true, {newBlock -> deleteBlock(localScope)
-                            block.index = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                ))
+                {
+                    if (block.indexRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.index,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.index = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (block.sourceRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        if (block.source != null) {
-                            addBlockInsideAnother(block.source as Block, true, { newBlock ->
-                                deleteBlock(localScope)
-                                block.source = newBlock
-                            }, isRelocating, relocateFunction, addBlockFunction, localScope)
+                    else if (block.sourceRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        if (block.source != null)
+                        {
+                            addBlockInsideAnother(
+                                block.source as Block,
+                                true,
+                                { newBlock ->
+                                    deleteBlock(localScope)
+                                    block.source = newBlock
+                                },
+                                isRelocating,
+                                relocateFunction,
+                                addBlockFunction,
+                                localScope
+                            )
                         }
-                        else{
-                            block.source = if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value
+                        else
+                        {
+                            block.source =
+                                if(!isRelocating)
+                                    createNewBlock(
+                                        draggingBlock.value,
+                                        localScope
+                                    )
+                                else
+                                    draggingBlock.value
                         }
                     }
-                    else if (block.valueRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.value, true, {newBlock -> deleteBlock(localScope)
-                            block.value = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                    else if (block.valueRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.value,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.value = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
+
             is UseListElement -> {
-                if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                    if (block.indexRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        addBlockInsideAnother(block.index, true, {newBlock -> deleteBlock(localScope)
-                            block.index = newBlock}, isRelocating, relocateFunction, addBlockFunction,localScope)
+                if (block.selfRect.contains(
+                        Offset(
+                            dragOffset.value.x,
+                            dragOffset.value.y
+                        )
+                ))
+                {
+                    if (block.indexRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        addBlockInsideAnother(
+                            block.index,
+                            true,
+                            {newBlock -> deleteBlock(localScope)
+                                block.index = newBlock
+                            },
+                            isRelocating,
+                            relocateFunction,
+                            addBlockFunction,
+                            localScope
+                        )
                     }
-                    else if (block.sourceRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                        if (block.source != null) {
-                            addBlockInsideAnother(block.source as Block, true, { newBlock ->
-                                deleteBlock(localScope)
-                                block.source = newBlock
-                            }, isRelocating, relocateFunction, addBlockFunction, localScope)
+                    else if (block.sourceRect.contains(
+                            Offset(
+                                dragOffset.value.x,
+                                dragOffset.value.y
+                            )
+                    ))
+                    {
+                        if (block.source != null)
+                        {
+                            addBlockInsideAnother(
+                                block.source as Block,
+                                true,
+                                { newBlock -> deleteBlock(localScope)
+                                    block.source = newBlock
+                                },
+                                isRelocating,
+                                relocateFunction,
+                                addBlockFunction,
+                                localScope
+                            )
                         }
-                        else{
-                            block.source = if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value
+                        else
+                        {
+                            block.source =
+                                if(!isRelocating)
+                                    createNewBlock(
+                                        draggingBlock.value,
+                                        localScope
+                                    )
+                                else
+                                    draggingBlock.value
                         }
                     }
-                    else if (isInsideBlock){
-                        onReplace(if(!isRelocating) createNewBlock(draggingBlock.value, localScope) else draggingBlock.value)
+                    else if (isInsideBlock)
+                    {
+                        onReplace(
+                            if(!isRelocating)
+                                createNewBlock(
+                                    draggingBlock.value,
+                                    localScope
+                                )
+                            else
+                                draggingBlock.value)
                     }
                 }
             }
@@ -392,21 +853,31 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
     )
     {
         for(i in localScope.dropZones.indices){
-            if (localScope.dropZones[i].contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                if (isNotSpecialBlock(block)){
+            if (localScope.dropZones[i].contains(
+                    Offset(
+                        dragOffset.value.x,
+                        dragOffset.value.y
+                    )
+            ))
+            {
+                if (isNotSpecialBlock(block))
+                {
                     val insertIndex = if (localScope.blockList.isEmpty()) 0 else i+1
                     var newBlock = createNewBlock(block, localScope)
                     localScope.blockList.add(insertIndex, newBlock)
                     newBlock.scope = localScope
                     when(newBlock){
                         is IfElse -> {
-                            newBlock.ifBlock.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
-                            newBlock.elseBlock.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                            newBlock.ifBlock.spacerPair =
+                                mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                            newBlock.elseBlock.spacerPair =
+                                mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
                             scopesList.add(newBlock.ifBlock)
                             scopesList.add(newBlock.elseBlock)
                         }
                         is For -> {
-                            newBlock.spacerPair = mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
+                            newBlock.spacerPair =
+                                mutableStateOf<Pair<Int, NewScope>>(context.spacerPair.value)
                             scopesList.add(newBlock)
                         }
                     }
@@ -414,9 +885,15 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                 }
             }
         }
-        localScope.blockList.forEach { item ->
-            addBlockInsideAnother(item, false, {}, false, {_, _ ->}, {block, scope -> AddNewBlock(block, scope)}, localScope)
-        }
+        localScope.blockList.forEach { item -> addBlockInsideAnother(
+            item,
+            false,
+            {},
+            false,
+            {_, _ ->},
+            {block, scope -> AddNewBlock(block, scope)},
+            localScope
+        )}
     }
 
     fun relocateBlock(
@@ -425,18 +902,39 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
     )
     {
         for(i in localScope.dropZones.indices){
-            if (localScope.dropZones[i].contains(Offset(dragOffset.value.x, dragOffset.value.y))){
-                if (block !is Constant && block !is UseVariable && block !is MathExpression){
+            if (localScope.dropZones[i].contains(
+                    Offset(
+                        dragOffset.value.x,
+                        dragOffset.value.y
+                    )
+            ))
+            {
+                if (block !is Constant &&
+                    block !is UseVariable &&
+                    block !is MathExpression)
+                {
                     deleteBlock(block.scope)
-                    localScope.blockList.add(if (localScope.blockList.isEmpty()) i else i+1, block)
+                    localScope.blockList.add(
+                        if (localScope.blockList.isEmpty())
+                            i
+                        else
+                            i + 1,
+                        block
+                    )
                     block.scope = localScope
                     return
                 }
             }
         }
-        localScope.blockList.forEach { item ->
-            addBlockInsideAnother(item, false, {}, true, {block, scope -> relocateBlock(block, scope)}, {_, _ ->}, localScope)
-        }
+        localScope.blockList.forEach { item -> addBlockInsideAnother(
+            item,
+            false,
+            {},
+            true,
+            {block, scope -> relocateBlock(block, scope)},
+            {_, _ ->},
+            localScope
+        )}
     }
 }
 
