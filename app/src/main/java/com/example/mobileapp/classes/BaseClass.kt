@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.unit.dp
 
 abstract class Block
 {
@@ -64,7 +65,7 @@ abstract class NewScope : Block()
         }
     }
 
-    open fun updateDropZones(draggingBlock: Block)
+    open fun updateDropZones(draggingBlock: Block, pixels: Float)
     {
         dropZones.clear()
         if (blockList.isEmpty())
@@ -76,9 +77,8 @@ abstract class NewScope : Block()
             for(i in blockList.indices)
             {
                 if(blockList[i] == draggingBlock) continue
-                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.top +
-                        ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.75.toFloat()),
-                    bottom = blockList[i].selfRect.bottom + ((blockList[i].selfRect.bottom-blockList[i].selfRect.top)*0.25.toFloat())))
+                dropZones.add(blockList[i].selfRect.copy(top = blockList[i].selfRect.bottom - pixels,
+                    bottom = blockList[i].selfRect.bottom + pixels))
             }
         }
     }

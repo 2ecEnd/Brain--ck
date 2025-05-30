@@ -47,6 +47,7 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
@@ -99,10 +100,14 @@ fun RedactorPage(navController: NavController){
     val otherTabList =  viewModel.otherTabList
 
     val pagerState = rememberPagerState (pageCount = {2})
+    val density = LocalDensity.current
 
     context.spacerPair = remember{mutableStateOf<Pair<Int, NewScope>>(-1 to context)}
 
-    scopesList.forEach { scope -> scope.updateDropZones(draggingBlock) }
+    scopesList.forEach { scope ->
+        scope.updateDropZones(draggingBlock,
+        with(density) {(20.dp).toPx()})
+    }
 
     val onDragStart = remember {
         { offset: Offset, chosenBlock: Block ->
@@ -127,7 +132,10 @@ fun RedactorPage(navController: NavController){
             isDragging = true
             touchPoint = offset
             draggingBlock = chosenBlock
-            scopesList.forEach { scope -> scope.updateDropZones(draggingBlock) }
+            scopesList.forEach { scope ->
+                scope.updateDropZones(draggingBlock,
+                    with(density) {(20.dp).toPx()})
+            }
         }
     }
     val tabOnDragEnd = remember {
