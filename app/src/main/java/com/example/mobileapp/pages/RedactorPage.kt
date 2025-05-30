@@ -65,7 +65,19 @@ import com.example.mobileapp.classes.BoolExpression
 import com.example.mobileapp.classes.NewScope
 import com.example.mobileapp.classes.Console
 import com.example.mobileapp.classes.Constant
+import com.example.mobileapp.classes.DeclareVariable
+import com.example.mobileapp.classes.DeleteListElement
+import com.example.mobileapp.classes.For
+import com.example.mobileapp.classes.IfElse
+import com.example.mobileapp.classes.ListConstant
+import com.example.mobileapp.classes.MathExpression
+import com.example.mobileapp.classes.Print
+import com.example.mobileapp.classes.SetListElement
+import com.example.mobileapp.classes.SetVariable
+import com.example.mobileapp.classes.UseListElement
+import com.example.mobileapp.classes.UseVariable
 import com.example.mobileapp.redactorspage_components.RedactorArea
+import com.example.mobileapp.redactorspage_components.ScrollableTabSample
 import com.example.mobileapp.redactorspage_components.Toolbar
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
@@ -90,7 +102,12 @@ fun RedactorPage(navController: NavController){
     var touchPoint by viewModel.touchPoint
 
     var scopesList = viewModel.scopesList
-    var blockChooserList = viewModel.blockChooserList
+
+    var variablesTabList = viewModel.variablesTabList
+    var listsTabList = viewModel.listsTabList
+    var expressionsTabList = viewModel.expressionsTabList
+    var constantsTabList = viewModel.constantsTabList
+    var otherTabList =  viewModel.otherTabList
 
     var pagerState = rememberPagerState (pageCount = {2})
 
@@ -113,6 +130,21 @@ fun RedactorPage(navController: NavController){
             if (!isDeleting) viewModel.relocateBlock(draggedBlock, currentInteractionScope)
             else viewModel.deleteBlock(currentInteractionScope)
             draggingBlock = Constant(context)
+        }
+    }
+
+    val tabOnDragStart = remember {
+        { offset: Offset, chosenBlock: Block ->
+            isDragging = true
+            touchPoint = offset
+            draggingBlock = chosenBlock
+            scopesList.forEach { scope -> scope.updateDropZones(draggingBlock) }
+        }
+    }
+    val tabOnDragEnd = remember {
+        { draggedBlock: Block ->
+            isDragging = false
+            viewModel.AddNewBlock(draggedBlock, currentInteractionScope)
         }
     }
 
@@ -275,33 +307,15 @@ fun RedactorPage(navController: NavController){
                         colors = CardDefaults.cardColors(containerColor = Color(230, 224, 233))
                     )
                     {
-                        val scrollState = rememberScrollState()
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(scrollState),
-                            verticalArrangement = Arrangement.SpaceAround,
-                            horizontalAlignment = Alignment.Start
+                        ScrollableTabSample(
+                            tabOnDragStart,
+                            tabOnDragEnd,
+                            variablesTabList,
+                            listsTabList,
+                            expressionsTabList,
+                            constantsTabList,
+                            otherTabList
                         )
-                        {
-                            blockChooserList.forEach { item ->
-                                Box(modifier = Modifier.padding(12.dp)){
-                                    DrawBlock(
-                                        item, {offset, chosenBlock ->
-                                            isDragging = true
-                                            touchPoint = offset
-                                            draggingBlock = chosenBlock
-                                            scopesList.forEach { scope -> scope.updateDropZones(draggingBlock) }
-                                        },
-                                        { draggedBlock ->
-                                            isDragging = false
-                                            viewModel.AddNewBlock(draggedBlock, currentInteractionScope)
-                                        }, false
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
                 1 -> {

@@ -112,9 +112,9 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                     onValueChange = { newValue ->
                         block.iterableVar.scope.deleteVariable(value)
                         block.iterableVar.name = newValue
+                        block.startValue.name = newValue
                         (block.stopCondition.leftValue as UseVariable).name = newValue
                         (block.changeIterableVar.leftValue as UseVariable).name = newValue
-                        block.startValue.name = newValue
                         block.iterableVar.scope.addVariable(newValue)
                         value = newValue
                     },

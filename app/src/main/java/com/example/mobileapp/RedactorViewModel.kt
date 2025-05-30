@@ -44,10 +44,19 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 
     var blockList = context.blockList
     var scopesList = mutableStateListOf<NewScope>(context)
-    var blockChooserList = mutableStateListOf<Block>(For(context, context.varList, "i"), IfElse(context), DeclareVariable(context, context.varList),
-        UseVariable(context, context.varList), SetVariable(context, context.varList), MathExpression(context), Print(context, console),
-        AddListElement(context), DeleteListElement(context), SetListElement(context), UseListElement(context), Constant(context, "int", 0),
-        Constant(context, "string", "str"), Constant(context, "double", 0.0), Constant(context, "bool", true), ListConstant(context))
+
+    var variablesTabList = mutableStateListOf<Block>(DeclareVariable(context, context.varList),
+        UseVariable(context, context.varList), SetVariable(context, context.varList))
+
+    var listsTabList = mutableStateListOf<Block>(ListConstant(context), AddListElement(context),
+        DeleteListElement(context), SetListElement(context), UseListElement(context))
+
+    var expressionsTabList = mutableStateListOf<Block>(MathExpression(context), BoolExpression(context))
+
+    var constantsTabList = mutableStateListOf<Block>(Constant(context, "int", 0), Constant(context, "string", "str"),
+        Constant(context, "double", 0.0), Constant(context, "bool", true))
+
+    var otherTabList = mutableStateListOf<Block>(For(context, context.varList, "i"), IfElse(context), Print(context, console))
 
     fun createNewBlock(oldBlock: Block, scope: NewScope): Block{
         when(oldBlock){
@@ -138,7 +147,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                               onReplace: (newBlock: Block) -> Unit, isRelocating: Boolean,
                               relocateFunction: (Block, NewScope) -> Unit,
                               addBlockFunction: (Block, NewScope) -> Unit, localScope: NewScope){
-        if (isNotSpecialBlock(draggingBlock.value) && block !is IfElse) return
+        if ((isNotSpecialBlock(draggingBlock.value) && block !is IfElse) || draggingBlock.value == block) return
         when(block){
             is MathExpression -> {
                 if (block.selfRect.contains(Offset(dragOffset.value.x, dragOffset.value.y))){
