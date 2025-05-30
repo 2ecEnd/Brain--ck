@@ -89,6 +89,12 @@ fun DrawMathExpression(
             horizontalArrangement = Arrangement.SpaceAround
         )
         {
+            Text(
+                text = stringResource(R.string.left_bracket),
+                fontSize = 36.sp,
+                color = White
+            )
+
             Box(
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
@@ -152,6 +158,12 @@ fun DrawMathExpression(
                     DrawBlock(block.rightValue, onDragStart, onDragEnd, isActive)
                 }
             }
+
+            Text(
+                text = stringResource(R.string.right_bracket),
+                fontSize = 36.sp,
+                color = White
+            )
         }
     }
 }

@@ -100,38 +100,38 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         iterable = resources.getString(R.string.i)
     }
 
-    fun createNewBlock(
+    private fun createNewBlock(
         oldBlock: Block,
         scope: NewScope
     ): Block
     {
-        when(oldBlock){
-            is DeclareVariable -> return DeclareVariable(scope, context.varList)
-            is SetVariable -> return SetVariable(scope, context.varList)
-            is MathExpression -> return MathExpression(scope)
-            is BoolExpression -> return BoolExpression(scope)
-            is Constant -> return Constant(scope, oldBlock.type, when(oldBlock.type){
+        return when(oldBlock){
+            is DeclareVariable -> DeclareVariable(scope, context.varList)
+            is SetVariable -> SetVariable(scope, context.varList)
+            is MathExpression -> MathExpression(scope)
+            is BoolExpression -> BoolExpression(scope)
+            is Constant -> Constant(scope, oldBlock.type, when(oldBlock.type){
                 dataTypes[0] -> 0
                 dataTypes[1] -> 0.0
                 dataTypes[2] -> defaultStringValue
                 dataTypes[3] -> true
                 else -> 0
             })
-            is ListConstant -> return ListConstant(scope)
-            is Print -> return Print(scope, console)
-            is UseVariable -> return UseVariable(scope, context.varList)
-            is IfElse -> return IfElse(scope)
-            is AddListElement -> return AddListElement(scope)
-            is DeleteListElement -> return DeleteListElement(scope)
-            is SetListElement -> return SetListElement(scope)
-            is UseListElement -> return UseListElement(scope)
-            is For -> return For(scope, context.varList, iterable)
-            is ToBoolean -> return ToBoolean(scope)
-            is ToDouble -> return ToDouble(scope)
-            is ToInt -> return ToInt(scope)
-            is ToString -> return ToString(scope)
+            is ListConstant -> ListConstant(scope)
+            is Print -> Print(scope, console)
+            is UseVariable -> UseVariable(scope, context.varList)
+            is IfElse -> IfElse(scope)
+            is AddListElement -> AddListElement(scope)
+            is DeleteListElement -> DeleteListElement(scope)
+            is SetListElement -> SetListElement(scope)
+            is UseListElement -> UseListElement(scope)
+            is For -> For(scope, context.varList, iterable)
+            is ToBoolean -> ToBoolean(scope)
+            is ToDouble -> ToDouble(scope)
+            is ToInt -> ToInt(scope)
+            is ToString -> ToString(scope)
+            else -> Constant(scope)
         }
-        return TODO("Provide the return value")
     }
 
     fun isNotSpecialBlock(block: Block): Boolean =
@@ -153,8 +153,8 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         if(draggingBlock.value.parent == null)
             draggingBlock.value.scope.blockList.remove(draggingBlock.value)
         else{
-            var parent = draggingBlock.value.parent
-            var child = draggingBlock.value
+            val parent = draggingBlock.value.parent
+            val child = draggingBlock.value
             when(parent) {
                 is MathExpression -> {
                     if (parent.leftValue == child)
@@ -233,7 +233,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         }
     }
 
-    fun addBlockInsideAnother(
+    private fun addBlockInsideAnother(
         block: Block,
         isInsideBlock: Boolean,
         onReplace: (newBlock: Block) -> Unit,
@@ -1052,7 +1052,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
         }
     }
 
-    fun AddNewBlock(
+    fun addNewBlock(
         block: Block,
         localScope: NewScope
     )
@@ -1068,7 +1068,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                 if (isNotSpecialBlock(block))
                 {
                     val insertIndex = if (localScope.blockList.isEmpty()) 0 else i+1
-                    var newBlock = createNewBlock(block, localScope)
+                    val newBlock = createNewBlock(block, localScope)
                     localScope.blockList.add(insertIndex, newBlock)
                     newBlock.scope = localScope
                     when(newBlock){
@@ -1096,7 +1096,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
             {},
             false,
             {_, _ ->},
-            {block, scope -> AddNewBlock(block, scope)},
+            {block, scope -> addNewBlock(block, scope)},
             localScope
         )}
     }
@@ -1144,7 +1144,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
 }
 
 
-class RedactorViewModelFactory(var resources: Resources) : ViewModelProvider.Factory {
+class RedactorViewModelFactory(private var resources: Resources) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return RedactorViewModel(resources) as T
     }

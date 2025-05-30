@@ -79,7 +79,7 @@ fun DrawBlock(block: Block,
 }
 
 @Composable
-fun DrawShadow(block: Block?){
+fun DrawShadow(){
     Card(
         modifier = Modifier
             .width(200.dp)

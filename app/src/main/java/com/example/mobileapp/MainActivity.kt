@@ -36,7 +36,8 @@ class MainActivity : ComponentActivity() {
                 windowInsetsController.apply {
                     hide(WindowInsetsCompat.Type.navigationBars())
                     hide(WindowInsetsCompat.Type.statusBars())
-                    systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    systemBarsBehavior =
+                        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

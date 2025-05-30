@@ -1,47 +1,31 @@
 package com.example.mobileapp.redactorspage_components
 
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.mobileapp.classes.Block
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.R
-import com.example.mobileapp.ui.theme.ExecuteButtonColor
 
 @Composable
 fun ScrollableTabSample(
@@ -54,7 +38,7 @@ fun ScrollableTabSample(
     convertersTabList: MutableList<Block>,
     otherTabList: MutableList<Block>,
 ) {
-    var state by remember { mutableStateOf(0) }
+    var state by remember { mutableIntStateOf(0) }
     val titles = listOf(
         stringResource(R.string.variables),
         stringResource(R.string.lists),
@@ -100,18 +84,20 @@ fun Variables(
     onDragEnd: (Block) -> Unit,
     variablesTabList: MutableList<Block>
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
-        variablesTabList.forEach { item ->
+        items(variablesTabList) { item ->
             Box(modifier = Modifier.padding(12.dp)){
                 DrawBlock(
                     item, onDragStart, onDragEnd, false
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.padding(64.dp))
         }
     }
 }
@@ -122,18 +108,20 @@ fun Lists(
     onDragEnd: (Block) -> Unit,
     listsTabList: MutableList<Block>
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
-        listsTabList.forEach { item ->
+        items(listsTabList) { item ->
             Box(modifier = Modifier.padding(12.dp)){
                 DrawBlock(
                     item, onDragStart, onDragEnd, false
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.padding(64.dp))
         }
     }
 }
@@ -144,18 +132,20 @@ fun Expressions(
     onDragEnd: (Block) -> Unit,
     expressionsTabList: MutableList<Block>
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
-        expressionsTabList.forEach { item ->
+        items(expressionsTabList) { item ->
             Box(modifier = Modifier.padding(12.dp)){
                 DrawBlock(
                     item, onDragStart, onDragEnd, false
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.padding(64.dp))
         }
     }
 }
@@ -166,18 +156,20 @@ fun Constants(
     onDragEnd: (Block) -> Unit,
     constantsTabList: MutableList<Block>
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
-        constantsTabList.forEach { item ->
+        items(constantsTabList) { item ->
             Box(modifier = Modifier.padding(12.dp)){
                 DrawBlock(
                     item, onDragStart, onDragEnd, false
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.padding(64.dp))
         }
     }
 }
@@ -188,18 +180,20 @@ fun Converters(
     onDragEnd: (Block) -> Unit,
     otherTabList: MutableList<Block>
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
-        otherTabList.forEach { item ->
+        items(otherTabList) { item ->
             Box(modifier = Modifier.padding(12.dp)){
                 DrawBlock(
                     item, onDragStart, onDragEnd, false
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.padding(64.dp))
         }
     }
 }
@@ -210,18 +204,20 @@ fun Other(
     onDragEnd: (Block) -> Unit,
     otherTabList: MutableList<Block>
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
-        otherTabList.forEach { item ->
+        items(otherTabList) { item ->
             Box(modifier = Modifier.padding(12.dp)){
                 DrawBlock(
                     item, onDragStart, onDragEnd, false
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.padding(64.dp))
         }
     }
 }
