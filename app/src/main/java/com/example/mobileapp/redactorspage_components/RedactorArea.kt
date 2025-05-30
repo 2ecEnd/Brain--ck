@@ -1,6 +1,9 @@
 package com.example.mobileapp.redactorspage_components
 
 
+import android.R
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -15,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -26,6 +30,7 @@ import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.NewScope
 import com.example.mobileapp.ui.theme.*
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun RedactorArea(
@@ -34,13 +39,13 @@ fun RedactorArea(
     currentInteractionScope: NewScope,
     draggingBlock: Block?,
     onDragStart: (Offset, Block) -> Unit,
-    onDragEnd: (Block) -> Unit
+    onDragEnd: (Block) -> Unit,
 )
 {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.75f)
+            .fillMaxHeight(0.7f)
             .background(NewScopeBodyColor)
             .verticalScroll(rememberScrollState())
             .horizontalScroll(rememberScrollState())

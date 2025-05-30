@@ -1,6 +1,9 @@
 package com.example.mobileapp.redactorspage_components
 
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
@@ -13,18 +16,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.mobileapp.classes.Block
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.R
+import com.example.mobileapp.ui.theme.ExecuteButtonColor
 
 @Composable
 fun ScrollableTabSample(
@@ -35,7 +52,7 @@ fun ScrollableTabSample(
     expressionsTabList: MutableList<Block>,
     constantsTabList: MutableList<Block>,
     convertersTabList: MutableList<Block>,
-    otherTabList: MutableList<Block>
+    otherTabList: MutableList<Block>,
 ) {
     var state by remember { mutableStateOf(0) }
     val titles = listOf(
@@ -61,7 +78,7 @@ fun ScrollableTabSample(
                             text = title, maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
-                    }
+                    },
                 )
             }
         }
