@@ -38,12 +38,11 @@ import androidx.compose.ui.unit.sp
 import com.example.mobileapp.DrawBlock
 import com.example.mobileapp.classes.AddListElement
 import com.example.mobileapp.classes.Block
-import com.example.mobileapp.classes.SetListElement
+import com.example.mobileapp.classes.UseListElement
 
 @Composable
-fun DrawSetListElement(block: SetListElement, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
+fun DrawUseListElement(block: UseListElement, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block) -> Unit,
               isActive: Boolean){
-    block.value.parent = block
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -112,20 +111,6 @@ fun DrawSetListElement(block: SetListElement, onDragStart: (Offset, Block) -> Un
                 }
             }
             Text("]", fontSize = 36.sp, color = Color.White, modifier = Modifier.padding(start = 0.dp))
-
-            Text("=", fontSize = 36.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
-
-            Box(
-                modifier = Modifier
-                    .onGloballyPositioned { coordinates ->
-                        block.valueRect = coordinates.boundsInWindow()
-                    }
-            )
-            {
-                key(block.value) {
-                    DrawBlock(block.value, onDragStart, onDragEnd, isActive)
-                }
-            }
         }
     }
 }

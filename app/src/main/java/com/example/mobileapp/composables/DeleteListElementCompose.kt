@@ -89,21 +89,7 @@ fun DrawDeleteListElement(block: DeleteListElement, onDragStart: (Offset, Block)
             horizontalArrangement = Arrangement.SpaceAround
         )
         {
-            Text("remove at index", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
-
-            Box(
-                modifier = Modifier
-                    .onGloballyPositioned { coordinates ->
-                        block.indexRect = coordinates.boundsInWindow()
-                    }
-            )
-            {
-                key(block.source) {
-                    DrawBlock(block.index, onDragStart, onDragEnd, isActive)
-                }
-            }
-
-            Text("from list", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+            Text("remove", fontSize = 16.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
 
             Box(
                 modifier = Modifier
@@ -130,6 +116,20 @@ fun DrawDeleteListElement(block: DeleteListElement, onDragStart: (Offset, Block)
                     }
                 }
             }
+
+            Text("[", fontSize = 36.sp, color = Color.White, modifier = Modifier.padding(start = 8.dp))
+            Box(
+                modifier = Modifier
+                    .onGloballyPositioned { coordinates ->
+                        block.indexRect = coordinates.boundsInWindow()
+                    }
+            )
+            {
+                key(block.source) {
+                    DrawBlock(block.index, onDragStart, onDragEnd, isActive)
+                }
+            }
+            Text("]", fontSize = 36.sp, color = Color.White, modifier = Modifier.padding(horizontal = 0.dp))
         }
     }
 }
