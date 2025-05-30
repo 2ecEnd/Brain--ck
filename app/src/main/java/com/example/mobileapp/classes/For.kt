@@ -66,6 +66,7 @@ class For(
 
     override fun execute()
     {
+        iterableVar.execute()
         startValue.execute()
 
         while ((stopCondition.execute() as Value.BOOLEAN).value)
@@ -73,6 +74,7 @@ class For(
             for (block in blockList)
                 block.execute()
 
+            println(iterableVar.name + ": " + varList[iterableVar.name])
             varList[iterableVar.name] = changeIterableVar.execute()
         }
     }
