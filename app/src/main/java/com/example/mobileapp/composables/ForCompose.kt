@@ -89,6 +89,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
         Column ()
         {
             Row(
+                modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             )
@@ -97,7 +98,7 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                     "for (var",
                     fontSize = 24.sp,
                     color = Color.White,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(end = 8.dp)
                 )
 
                 var value = block.iterableVar.name
@@ -123,12 +124,171 @@ fun DrawFor(block: For, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Block)
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier
-                                .background(Color.White, RoundedCornerShape(20.dp)),
+                                .background(Color.White, RoundedCornerShape(24.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             innerTextField()
                         }
                     }
+                )
+
+                Text(
+                    "=",
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            block.startValue.valueRect = coordinates.boundsInWindow()
+                        }
+                )
+                {
+                    key(block.startValue.value) {
+                        DrawBlock(block.startValue.value, onDragStart, onDragEnd, isActive)
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.padding(start = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            )
+            {
+                Text(
+                    block.iterableVar.name,
+                    fontSize = 24.sp,
+                    color = Color.White,
+                )
+
+                var expanded by remember { mutableStateOf(false) }
+                var selectedOperation by remember { mutableStateOf("<") }
+                Box(
+                    modifier = Modifier
+                        .height(38.dp)
+                        .width(54.dp)
+                        .padding(horizontal = 8.dp)
+                ) {
+                    Button(
+                        onClick = { if (isActive) expanded = true },
+                        contentPadding = PaddingValues(0.dp)
+                    )
+                    {
+                        Text(
+                            selectedOperation,
+                            fontSize = 24.sp,
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        listOf("==", "!=", ">", "<", ">=", "<=", "&&", "||").forEach { operator ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        operator,
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(horizontal = 8.dp)
+                                    )
+                                },
+                                onClick = {
+                                    selectedOperation = operator
+                                    block.stopCondition.operator = operator
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            block.stopCondition.rightValueRect = coordinates.boundsInWindow()
+                        }
+                ) {
+                    key(block.stopCondition.rightValue) {
+                        DrawBlock(block.stopCondition.rightValue, onDragStart, onDragEnd, isActive)
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            )
+            {
+                Text(
+                    block.iterableVar.name,
+                    fontSize = 24.sp,
+                    color = Color.White,
+                )
+
+                var expanded by remember { mutableStateOf(false) }
+                var selectedOperation by remember { mutableStateOf("+") }
+                Box(
+                    modifier = Modifier
+                        .height(38.dp)
+                        .width(54.dp)
+                        .padding(horizontal = 8.dp)
+                ) {
+                    Button(
+                        onClick = { if (isActive) expanded = true },
+                        contentPadding = PaddingValues(0.dp)
+                    )
+                    {
+                        Text(
+                            selectedOperation,
+                            fontSize = 24.sp,
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        listOf("+", "-", "*", "/", "%", "^").forEach { operator ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        operator,
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(horizontal = 8.dp)
+                                    )
+                                },
+                                onClick = {
+                                    selectedOperation = operator
+                                    block.changeIterableVar.operator = operator
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            block.changeIterableVar.rightValueRect = coordinates.boundsInWindow()
+                        }
+                )
+                {
+                    key(block.changeIterableVar.rightValue) {
+                        DrawBlock(block.changeIterableVar.rightValue, onDragStart, onDragEnd, isActive)
+                    }
+                }
+
+                Text(
+                    ")",
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
 

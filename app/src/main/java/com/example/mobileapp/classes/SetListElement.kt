@@ -11,6 +11,7 @@ class SetListElement(
 ) : Block()
 {
     var source: Block = ListConstant(scope)
+    var sourceRect: Rect = Rect.Zero
     var index: Block = Constant(scope)
     var indexRect: Rect = Rect.Zero
     var value by mutableStateOf<Block>(Constant(scope, "int"))

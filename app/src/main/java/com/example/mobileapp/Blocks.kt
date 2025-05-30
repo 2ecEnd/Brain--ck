@@ -62,6 +62,7 @@ import com.example.mobileapp.classes.DeleteListElement
 import com.example.mobileapp.classes.For
 import com.example.mobileapp.classes.ListConstant
 import com.example.mobileapp.classes.Print
+import com.example.mobileapp.classes.SetListElement
 import com.example.mobileapp.classes.SetVariable
 import com.example.mobileapp.classes.UseVariable
 import com.example.mobileapp.composables.DrawAddListElement
@@ -74,6 +75,7 @@ import com.example.mobileapp.composables.DrawIfElse
 import com.example.mobileapp.composables.DrawListConstant
 import com.example.mobileapp.composables.DrawMathExpression
 import com.example.mobileapp.composables.DrawPrint
+import com.example.mobileapp.composables.DrawSetListElement
 import com.example.mobileapp.composables.DrawSetVariable
 import com.example.mobileapp.composables.DrawUseVariable
 
@@ -93,6 +95,7 @@ fun DrawBlock(block: Block, onDragStart: (Offset, Block) -> Unit, onDragEnd: (Bl
         is IfElse -> DrawIfElse(block, onDragStart, onDragEnd, isActive)
         is AddListElement -> DrawAddListElement(block, onDragStart, onDragEnd, isActive)
         is DeleteListElement -> DrawDeleteListElement(block, onDragStart, onDragEnd, isActive)
+        is SetListElement -> DrawSetListElement(block, onDragStart, onDragEnd, isActive)
         is For -> DrawFor(block, onDragStart, onDragEnd, isActive)
     }
 }
