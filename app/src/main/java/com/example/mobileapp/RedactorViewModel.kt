@@ -1010,9 +1010,7 @@ class RedactorViewModel(resources: Resources) : ViewModel() {
                     Offset(dragOffset.value.x, dragOffset.value.y)
             ))
             {
-                if (block !is Constant &&
-                    block !is UseVariable &&
-                    block !is MathExpression)
+                if (isNotSpecialBlock(block))
                 {
                     deleteBlock(block.scope)
                     localScope.blockList.add(
