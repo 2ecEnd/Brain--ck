@@ -48,7 +48,7 @@
     <string name="integer">int</string>
     <string name="fractional">double</string>
     <string name="string">string</string>
-    <string name="default_string_value">str</string>
+    <string name="default_string_value"></string>
     <string name="bool">bool</string>
 
     <!--Other-->

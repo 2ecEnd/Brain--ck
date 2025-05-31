@@ -27,7 +27,7 @@ class Constant(override var scope: NewScope): Block()
     {
         value = when (type)
         {
-            "string" -> Value.STRING("str")
+            "string" -> Value.STRING("")
             "int" -> Value.INT(0)
             "double" -> Value.DOUBLE(0.0)
             "bool" -> Value.BOOLEAN(true)
