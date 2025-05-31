@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -58,7 +59,7 @@ fun RedactorArea(
                 val alpha = if (block == draggingBlock) 0.5f else 1f
                 Row(
                     modifier = Modifier
-                        .width(512.dp)
+                        .widthIn(min = 512.dp)
                         .background(
                             if(block.isTroublesome)
                                 Red.copy(alpha = 0.8f)

@@ -70,8 +70,7 @@ class Context(
                         top =
                             blockList[i].selfRect.bottom,
                         bottom =
-                            blockList[i].selfRect.bottom +
-                                    (blockList[i].selfRect.bottom - blockList[i].selfRect.top)
+                            blockList[i].selfRect.bottom + pixels*3
                     )
                 )
             }

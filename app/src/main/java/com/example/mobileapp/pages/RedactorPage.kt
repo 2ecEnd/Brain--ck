@@ -60,6 +60,7 @@ import com.example.mobileapp.RedactorViewModelFactory
 import com.example.mobileapp.classes.Block
 import com.example.mobileapp.classes.NewScope
 import com.example.mobileapp.classes.Constant
+import com.example.mobileapp.classes.For
 import com.example.mobileapp.redactorspage_components.RedactorArea
 import com.example.mobileapp.redactorspage_components.ScrollableTabSample
 import com.example.mobileapp.redactorspage_components.Toolbar
@@ -215,8 +216,18 @@ fun RedactorPage(navController: NavController){
 
             currentInteractionScope = context
             scopesList.forEach { scope ->
-                if (scope.selfRect.contains(Offset(dragOffset.x, dragOffset.y))) {
-                    currentInteractionScope = scope
+                when(scope){
+                    is For -> {
+                        if (scope.contentRect.contains(Offset(dragOffset.x, dragOffset.y)) ||
+                            scope.selfRect.contains(Offset(dragOffset.x, dragOffset.y))) {
+                            currentInteractionScope = scope
+                        }
+                    }
+                    else -> {
+                        if (scope.selfRect.contains(Offset(dragOffset.x, dragOffset.y))) {
+                            currentInteractionScope = scope
+                        }
+                    }
                 }
             }
 
